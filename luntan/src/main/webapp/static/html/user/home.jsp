@@ -120,16 +120,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <div class="layui-row layui-col-space15">
     <div class="layui-col-md6 fly-home-jie">
       <div class="fly-panel">
-        <h3 class="fly-panel-title">${user.unickname} 最近的发帖</h3>
+        <h3 class="fly-panel-title">${user.unickname} ——最近的发帖</h3>
         <ul class="jie-row">
-          <c:forEach items="${listp}" var="p">
+        	<c:set var="flag" value="0"></c:set>
+          <c:forEach items="${listp}" var="p" varStatus="vs">
+          	<c:if test="${vs.index eq 0}">
+          		<c:set var="flag" value="1"></c:set>
+          	</c:if>
         	<li>
         	<c:if test="${p.hot eq '1'}">
            	 <span class="fly-jing">精</span>
             </c:if>
             <a href="" class="jie-title"> ${p.postsTitle}</a>
             <i>${p.uptime}</i>
-            <em class="layui-hide-xs">${p.pageView}阅/${p.replyNum}评论</em>
+            <em class="layui-hide-xs">${p.pageView}阅 / ${p.replyNum}评论</em>
           </li>
           </c:forEach>
           <!-- <li>
@@ -139,6 +143,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <em class="layui-hide-xs">1136阅/27答</em>
           </li>
            -->
+           <c:if test="${flag eq 0}">
+          		<div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div>
+          	</c:if>
           <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div> -->
         </ul>
       </div>
@@ -146,9 +153,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     <div class="layui-col-md6 fly-home-da">
       <div class="fly-panel">
-        <h3 class="fly-panel-title">贤心 最近的回帖</h3>
+        <h3 class="fly-panel-title">${user.unickname} ——最近的回帖</h3>
         <ul class="home-jieda">
-          <c:forEach items="${listr}" var="r">
+        <c:set var="flag" value="0"></c:set>
+          <c:forEach items="${listr}" var="r" varStatus="vs">
+          	<c:if test="${vs.index eq 0}">
+          		<c:set var="flag" value="1"></c:set>
+          	</c:if>
           	<li>
           <p>
           <span>${r.replyTime}</span>
@@ -159,6 +170,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           </div>
         </li>
           </c:forEach>
+          
           <!-- 
         <li>
           <p>
@@ -169,7 +181,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             Fly社区采用的是NodeJS。分享出来的只是前端模版
           </div>
         </li> -->
-        
+        <c:if test="${flag eq 0}">
+          		<div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有任何的回帖</span></div>
+          	</c:if>
           <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有回答任何问题</span></div> -->
         </ul>
       </div>
