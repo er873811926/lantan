@@ -105,7 +105,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <div class="layui-col-md3">
                   <label class="layui-form-label">所在专栏</label>
                   <div class="layui-input-block">
-                    <select lay-verify="required" name="class" lay-filter="column"> 
+                    <select lay-verify="required" id="pyl_tpye" name="class" lay-filter="column"> 
                       <option></option> 
                       <c:forEach items="${smodule }" var="s">
                       		<option value="${s.smoduleId }">${s.smoduleName }</option>
@@ -126,32 +126,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                   </div>
                 </div>
               </div>
-              <%-- <div class="layui-row layui-col-space15 layui-form-item layui-hide" id="LAY_quiz">
-                <div class="layui-col-md3">
-                  <label class="layui-form-label">所属产品</label>
-                  <div class="layui-input-block">
-                    <select name="project">
-                      <option></option>
-                      <option value="layui">layui</option>
-                      <option value="独立版layer">独立版layer</option>
-                      <option value="独立版layDate">独立版layDate</option>
-                      <option value="LayIM">LayIM</option>
-                      <option value="Fly社区模板">Fly社区模板</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="layui-col-md3">
-                  <label class="layui-form-label" for="L_version">版本号</label>
-                  <div class="layui-input-block">
-                    <input type="text" id="L_version" value="" name="version" autocomplete="off" class="layui-input">
-                  </div>
-                </div>
-                <div class="layui-col-md6">
-                  <label class="layui-form-label" for="L_browser">浏览器</label>
-                  <div class="layui-input-block">
-                    <input type="text" id="L_browser"  value="" name="browser" placeholder="浏览器名称及版本，如：IE 11" autocomplete="off" class="layui-input">
-                  </div>
-                </div> --%>
+             
               </div>
               <div class="layui-form-item layui-form-text">
                 <div class="layui-input-block">
@@ -252,8 +227,21 @@ layui.config({
 		}else{
 			pyl_flag_code=false;
 		}
-		console.log(pyl_flag_code);
 	});
+	
+	
+	var pyl_flag_content=false;
+	//文本域判断
+	$("#L_content").blur(function(){
+		if(!$("#L_content").val()==""){
+			pyl_flag_content=true;
+		}else{
+			pyl_flag_content=false;
+		}
+	});
+	
+	
+	
 	
 	
 	
@@ -262,8 +250,16 @@ layui.config({
 	//点击发表
 	$("#pyl_send").click(function(){
 		var flag=formjiance();
+		//文本域的潘墩
+		if(!pyl_flag_content){
+			$("#L_content").css("border-color","red");
+				layer.msg("将信息填写完整",{shift : 6});
+				setTimeout(function(){
+					$("#L_content").css("border-color","#e2e2e2");
+				},1350);
+			return ;
+		}
 		if(flag){
-			console.log(pyl_flag_code);
 			if(!pyl_flag_code){
 				$('#L_vercode').css("border-color","red");
 					layer.msg("验证码错误",{shift : 6});
@@ -273,19 +269,38 @@ layui.config({
 				return ;
 			}
 			//把查询到的积分进行对比、
-			if($("#feiwen").val()>score){
-				layer.msg("飞吻余额不够支付",{shift : 6});
+			var feiwen=$("#feiwen").val();
+			if(parseInt(feiwen)>score){
+				$('#feiwen').css("border-color","red");
+					layer.msg("飞吻余额不够支付",{shift : 6});
+					setTimeout(function(){
+						$('#feiwen').css("border-color","#e2e2e2");
+					},1000);
+				
 				return;
 			}
-			return ;
 		
+			var content=$("#L_content").val();
+			var type=$("#pyl_tpye").val();
+			var title=$("#L_title").val();
+			var typename=$("#pyl_tpye option:selected").text();
 			$.ajax({
-				url:'pyl/login.do',
+				url:'pyl/savePosts.do',
 				type:'post',
 				dataType:'json',
-				data:{'uemail':uemail,'upassword':upass},
+				data:{'content':content,'title':title,'type':type,'feiwen':feiwen,'typename':typename,"score":score},
 				success:function(data){
+					if(data.state==0){
+						layer.msg(data.msg, {shift: 6});
+						yanzhengma();				
+					}
 					
+					if(data.state==1){
+						layer.msg(data.msg, {shift: 3});
+						setTimeout(function(){
+							window.location = data.url;					
+						},1000);  
+					}
 				},	
 			});
 		

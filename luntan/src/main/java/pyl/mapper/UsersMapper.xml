@@ -149,9 +149,6 @@
     <update id="updateUsers" parameterType="map">
         UPDATE USERS
         <set>
-            <if test="uEmail != null">
-                U_EMAIL = #{uEmail},
-            </if>
             <if test="uPassword != null">
                 U_PASSWORD = #{uPassword},
             </if>
@@ -189,7 +186,7 @@
                 U_IDENTIFICATION = #{uIdentification}
             </if>
         </set>
-        WHERE U_ID = #{uId}
+        WHERE U_EMAIL = #{uEmail}
     </update>
     
     <!-- 根据主键删除数据 -->
