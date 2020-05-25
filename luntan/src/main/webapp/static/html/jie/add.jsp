@@ -82,7 +82,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </ul>
   </div>
 </div>
-
 <div class="layui-container fly-marginTop">
   <div class="fly-panel" pad20 style="padding-top: 5px;">
   <!-- 是否已经登录 -->
@@ -91,7 +90,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    	<hr/><a href="/luntan/static/html/user/login.jsp"><div class="layui-btn">登录</div></a>
 	    </div>
     </shiro:notAuthenticated>
-    <div class="layui-form layui-form-pane">
+    
+    <!-- 登录就有 -->
+    <shiro:authenticated>
+   	 <div class="layui-form layui-form-pane">
       <div class="layui-tab layui-tab-brief" lay-filter="user">
         <ul class="layui-tab-title">
           <li class="layui-this">发表新帖<!-- 编辑帖子 --></li>
@@ -160,13 +162,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <div class="layui-inline">
                   <label class="layui-form-label">悬赏飞吻</label>
                   <div class="layui-input-inline" style="width: 190px;">
-                    <select name="experience">
+                   <!--  <select name="experience">
                       <option value="20">20</option>
                       <option value="30">30</option>
                       <option value="50">50</option>
                       <option value="60">60</option>
                       <option value="80">80</option>
-                    </select>
+                    </select> -->
+                    <input type="text" id="feiwen"  placeholder="量力而行呀" name="feiwen" autocomplete="off" class="layui-input" oninput = "value=value.replace(/[^\d]/g,'')">
                   </div>
                   <div class="layui-form-mid layui-word-aux">发表后无法更改飞吻</div>
                 </div>
@@ -174,7 +177,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               <div class="layui-form-item">
                 <label for="L_vercode" class="layui-form-label">人类验证</label>
                 <div class="layui-input-inline">
-                  <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请回答后面的问题" autocomplete="off" class="layui-input">
+                  <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请回答后面的问题" autocomplete="off" class="layui-input" oninput= "value=value.replace(/[^\d]/g,'')">
                 </div>
                 <div class="layui-form-mid">
                   <span id="vercode_tips" style="color: #c00;"></span>
@@ -187,19 +190,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           </div>
         </div>
       </div>
-    </div>
+   	 </div>
+    </shiro:authenticated>
   </div>
 </div>
 
 <div class="fly-footer">
   <p><a href="" target="_blank">痴优社区</a> 2020 &copy; <a href="/fly-3.0/html/index.html" target="_blank">jiandan 出品</a></p>
-<!--  <p>
-    <a href="http://fly.layui.com/jie/3147/" target="_blank">付费计划</a>
-    <a href="http://www.layui.com/template/fly/" target="_blank">获取Fly社区模版</a>
-    <a href="http://fly.layui.com/jie/2461/" target="_blank">微信公众号</a>
-  </p>-->
 </div>
-
 <script src="/luntan/static/res/layui/layui.js"></script>
 <script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
 <script>
@@ -220,31 +218,80 @@ layui.config({
 </script>
 
 </body>
-
 </html>
 <script type="text/javascript">
-	(function(){yanzhengma()})();
+	var score='${uScore}';
 	
+	(function(){yanzhengma()})();
 	function formjiance(){
-	console.log($("form input[type='text']"));
-		$("form input").each(function(i){
-			var input=$("form input[type='text']").eq(i);
-			console.log($(input).parent().siblings("label").html());
-			var value=$(input).val();
-			console.log(value);
-			if(value ==""){
-			var v=$(input).parent().siblings("label").html();
-				layer.msg(v+"不能为空", {shift: 6});
-			
+		var flag=true;
+		$("input[type='text']").each(function(i){
+			var input=$("input[type='text']").eq(i);
+			flag=true;
+			if($(input).val()==""){
+				flag=false;
+				$(input).css("border-color","red");
+				layer.msg("将信息填写完整",{shift : 6});
+				setTimeout(function(){
+					$(input).css("border-color","#e2e2e2");
+				},1500);
+				
 			}
 		
-		})
+		});
+		return flag;		
 	}
 	
-	$("#pyl_send").click(function(){
-		formjiance();
+	var pyl_flag_code=false;
+	var ecode=-1;
+	//验证失焦
+	$('#L_vercode').blur(function(){
+		ecode=$("#vercode_tips").attr("code");
+		if($('#L_vercode').val()==ecode){
+			pyl_flag_code=true;
+		}else{
+			pyl_flag_code=false;
+		}
+		console.log(pyl_flag_code);
 	});
-
+	
+	
+	
+	
+	
+	//点击发表
+	$("#pyl_send").click(function(){
+		var flag=formjiance();
+		if(flag){
+			console.log(pyl_flag_code);
+			if(!pyl_flag_code){
+				$('#L_vercode').css("border-color","red");
+					layer.msg("验证码错误",{shift : 6});
+					setTimeout(function(){
+						$('#L_vercode').css("border-color","#e2e2e2");
+					},1000);
+				return ;
+			}
+			//把查询到的积分进行对比、
+			if($("#feiwen").val()>score){
+				layer.msg("飞吻余额不够支付",{shift : 6});
+				return;
+			}
+			return ;
+		
+			$.ajax({
+				url:'pyl/login.do',
+				type:'post',
+				dataType:'json',
+				data:{'uemail':uemail,'upassword':upass},
+				success:function(data){
+					
+				},	
+			});
+		
+		}
+	});
+	
 
 </script>
 

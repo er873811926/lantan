@@ -113,7 +113,6 @@ public class UsersController {
 		if("".equals(uEmail) || uEmail==null)return null;
 		
 		String[] arr=null;
-		boolean flag=true;
 		//拿到主体
 		Subject subject=SecurityUtils.getSubject(); 
 		//是否认证
@@ -148,15 +147,28 @@ public class UsersController {
 	
 	
 	
-	//验证是否登录
+	
 	@RequestMapping("/addPosts.do")
 	public String addPosts(Model model){
-		List<Smodule> list=SmoduleService.findSmoduleAll();
-		if(list.isEmpty()){
-			return null;
+		Subject subject=SecurityUtils.getSubject(); 
+		if(!subject.isAuthenticated()){
+			
+			return "redirect:/static/html/user/login.jsp";
+		}
+		List<Smodule> lists=SmoduleService.findSmoduleAll();
+		if(lists.isEmpty()){
+			return "redirect:/static/html/user/login.jsp";
 		}
 		
-		model.addAttribute("smodule", list);
+		Object uname=subject.getPrincipal();
+		
+		Map<String,Object> map=new HashMap<String, Object>();
+		map.put("uEmail", uname);
+		List<Users> listu=userservice.findUsersByCondition(map);
+		
+		
+		model.addAttribute("uScore", listu.get(0).getUScore());
+		model.addAttribute("smodule", lists);
 		
 		return "forward:/static/html/jie/add.jsp";
 	}

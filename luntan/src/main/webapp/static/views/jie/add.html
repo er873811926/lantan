@@ -27,7 +27,7 @@
                 <div class="layui-col-md3">
                   <label class="layui-form-label">所在专栏</label>
                   <div class="layui-input-block">
-                    <select lay-verify="required" name="class" lay-filter="column" {{ d.edit && user.auth < 1 ? 'disabled' : '' }}>
+                    <select lay-verify="required" name="class" lay-filter="column" {{ d.edit && user.auth lt 1 ? 'disabled' : '' }}>
                       <option></option>
                       {{# for(var classes in lay.base.classes){ 
                         if(classes >= 168){ 
