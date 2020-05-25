@@ -24,15 +24,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import pyl.pojo.Posts;
 import pyl.pojo.PostsContent;
+import pyl.pojo.Reply;
 import pyl.pojo.Smodule;
 import pyl.pojo.Users;
 import pyl.service.UsersService;
 import pyl.service.PostsContentService;
 import pyl.service.PostsService;
+import pyl.service.ReplyService;
 import pyl.service.SmoduleService;
 import pyl.util.GetHttpIP;
 import pyl.util.MyMD5;
 import pyl.util.MyUUID;
+import pyl.util.Myutil;
 
 @Controller
 @RequestMapping("/userSet")
@@ -41,11 +44,11 @@ public class UsersSetController {
 	@Autowired
 	private UsersService userservice=null;
 	@Autowired
-	private SmoduleService SmoduleService=null;
-	@Autowired
 	private PostsService postsService=null;
 	@Autowired
 	private PostsContentService pcService=null;
+	@Autowired
+	private ReplyService replyService=null;
 	
 	
 	
@@ -109,10 +112,17 @@ public class UsersSetController {
 		Object uname=subject.getPrincipal();
 		map.put("uEmail", uname);
 		List<Users> listu=userservice.findUsersByCondition(map);
+		
+		map=Myutil.fenPage(map, 12, 1);//分页
+		map.put("desc", "");
 		List<Posts> listp=postsService.findPostsByCondition(map);
+		List<Reply> listr=replyService.findReplyByCondition(map);
 		
 		
+		model.addAttribute("listr", listr);
 		model.addAttribute("listp", listp);
+		
+	
 		model.addAttribute("user", (Users)listu.get(0));
 		
 		return "forward:/static/html/user/home.jsp";

@@ -91,6 +91,14 @@
         <if test="uptime != null and uptime != ''">
             AND UPTIME = #{uptime}
         </if>
+        <!--  倒叙 -->
+        <if test="desc!=null ">
+			order by POSTS_ID desc 
+		</if>
+        <if test="currentPage!=null and pageSize!=null">
+			limit #{currentPage},#{pageSize}
+		</if>
+        
     </select>
     
     <!-- 根据主键查询数据 -->

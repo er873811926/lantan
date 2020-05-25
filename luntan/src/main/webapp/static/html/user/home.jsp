@@ -120,7 +120,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <div class="layui-row layui-col-space15">
     <div class="layui-col-md6 fly-home-jie">
       <div class="fly-panel">
-        <h3 class="fly-panel-title">${user.unickname} 最近的提问</h3>
+        <h3 class="fly-panel-title">${user.unickname} 最近的发帖</h3>
         <ul class="jie-row">
           <c:forEach items="${listp}" var="p">
         	<li>
@@ -129,7 +129,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </c:if>
             <a href="" class="jie-title"> ${p.postsTitle}</a>
             <i>${p.uptime}</i>
-            <em class="layui-hide-xs">${p.pageView}阅/${p.replyNum}答</em>
+            <em class="layui-hide-xs">${p.pageView}阅/${p.replyNum}评论</em>
           </li>
           </c:forEach>
           <!-- <li>
@@ -138,36 +138,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <i>刚刚</i>
             <em class="layui-hide-xs">1136阅/27答</em>
           </li>
-          <li>
-            <a href="" class="jie-title"> 你的帖子真的帖子好</a>
-            <i>1天前</i>
-            <em class="layui-hide-xs">1136阅/27答</em>
-          </li>
-          <li>
-            <a href="" class="jie-title"> 你的帖子真的帖子好</a>
-            <i>2017-10-30</i>
-            <em class="layui-hide-xs">1136阅/27答</em>
-          </li>
-          <li>
-            <a href="" class="jie-title"> 你的帖子真的帖子好</a>
-            <i>1天前</i>
-            <em class="layui-hide-xs">1136阅/27答</em>
-          </li>
-          <li>
-            <a href="" class="jie-title"> 你的帖子真的帖子好</a>
-            <i>1天前</i>
-            <em class="layui-hide-xs">1136阅/27答</em>
-          </li>
-          <li>
-            <a href="" class="jie-title"> 你的帖子真的帖子好</a>
-            <i>1天前</i>
-            <em class="layui-hide-xs">1136阅/27答</em>
-          </li>
-          <li>
-            <a href="" class="jie-title"> 你的帖子真的帖子好</a>
-            <i>1天前</i>
-            <em class="layui-hide-xs">1136阅/27答</em>
-          </li> -->
+           -->
           <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div> -->
         </ul>
       </div>
@@ -175,21 +146,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     <div class="layui-col-md6 fly-home-da">
       <div class="fly-panel">
-        <h3 class="fly-panel-title">贤心 最近的回答</h3>
+        <h3 class="fly-panel-title">贤心 最近的回帖</h3>
         <ul class="home-jieda">
-          <li>
+          <c:forEach items="${listr}" var="r">
+          	<li>
           <p>
-          <span>1分钟前</span>
-          在<a href="" target="_blank">tips能同时渲染多个吗?</a>中回答：
+          <span>${r.replyTime}</span>
+          在<a href="" target="_blank">${r.postsTitle}</a>中回帖：
           </p>
           <div class="home-dacontent">
-            尝试给layer.photos加上这个属性试试：
-<pre>
-full: true         
-</pre>
-            文档没有提及
+            ${r.replyContent}
           </div>
         </li>
+          </c:forEach>
+          <!-- 
         <li>
           <p>
           <span>5分钟前</span>
@@ -198,7 +168,7 @@ full: true
           <div class="home-dacontent">
             Fly社区采用的是NodeJS。分享出来的只是前端模版
           </div>
-        </li>
+        </li> -->
         
           <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有回答任何问题</span></div> -->
         </ul>
