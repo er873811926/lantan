@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8" isELIgnored="false"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
@@ -81,27 +81,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <img src="/luntan/static/res/images/userPhoto.png">
   <i class="iconfont icon-renzheng" title="禹霖社区认证"></i>
   <h1>
-    贤心
-    <i class="iconfont icon-nan"></i>
-    <!-- <i class="iconfont icon-nv"></i>  -->
+    ${user.unickname}
+    <c:if test="${requestScope.user.usex eq '男'}">
+    	<i class="iconfont icon-nan"></i>
+    </c:if>
+    <c:if test="${requestScope.user.usex eq '女'}">
+   		 <i class="iconfont icon-nv"></i> 
+    </c:if>
     
-    <shiro:hasRole name="admin">
 	    <!--特殊身份显示-->
+    <shiro:hasRole name="admin">
 	    <span style="color:#c00;">（管理员）</span>
 	    <%-- <span style="color:#5FB878;">（社区之光）</span> --%>
     </shiro:hasRole>
-     <%-- <span>（该号已被封）</span> --%>
+    <c:if test="${requestScope.user.uban eq '1'}">
+   		 <span>（该号已被封）</span>
+    </c:if>
   </h1>
 
-  <p style="padding: 10px 0; color: #5FB878;">认证信息：白给</p>
+  <%-- <p style="padding: 10px 0; color: #5FB878;">认证信息：白给</p> --%>
 
   <p class="fly-home-info">
-    <i class="iconfont icon-kiss" title="飞吻"></i><span style="color: #FF7200;">66666 飞吻</span>
-    <i class="iconfont icon-shijian"></i><span>2015-6-17 加入</span>
-    <i class="iconfont icon-chengshi"></i><span>来自杭州</span>
+    <i class="iconfont icon-kiss" title="飞吻"></i><span style="color: #FF7200;">${requestScope.user.uscore } 飞吻</span>
+    <i class="iconfont icon-shijian"></i><span>${requestScope.user.uregistertime} 加入</span>
+    <i class="iconfont icon-chengshi"></i><span>${requestScope.user.uaddress}</span>
   </p>
 
-  <p class="fly-home-sign">（人生仿若一场修行）</p>
+  <p class="fly-home-sign">（${requestScope.user.umaxim}）</p>
 
 <%--  <div class="fly-sns" data-user="">
     <a href="javascript:;" class="layui-btn layui-btn-primary fly-imActive" data-type="addFriend">加为好友</a>
@@ -114,9 +120,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <div class="layui-row layui-col-space15">
     <div class="layui-col-md6 fly-home-jie">
       <div class="fly-panel">
-        <h3 class="fly-panel-title">贤心 最近的提问</h3>
+        <h3 class="fly-panel-title">${user.unickname} 最近的提问</h3>
         <ul class="jie-row">
-          <li>
+          <c:forEach items="${listp}" var="p">
+        	<li>
+        	<c:if test="${p.hot eq '1'}">
+           	 <span class="fly-jing">精</span>
+            </c:if>
+            <a href="" class="jie-title"> ${p.postsTitle}</a>
+            <i>${p.uptime}</i>
+            <em class="layui-hide-xs">${p.pageView}阅/${p.replyNum}答</em>
+          </li>
+          </c:forEach>
+          <!-- <li>
             <span class="fly-jing">精</span>
             <a href="" class="jie-title"> 你的帖子真的帖子好</a>
             <i>刚刚</i>
@@ -151,7 +167,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <a href="" class="jie-title"> 你的帖子真的帖子好</a>
             <i>1天前</i>
             <em class="layui-hide-xs">1136阅/27答</em>
-          </li>
+          </li> -->
           <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><i style="font-size:14px;">没有发表任何求解</i></div> -->
         </ul>
       </div>

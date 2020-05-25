@@ -74,14 +74,14 @@ public class PublicController {
 		Map<String,Object> map=new HashMap<String, Object>();
 		if("".equals(uEmail) || uEmail==null)return null;
 		Users user=new Users();
-		user.setUEmail(uEmail);
+		user.setUemail(uEmail);
 		//使用shiro提供的加密方式
 		Object bs=ByteSource.Util.bytes(uEmail);
 		SimpleHash sh=new SimpleHash("MD5", uPassword,bs, 5);
 		//=====
 		uPassword=sh.toString();
-		user.setUPassword(uPassword);
-		user.setUNickname(uNickname);
+		user.setUpassword(uPassword);
+		user.setUnickname(uNickname);
 		try{
 			userservice.addUsers(user);
 		}catch(Exception e){

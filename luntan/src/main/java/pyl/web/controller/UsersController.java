@@ -34,6 +34,7 @@ import pyl.service.SmoduleService;
 import pyl.util.GetHttpIP;
 import pyl.util.MyMD5;
 import pyl.util.MyUUID;
+import pyl.util.Myutil;
 
 @Controller
 @RequestMapping("/pyl")
@@ -70,7 +71,7 @@ public class UsersController {
 		if(uemail==null || uemail.equals(""))return null;
 		
 		//先用map去查数据库
-		map.put("uEmail", uemail);
+		map.put("uemail", uemail);
 		List<Users> list=userservice.findUsersByCondition(map);
 		
 		
@@ -93,15 +94,18 @@ public class UsersController {
 		Map<String,Object> map=new HashMap<String, Object>();
 		if("".equals(uEmail) || uEmail==null)return null;
 		Users user=new Users();
-		user.setUEmail(uEmail);
+		user.setUemail(uEmail);
 		//使用shiro提供的加密方式
 		Object bs=ByteSource.Util.bytes(uEmail);
 		SimpleHash sh=new SimpleHash("MD5", uPassword,bs, 5);
 		//=====
 		uPassword=sh.toString();
-		user.setUPassword(uPassword);
-		user.setUNickname(uNickname);
-		user.setURegistertime(new Date());
+		user.setUpassword(uPassword);
+		user.setUnickname(uNickname);
+		user.setUregistertime(Myutil.playTime(new Date()));
+		user.setUsex("男");
+		user.setUaddress("");
+		user.setUmaxim("");
 		try{
 			userservice.addUsers(user);
 		}catch(Exception e){
@@ -140,6 +144,7 @@ public class UsersController {
 				subject.login(token);
 			} catch (Exception e) {
 				// TODO: handle exception
+				System.out.println(e.getMessage());
 				 arr=e.getMessage().split(",");				
 			}
 		}
@@ -180,11 +185,11 @@ public class UsersController {
 		Object uname=subject.getPrincipal();
 		
 		Map<String,Object> map=new HashMap<String, Object>();
-		map.put("uEmail", uname);
+		map.put("uemail", uname);
 		List<Users> listu=userservice.findUsersByCondition(map);
 		
 		
-		model.addAttribute("uScore", listu.get(0).getUScore());
+		model.addAttribute("uScore", listu.get(0).getUscore());
 		model.addAttribute("smodule", lists);
 		
 		return "forward:/static/html/jie/add.jsp";
@@ -219,8 +224,8 @@ public class UsersController {
 		posts.setReward(Integer.parseInt(reward));
 		posts.setSmoduleId(Integer.parseInt(smoduleId));
 		posts.setSmoduleName(smoduleName);
-		posts.setuEmail(uEmail);
-		posts.setUptime(new Date());
+		posts.setUemail(uEmail);
+		posts.setUptime(Myutil.playTime(new Date()));
 		
 		//postsContent类创建
 		PostsContent postsC=new PostsContent();
@@ -228,8 +233,8 @@ public class UsersController {
 		postsC.setContent(content);
 		
 		//修改飞吻余额的
-		map.put("uEmail", uEmail);
-		map.put("uScore", y);
+		map.put("uemail", uEmail);
+		map.put("uscore", y);
 		
 		
 		postsService.addPosts(posts);

@@ -68,7 +68,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      
       <li class="layui-nav-item">
       	
-        <a class="fly-nav-avatar" href="/luntan/static/html/user/home.jsp">
+        <a class="fly-nav-avatar" href="userSet/home.do">
           <cite class="layui-hide-xs">贤心</cite>
           <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
           <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">

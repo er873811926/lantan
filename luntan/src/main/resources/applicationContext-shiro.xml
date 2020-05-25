@@ -93,6 +93,7 @@
               /static/html/user/reg.jsp = anon
               #/static/html/** = anon
                 /pyl/*.do = anon
+                /userSet/*.do = anon
                 /static/html/index.jsp = roles[admin]
                 
                 

@@ -100,6 +100,10 @@ public class UsersSetController {
 	@RequestMapping("/home.do")
 	public String addPosts(Model model){
 		Subject subject=SecurityUtils.getSubject(); 
+		if(!subject.isAuthenticated()){
+			return "redirect:/static/html/user/login.jsp";
+		}
+		
 		Map<String,Object> map=new HashMap<String, Object>();
 		//查询用户信息
 		Object uname=subject.getPrincipal();
@@ -109,7 +113,7 @@ public class UsersSetController {
 		
 		
 		model.addAttribute("listp", listp);
-		model.addAttribute("listu", listu);
+		model.addAttribute("user", (Users)listu.get(0));
 		
 		return "forward:/static/html/user/home.jsp";
 	}
@@ -143,7 +147,7 @@ public class UsersSetController {
 		posts.setReward(Integer.parseInt(reward));
 		posts.setSmoduleId(Integer.parseInt(smoduleId));
 		posts.setSmoduleName(smoduleName);
-		posts.setuEmail(uEmail);
+		posts.setUemail(uEmail);
 		
 		//postsContent类创建
 		PostsContent postsC=new PostsContent();

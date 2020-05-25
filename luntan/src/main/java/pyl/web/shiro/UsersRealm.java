@@ -44,15 +44,15 @@ public class UsersRealm extends AuthorizingRealm{
 		String uname=token.getUsername();
 		String upass=new String(token.getPassword());
 		Map<String,Object> map=new HashMap<String, Object>();
-		map.put("uEmail", uname);
+		map.put("uemail", uname);
 		List<Users> list=usersservice.findUsersByCondition(map);
 		Object principal="";
 		Object credentials="";
 		if(!list.isEmpty()){
 			Users u=list.get(0);
-			principal=u.getUEmail();
-			credentials =u.getUPassword();
-			if(u.getUBan().equals("1")){
+			principal=u.getUemail();
+			credentials =u.getUpassword();
+			if(u.getUban().equals("1")){
 				throw new LockedAccountException("msg:帐号被禁用,static:0");
 			}
 		}else{
@@ -71,7 +71,7 @@ public class UsersRealm extends AuthorizingRealm{
 		// TODO Auto-generated method stub
 		Object principal = arg0.getPrimaryPrincipal();
 		Map<String,Object> map=new HashMap<String, Object>();
-		map.put("uEmail", principal);
+		map.put("uemail", principal);
 		List<RoleRelation> list=rservice.findRoleRelationByCondition(map);
 		Set<String> roles=new HashSet<String>();
 		if(!list.isEmpty()){
