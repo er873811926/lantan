@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+<configuration>
+	<typeAliases>
+		<package name="pyl/pojo"/>
+	</typeAliases>
+	<!-- 环境的配置 -->
+	<!-- <environments default="development">告诉框架使用那个环境
+		<environment id="development">每个环境都有自己的名字
+			由JDBC来管理
+			<transactionManager type="JDBC"></transactionManager>
+			<dataSource type="POOLED">
+				<property name="url" value="jdbc:mysql://localhost:3306/a0715?characterEncoding=utf8&amp;useUnicode=true"/>
+				<property name="driver" value="com.mysql.jdbc.Driver"/>
+				<property name="username" value="root"/>
+				<property name="password" value="root"/>
+			</dataSource>
+		</environment>
+	</environments> -->
+	<!-- <mappers>
+		<mapper class="pyl.mapper"/>
+	</mappers> -->
+</configuration>

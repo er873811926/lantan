@@ -1,0 +1,233 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>luntan</groupId>
+  <artifactId>luntan</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>luntan</name>
+  <description/>
+  <properties>
+    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  	 	<spring-version>3.1.2.RELEASE</spring-version>  
+        <cglib-version>2.2.2</cglib-version>  
+        <aspectj-version>1.6.9</aspectj-version>  
+        <jstl-version>1.2</jstl-version>  
+        <servlet-version>3.0.1</servlet-version>  
+        <jsp-version>2.2.1</jsp-version>  
+        <log4j-version>1.2.14</log4j-version>  
+        <junit-version>4.11</junit-version>  
+  </properties>
+  
+    <dependencies>  
+    	<!-- json请求 -->
+  	<dependency>
+		<groupId>net.sf.json-lib</groupId>
+		<artifactId>json-lib</artifactId>
+		<version>2.4</version>
+		<classifier>jdk15</classifier>
+	</dependency>
+    
+    
+        <!-- Spring -->  
+        <dependency>  
+            <groupId>org.springframework</groupId>  
+            <artifactId>spring-context</artifactId>  
+            <version>${spring-version}</version>  
+        </dependency>  
+	     <dependency>
+	    	<groupId>org.springframework</groupId>
+	    	<artifactId>spring-jdbc</artifactId>
+	    	<version>3.1.2.RELEASE</version>
+	    </dependency>
+	    
+        <dependency>  
+            <groupId>org.springframework</groupId>  
+            <artifactId>spring-web</artifactId>  
+            <version>${spring-version}</version>  
+        </dependency>  
+  
+        <dependency>  
+            <groupId>org.springframework</groupId>  
+            <artifactId>spring-webmvc</artifactId>  
+            <version>${spring-version}</version>  
+        </dependency>  
+  
+  		<dependency>
+	    	<groupId>org.springframework</groupId>
+	    	<artifactId>spring-orm</artifactId>
+	    	<version>3.1.2.RELEASE</version>
+   		 </dependency>
+   		 
+        <dependency>  
+            <groupId>org.springframework</groupId>  
+            <artifactId>spring-test</artifactId>  
+            <version>${spring-version}</version>  
+        </dependency>  
+  
+	   <dependency>
+	    	<groupId>org.springframework</groupId>
+	    	<artifactId>spring-tx</artifactId>
+	    	<version>3.1.2.RELEASE</version>
+	    </dependency>
+  	<!-- 与spring的aop相关依赖 -->
+        <dependency>  
+            <groupId>org.aspectj</groupId>  
+            <artifactId>aspectjweaver</artifactId>  
+            <version>${aspectj-version}</version>  
+        </dependency>  
+	    
+	    <dependency>
+	    	<groupId>javassist</groupId>
+	    	<artifactId>javassist</artifactId>
+	    	<version>3.9.0.GA</version>
+   		 </dependency>
+    
+        <dependency>  
+            <groupId>cglib</groupId>  
+            <artifactId>cglib-nodep</artifactId>  
+            <version>${cglib-version}</version>  
+        </dependency>  
+  <!-- web插件 -->
+        <dependency>  
+            <groupId>javax.servlet</groupId>  
+            <artifactId>javax.servlet-api</artifactId>  
+            <version>3.0.1</version>  
+            <scope>provided</scope>  
+        </dependency>  
+        <dependency>  
+            <groupId>javax.servlet.jsp</groupId>  
+            <artifactId>javax.servlet.jsp-api</artifactId>  
+            <version>2.2.1</version>  
+            <scope>provided</scope>  
+        </dependency>  
+        <dependency>  
+            <groupId>javax.servlet</groupId>  
+            <artifactId>jstl</artifactId>  
+            <version>1.2</version>  
+        </dependency>  
+        <!-- log4j -->  
+        <dependency>  
+            <groupId>log4j</groupId>  
+            <artifactId>log4j</artifactId>  
+            <version>${log4j-version}</version>  
+        </dependency>  
+  
+        <!-- JUnit -->  
+        <dependency>  
+            <groupId>junit</groupId>  
+            <artifactId>junit</artifactId>  
+            <version>${junit-version}</version>  
+            <scope>test</scope>  
+        </dependency>
+        
+        <!-- shiro依赖 -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-all</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        <!-- ehcache依赖 -->
+        <dependency>
+        	<groupId>net.sf.ehcache</groupId>
+        	<artifactId>ehcache-core</artifactId>
+        	<version>2.4.3</version>
+        </dependency>
+           <!-- 数据源连接池依赖 -->
+    <dependency>
+    	<groupId>commons-dbcp</groupId>
+    	<artifactId>commons-dbcp</artifactId>
+    	<version>1.4</version>
+    </dependency>
+    <dependency>
+    	<groupId>commons-pool</groupId>
+    	<artifactId>commons-pool</artifactId>
+    	<version>1.5.4</version>
+    </dependency>
+         <!-- 数据库的依赖包 -->
+    <dependency>
+  		<groupId>mysql</groupId>
+  		<artifactId>mysql-connector-java</artifactId>
+  		<version>5.1.9</version>
+  		<scope>runtime</scope>
+  	</dependency>
+        
+        <!-- mybatis框架包 -->
+  	<dependency>
+  		<groupId>org.mybatis</groupId>
+  		<artifactId>mybatis</artifactId>
+  		<version>3.3.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.mybatis</groupId>
+  		<artifactId>mybatis-spring</artifactId>
+  		<version>1.2.2</version>
+  	</dependency>
+        
+        <!-- springmvc与AJAX的依赖 -->
+  	 <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.8.6</version>
+        </dependency>
+        
+         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.8.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.8.6</version>
+        </dependency>
+        
+        
+        <!-- 低版本的依赖配置（在spring的配置中要手动指定转换） -->         
+	  	<dependency>
+	  		<groupId>net.sf.json-lib</groupId>
+	  		<artifactId>json-lib</artifactId>
+	  		<version>2.2</version>
+	  		<classifier>jdk15</classifier>
+	  	</dependency>
+	  	<dependency>
+	  		<groupId>org.codehaus.jackson</groupId>
+	  		<artifactId>jackson-core-asl</artifactId>
+	  		<version>1.8.4</version>
+	  	</dependency>
+	  	<dependency>
+	  		<groupId>org.codehaus.jackson</groupId>
+	  		<artifactId>jackson-mapper-asl</artifactId>
+	  		<version>1.8.4</version>
+	  	</dependency>
+	  	<!-- Unable to create a Configuration, because no Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath. -->
+        <dependency> 
+        	<groupId>javax.validation</groupId>
+        	<artifactId>validation-api</artifactId>
+        	<version>1.1.0.Final</version> 
+        </dependency> 
+        <dependency> 
+        	<groupId>org.hibernate</groupId> 
+        	<artifactId>hibernate-validator</artifactId> 
+        	<version>5.2.4.Final</version> 
+        </dependency>
+    </dependencies> 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

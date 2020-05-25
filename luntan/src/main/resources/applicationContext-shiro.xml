@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+						http://www.springframework.org/schema/mvc
+						http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+						http://www.springframework.org/schema/context
+						http://www.springframework.org/schema/context/spring-context-3.1.xsd
+						http://www.springframework.org/schema/tx
+						http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+						http://www.springframework.org/schema/aop
+						http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+						">
+	<context:component-scan base-package="pyl"/>
+	<mvc:annotation-driven/>
+	<!-- 配置shiro的东西 -->
+		<!-- 安全管理器(使用缓存和realm【规则】) -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="cacheManager" ref="cacheManager"/>
+        <property name="authenticator" ref="authenticator"/>
+         <property name="realms">
+			<list>
+				<ref bean="usersRealm"/>			
+			</list>
+		</property> 
+		<property name="rememberMeManager.cookie.maxAge" value="15"></property>
+    </bean>
+    <!-- 缓存 （记得将ehcache.xml拷贝到classpath下）-->
+    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+    	 <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>
+    </bean>
+    <!-- realm【规则，自定义的类继承AuthorizingRealm认证与授权】 
+			                                   继承AuthenticatingRealm认证-->
+     <bean id="usersRealm" class="pyl.web.shiro.UsersRealm">
+   	 	<!-- 注入凭证匹配器 -->
+   	 	 <property name="credentialsMatcher">
+   	 		<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+   	 			<property name="hashAlgorithmName" value="MD5"></property>
+   	 			<property name="hashIterations" value="5"></property>
+   	 		</bean>
+   	 	</property>
+   	 </bean> 
+ <!--     <bean id="sHARealm" class="pyl.shiro.SHARealm">
+   	 	注入凭证匹配器
+   	 	 <property name="credentialsMatcher">
+   	 		<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+   	 			<property name="hashAlgorithmName" value="SHA1"></property>
+   	 			<property name="hashIterations" value="2"></property>
+   	 		</bean>
+   	 	</property>
+   	 </bean> -->
+   	 <!-- shiro生命周期处理器 -->
+   	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+	
+	<!-- 多realm认证器 -->
+	<bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+		<property name="authenticationStrategy">
+			<bean class="org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy"></bean>
+		</property>
+	</bean>
+	
+	
+    <!-- 启用shiro注解 依赖于上面的生命周期处理器 -->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+    
+    <!-- shiro过滤器代理工厂，id要与web.xml中过滤器名称一致 -->
+     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <!-- 登录页面 -->
+        <property name="loginUrl" value="/static/html/user/login.jsp"/>
+        <!-- 登录成功后的页面 -->
+        <property name="successUrl" value="/list.jsp"/>
+        <!-- 验证授权失败的页面  -->
+        <property name="unauthorizedUrl" value="/static/html/other/unauthorized.jsp"/>
+        <!-- 过滤链规则声明 -->
+        <property name="filterChainDefinitions">
+            <value>
+               /static/res/** = anon
+                #/static/html/* = anon
+                /static/json/* = anon
+              /static/html/user/login.jsp = anon
+              /static/html/user/reg.jsp = anon
+              #/static/html/** = anon
+                /pyl/*.do = anon
+                /static/html/index.jsp = roles[admin]
+                
+                
+                
+               # /login.do = anon
+               /logout.do = logout
+               # /mm.jsp = roles[mm]
+                #/nn.jsp = roles[nn]
+                #/static/html/user/admini-posts.jsp =roles[admin]
+                #/static/html/user/admini-users.jsp =roles[admin]
+                # everything else requires authentication:
+                /** = authc
+            </value>
+        </property>
+    </bean>
+    
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="url" value="jdbc:mysql://localhost:3306/luntan?characterEncoding=utf8&amp;useUnicode=true"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+	</bean>
+	 
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:sqlmap-config.xml"></property>
+	</bean>
+	
+	<!-- 扫描接口 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 注入工厂 -->
+		<property name="sqlSessionFactoryBeanName">
+			<idref bean="sqlSessionFactory"/>
+		</property>
+		<!-- 一次性扫描所有的接口 -->
+		<property name="basePackage" value="pyl.mapper"></property>
+	</bean>
+	
+	<!-- 定义事务 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<tx:advice id="myadvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="find*" read-only="true" propagation="REQUIRED"/>
+			<tx:method name="romeve*" propagation="REQUIRED"/>
+			<tx:method name="add*" propagation="REQUIRED"/>
+			<tx:method name="update*" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+		<aop:pointcut expression="execution(* pyl.service.impl.*.*(..))" id="myint"/>
+		<aop:advisor advice-ref="myadvice" pointcut-ref="myint"/>
+	</aop:config> <!-- -->
+	
+</beans>
