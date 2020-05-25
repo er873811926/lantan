@@ -1,5 +1,6 @@
 package pyl.web.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +101,7 @@ public class UsersController {
 		uPassword=sh.toString();
 		user.setUPassword(uPassword);
 		user.setUNickname(uNickname);
+		user.setURegistertime(new Date());
 		try{
 			userservice.addUsers(user);
 		}catch(Exception e){
@@ -218,6 +220,7 @@ public class UsersController {
 		posts.setSmoduleId(Integer.parseInt(smoduleId));
 		posts.setSmoduleName(smoduleName);
 		posts.setuEmail(uEmail);
+		posts.setUptime(new Date());
 		
 		//postsContent类创建
 		PostsContent postsC=new PostsContent();

@@ -35,12 +35,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <li class="layui-nav-item layui-this">
         <a href="/luntan/static/html/index.jsp"><i class="iconfont icon-jiaoliu"></i>首页</a>
       </li>
-     <!-- <li class="layui-nav-item">
-        <a href="../case/case.html"><i class="iconfont icon-iconmingxinganli"></i>案例</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
-      </li>-->
     </ul>
     
     <ul class="layui-nav fly-nav-user">
@@ -48,12 +42,26 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
        <li class="layui-nav-item layui-hide-xs">
         <span class="fly-search"><i class="layui-icon"></i></span> 
       </li>
-      <!-- 登入后的状态 -->
+       <!-- 未登入的状态 -->
+	<shiro:notAuthenticated> 
       <li class="layui-nav-item">
-        <a class="fly-nav-avatar" href="javascript:;">
+        <a class="iconfont icon-touxiang layui-hide-xs" href="user/login.html"></a>
+      </li>
+      <li class="layui-nav-item">
+        <a href="user/login.html">登入</a>
+      </li>
+      <li class="layui-nav-item">
+        <a href="user/reg.html">注册</a>
+      </li>
+
+    </shiro:notAuthenticated>
+         <!-- 登入后的状态 -->
+      <shiro:authenticated>
+      <li class="layui-nav-item">
+        <a class="fly-nav-avatar" href="/fly-3.0/html/user/home.html">
           <cite class="layui-hide-xs">贤心</cite>
           <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
-          <!--<i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>-->
+         <!-- <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>-->
           <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
         </a>
         <dl class="layui-nav-child">
@@ -64,28 +72,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <dd><a href="" style="text-align: center;">退出</a></dd>
         </dl>
       </li>
+       </shiro:authenticated>
     </ul>
   </div>
 </div>
 
 <div class="fly-home fly-panel" style="background-image: url();">
-  <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
-  <i class="iconfont icon-renzheng" title="痴优社区认证"></i>
+  <img src="/luntan/static/res/images/userPhoto.png">
+  <i class="iconfont icon-renzheng" title="禹霖社区认证"></i>
   <h1>
     贤心
     <i class="iconfont icon-nan"></i>
     <!-- <i class="iconfont icon-nv"></i>  -->
-    <!--<i class="layui-badge fly-badge-vip">VIP3</i>-->
     
-    <!--特殊身份显示-->
-    <!--
-    <span style="color:#c00;">（管理员）</span>
-    <span style="color:#5FB878;">（社区之光）</span>
-    <span>（该号已被封）</span>
-    -->
+    <shiro:hasRole name="admin">
+	    <!--特殊身份显示-->
+	    <span style="color:#c00;">（管理员）</span>
+	    <%-- <span style="color:#5FB878;">（社区之光）</span> --%>
+    </shiro:hasRole>
+     <%-- <span>（该号已被封）</span> --%>
   </h1>
 
-  <p style="padding: 10px 0; color: #5FB878;">认证信息：layui 作者</p>
+  <p style="padding: 10px 0; color: #5FB878;">认证信息：白给</p>
 
   <p class="fly-home-info">
     <i class="iconfont icon-kiss" title="飞吻"></i><span style="color: #FF7200;">66666 飞吻</span>
@@ -184,7 +192,7 @@ full: true
 </div>
 
 <div class="fly-footer">
-  <p><a href="http://fly.layui.com/" target="_blank">痴优社区</a> 2020 &copy; <a href="http://www.layui.com/" target="_blank">jiandan 出品</a></p>
+  <p><a href="http://fly.layui.com/" target="_blank">禹霖社区</a> 2020 &copy; <a href="http://www.layui.com/" target="_blank">jiandan 出品</a></p>
  <!-- <p>
     <a href="http://fly.layui.com/jie/3147/" target="_blank">付费计划</a>
     <a href="http://www.layui.com/template/fly/" target="_blank">获取Fly社区模版</a>

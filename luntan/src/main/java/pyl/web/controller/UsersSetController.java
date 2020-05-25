@@ -100,22 +100,18 @@ public class UsersSetController {
 	@RequestMapping("/home.do")
 	public String addPosts(Model model){
 		Subject subject=SecurityUtils.getSubject(); 
-		List<Smodule> lists=SmoduleService.findSmoduleAll();
-		if(lists.isEmpty()){
-			return "redirect:/static/html/user/login.jsp";
-		}
-		
-		Object uname=subject.getPrincipal();
-		
 		Map<String,Object> map=new HashMap<String, Object>();
+		//查询用户信息
+		Object uname=subject.getPrincipal();
 		map.put("uEmail", uname);
 		List<Users> listu=userservice.findUsersByCondition(map);
+		List<Posts> listp=postsService.findPostsByCondition(map);
 		
 		
-		model.addAttribute("uScore", listu.get(0).getUScore());
-		model.addAttribute("smodule", lists);
+		model.addAttribute("listp", listp);
+		model.addAttribute("listu", listu);
 		
-		return "forward:/static/html/jie/add.jsp";
+		return "forward:/static/html/user/home.jsp";
 	}
 	
 	

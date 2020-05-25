@@ -22,8 +22,8 @@ public class Users implements java.io.Serializable {
     /** uPassword */
     private String uPassword;
 
-    /** uHomepage */
-    private String uHomepage;
+    /** uPhoto */
+    private String uPhoto;
 
     /** uSex */
     private String uSex;
@@ -114,21 +114,21 @@ public class Users implements java.io.Serializable {
     }
 
     /**
-     * 获取uHomepage
+     * 获取uPhoto
      * 
-     * @return uHomepage
+     * @return uPhoto
      */
-    public String getUHomepage() {
-        return this.uHomepage;
+    public String getuPhoto() {
+        return this.uPhoto;
     }
 
     /**
-     * 设置uHomepage
+     * 设置uPhoto
      * 
-     * @param uHomepage
+     * @param uPhoto
      */
-    public void setUHomepage(String uHomepage) {
-        this.uHomepage = uHomepage;
+    public void setuPhoto(String uPhoto) {
+        this.uPhoto = uPhoto;
     }
 
     /**

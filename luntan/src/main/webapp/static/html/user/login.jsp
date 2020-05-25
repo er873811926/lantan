@@ -81,7 +81,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               <div class="layui-form-item">
                 <label for="L_vercode" class="layui-form-label">人类验证</label>
                 <div class="layui-input-inline">
-                  <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请回答后面的问题" autocomplete="off" class="layui-input">
+                  <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请回答后面的问题" autocomplete="off" class="layui-input" oninput = "value=value.replace(/[^\d]/g,'')">
                 </div>
                 <div class="layui-form-mid" id="code_tips">
                   <span id="vercode_tips" style="color: #c00;"></span>
@@ -103,7 +103,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 
 <div class="fly-footer">
-  <p><a href="http://fly.layui.com/" target="_blank">痴优社区</a> 2020 &copy; <a href="http://www.layui.com/" target="_blank">jiandan 出品</a></p>
+  <p><a href="http://fly.layui.com/" target="_blank">禹霖社区</a> 2020 &copy; <a href="http://www.layui.com/" target="_blank">jiandan 出品</a></p>
 <!--  <p>
     <a href="http://fly.layui.com/jie/3147/" target="_blank">付费计划</a>
     <a href="http://www.layui.com/template/fly/" target="_blank">获取Fly社区模版</a>
@@ -136,7 +136,24 @@ layui.config({
 		yanzhengma();
 	})();
 	
-
+	function formjiance(){
+		var flag=true;
+		$("input[type='text']").each(function(i){
+			var input=$("input").eq(i);
+			flag=true;
+			if($(input).val()==""){
+				flag=false;
+				$(input).css("border-color","red");
+				layer.msg("将信息填写完整",{shift : 6});
+				setTimeout(function(){
+					$(input).css("border-color","#e2e2e2");
+				},1500);
+				
+			}
+		
+		});
+		return flag;		
+	}
 	
 	
 	var pyl_flag_code=false;
@@ -144,28 +161,31 @@ layui.config({
 	//验证失焦
 	$('#L_vercode').blur(function(){
 		ecode=$("#vercode_tips").attr("code");
-		var re=/^[\d]{1,2}$/g;
-		if(!re.test($('#L_vercode').val())){
-			pyl_flag_code=false;
-			return;
-		};
 		if($('#L_vercode').val()==ecode){
 			pyl_flag_code=true;
-			
+		}else{
+			pyl_flag_code=false;
 		}		
 	});
 	
 	//注册登录事件去匹配数据库
 	$("#pyl_login").click(function(){
-		
+		var flag=formjiance();
 		//'uemail':uemail,'upassword':upass,'unickname':uname
 		var uemail=$('#L_email').val();
-		if(uemail==""){layer.msg("邮箱不能为空", {shift: 6});return;} ;
+		//if(uemail==""){layer.msg("邮箱不能为空", {shift: 6});return;} ;
 		
 		var upass=$('#L_pass').val();
-		if(upass==""){layer.msg("密码不能为空", {shift: 6});return;} ;
-		
-		if(pyl_flag_code){
+		//if(upass==""){layer.msg("密码不能为空", {shift: 6});return;} ;
+		if(flag){
+			if(!pyl_flag_code){
+				$('#L_vercode').css("border-color","red");
+					layer.msg("验证码错误",{shift : 6});
+					setTimeout(function(){
+						$('#L_vercode').css("border-color","#e2e2e2");
+					},1000);
+				return ;
+			}
 			$('#L_email').val("");
 			$("#vercode_tips").attr("code","x");
 			$.ajax({
@@ -176,7 +196,8 @@ layui.config({
 			success:function(data){
 				if(data.state==0){
 					layer.msg(data.msg, {shift: 6});
-					yanzhengma();				
+					yanzhengma();
+					pyl_flag_code=false;				
 				}
 					
 				if(data.state==1){
@@ -188,9 +209,10 @@ layui.config({
 			},
 				
 			});
-			}else{
-				layer.msg("请填写验证码", {shift: 6});
 			}
+			//else{
+			//	layer.msg("请填写验证码", {shift: 6});
+			//}
 		});
 	
 </script>
