@@ -85,7 +85,7 @@
         </if>
        <!--  倒叙 -->
         <if test="desc!=null ">
-			order by POSTS_ID desc 
+			order by REPLY_ID desc 
 		</if>
         <if test="currentPage!=null and pageSize!=null">
 			limit #{currentPage},#{pageSize}
