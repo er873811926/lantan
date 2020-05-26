@@ -315,7 +315,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           </shiro:authenticated>
         </div>
         <div class="fly-panel-main fly-signin-main">
-          <div class="layui-btn layui-btn-danger " id="LAY_signin" title="连续签到可获得额外飞吻（5+连续签到天数）">今日签到</div>
+          <div class="layui-btn layui-btn-danger " id="L_signin" title="连续签到可获得额外飞吻（5+连续签到天数）,连续签到天数最多提供15飞吻">今日签到</div>
           <span>可获得<cite>5</cite>飞吻</span>
           
           <!-- 已签到状态 --> 
@@ -477,7 +477,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script src="/luntan/static/res/layui/layui.js"></script>
 <script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
 <script>
-layui.cache.page = '';
+layui.cache.page = 'user';
 layui.cache.user = {
   username: '游客'
   ,uid: -1
@@ -493,7 +493,7 @@ layui.config({
 }).use('fly');
 </script>
 
-<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_30088308'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "w.cnzz.com/c.php%3Fid%3D30088308' type='text/javascript'%3E%3C/script%3E"));</script>
+<!-- <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_30088308'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "w.cnzz.com/c.php%3Fid%3D30088308' type='text/javascript'%3E%3C/script%3E"));</script> -->
 
 </body>
 </html>
@@ -506,19 +506,21 @@ layui.config({
 			dataType:'json',
 			data:{},
 			success:function(data){
-				$("#LAY_signin").html(data.msg);
+				$("#L_signin").html(data.msg);
 				$("#signin-days").children(":first").html(data.signintime);
-				console.log(1);
+				if(data.state==0){
+					$("#L_signin").html(data.msg).addClass("layui-btn-disabled");
+				}
 			}
 		});
 		
-				console.log(2);
 	 }
 
 
 	//点击签到
-	$("#LAY_signin").click(function(){
+	$("#L_signin").click(function(){
 		var signdays=$("#signin-days").children(":first").html();
+		 if($("#L_signin").hasClass('layui-btn-disabled')){return;}
 		$.ajax({
 			url:'pyl/signIn.do',
 			type:'post',
@@ -526,12 +528,12 @@ layui.config({
 			data:{"signdays":signdays},
 			success:function(data){
 				if(data.state==0){
-					layer.msg(data.msg, {shift: 4});
+					alert(data.msg);
 					return ;
 				}
-				$("#LAY_signin").html(data.msg).addClass("layui-btn-disabled");
-				$("#signin-days").children(":first").html(data.signinday);
-				var span=$("#LAY_signin").siblings("span").eq(0);
+				$("#L_signin").html(data.msg).addClass("layui-btn-disabled");
+				$("#signin-days").children(":first").html(data.usigninday);
+				var span=$("#L_signin").siblings("span").eq(0);
 				$(span).empty().append("获得了<cite>"+data.score+"</cite>飞吻")
 			}
 		});

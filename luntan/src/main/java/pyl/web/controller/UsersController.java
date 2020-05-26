@@ -300,21 +300,16 @@ public class UsersController {
 			map.put("uscore", user.getUscore());
 			map.put("msg", "今日签到");
 		}else{
-			System.out.println("3-2");
 			signintime=signintime.substring(0,10).replace("-", "");
-			System.out.println(signintime);
-			int time=Integer.parseInt(signintime);
-			int nowtime=Integer.parseInt(Myutil.playDate(new Date()));
-			System.out.println(nowtime);
+			long time=Integer.parseInt(signintime);
+			long nowtime=Integer.parseInt(Myutil.playDate(new Date()).replace("-", ""));
 			//签到过的时间等于今天，就显示签到过
 			if(nowtime==time){
-				System.out.println("3-3");
 				map.put("state", 0);
 				map.put("msg", "今日已签到");
 				map.put("signintime", user.getUsigninday());
 				map.put("uscore", user.getUscore());
 			}else{
-				System.out.println("3-3");
 				map.put("state", 1);
 				map.put("msg", "今日签到");
 				map.put("signintime", user.getUsigninday());
@@ -343,18 +338,25 @@ public class UsersController {
 		map.put("uemail", uemail);
 		List<Users> list=userservice.findUsersByCondition(map);
 		Users user=list.get(0);
-		
-		//修改数据
-		int score=user.getUscore()+signinday;
-		
+		int score=0;//总积分计数
+		int signindayscore=0;//额外积分计数
+		//修改数据积分
+		if(signinday>15){
+			score=user.getUscore()+15+5;
+			signindayscore=15;
+		}else{
+			score=user.getUscore()+signinday+5;
+			signindayscore=signinday;
+		}
 		map.put("uscore", score);
 		map.put("usignintime", Myutil.playTime(new Date()));
 		map.put("usigninday", (signinday+1));
 		
-		
 		userservice.updateUsers(map);
+		map.clear();
+		map.put("usigninday", (signinday+1));
 		map.put("static", "1");
-		map.put("score", (5+signinday));
+		map.put("score", (5+signindayscore));
 		map.put("msg", "今日已签到");
 		
 		return map;
