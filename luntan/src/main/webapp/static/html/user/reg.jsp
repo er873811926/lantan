@@ -33,12 +33,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <li class="layui-nav-item layui-this">
         <a href="/luntan/static/html/index.jsp"><i class="iconfont icon-jiaoliu"></i>首页</a>
       </li>
-     <!-- <li class="layui-nav-item">
-        <a href="../case/case.html"><i class="iconfont icon-iconmingxinganli"></i>案例</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
-      </li>-->
     </ul>
     
     <ul class="layui-nav fly-nav-user">
@@ -251,7 +245,7 @@ layui.config({
 			data:{'uemail':email},
 			success:function(data){
 				if(data.state==0){
-					layer.msg(data.msg, {shift: 6});
+					layer.msg(data.msg, {shift: 6,icon:2});
 					pyl_flag_L_email=false;
 				}
 			},
@@ -261,7 +255,7 @@ layui.config({
 			
 		}else{
 			if($('#L_email').val()=="")return;
-			layer.msg('邮箱格式不对，请重试', {shift: 6});
+			layer.msg('邮箱格式不对，请重试', {shift: 6,icon:2});
 			pyl_flag_L_email=false;
 		}
 	});
@@ -291,16 +285,26 @@ layui.config({
 	
 	//注册点击事件去匹配数据库
 	$("#pyl_reg").click(function(){
-		
+		var flag=formjiance();
 		//'uemail':uemail,'upassword':upass,'unickname':uname
 		var uemail=$('#L_email').val();
-		if(uemail==""){layer.msg("邮箱不能为空", {shift: 6});return;} ;
+		//if(uemail==""){layer.msg("邮箱不能为空", {shift: 6});return;} ;
 		var uname=$('#L_username').val();
-		if(uname==""){layer.msg("昵称不能为空", {shift: 6});return;} ;
+		//if(uname==""){layer.msg("昵称不能为空", {shift: 6});return;} ;
 		var upass=$('#L_pass').val();
-		if(upass==""){layer.msg("密码不能为空", {shift: 6});return;} ;
+		//if(upass==""){layer.msg("密码不能为空", {shift: 6});return;} ;
 		
-		if(pyl_flag_code&&pyl_flag_L_email&&pyl_flag_L_pass&&pyl_flag_L_repass&&pyl_flag_L_username){
+//		if(pyl_flag_code&&pyl_flag_L_email&&pyl_flag_L_pass&&pyl_flag_L_repass&&pyl_flag_L_username){
+		if(flag){
+		console.log(flag);
+			if(!pyl_flag_code){
+				$('#L_vercode').css("border-color","red");
+					layer.msg("验证码错误",{shift : 6,icon:2});
+					setTimeout(function(){
+						$('#L_vercode').css("border-color","#e2e2e2");
+					},1000);
+				return ;
+			}
 			$('#L_email').val("");
 			$("#vercode_tips").attr("code","x");
 			$.ajax({
@@ -315,7 +319,7 @@ layui.config({
 				}
 					
 				if(data.state==1){
-					layer.msg(data.msg, {shift: 3});
+					layer.msg(data.msg, {shift: 3,icon:1});
 					setTimeout(function(){
 						window.location = data.url;					
 					},1000);  

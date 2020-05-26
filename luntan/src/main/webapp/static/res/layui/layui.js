@@ -226,3 +226,25 @@ function yanzhengma(){
 			});
 	
 	}
+
+
+//输入框检测
+function formjiance(){
+	var flag=true;
+	$("input[type='text']").each(function(i){
+		var input=$("input").eq(i);
+		if($(input).val()==""){
+			flag=false;
+			$(input).css("border-color","red");
+			layer.msg("将信息填写完整",{shift : 6,icon:2});
+			setTimeout(function(){
+				$(input).css("border-color","#e2e2e2");
+			},1500);
+			
+		}else{
+			flag=true;
+		}
+	
+	});
+	return flag;		
+}
