@@ -1,4 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -18,7 +20,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	-->
 
 	  <meta charset="utf-8">
-	  <title>Fly Template v3.0，你的帖子也写得也太好了</title>
+	  <title>${posts.postsTitle}</title>
 	  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	  <link rel="stylesheet" href="/luntan/static/res/layui/css/layui.css">
 	  <link rel="stylesheet" href="/luntan/static/res/css/global.css">
@@ -34,12 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <li class="layui-nav-item layui-this">
         <a href="/"><i class="iconfont icon-jiaoliu"></i>首页</a>
       </li>
-     <!-- <li class="layui-nav-item">
-        <a href="../case/case.html"><i class="iconfont icon-iconmingxinganli"></i>案例</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
-      </li>-->
+    
     </ul>
     
     <ul class="layui-nav fly-nav-user">
@@ -118,29 +115,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <div class="layui-row layui-col-space15">
     <div class="layui-col-md8 content detail">
       <div class="fly-panel detail-box">
-        <h1>Fly Template v3.0，你的帖子也写得也太好了</h1>
+        <h1>${posts.postsTitle}</h1>
         <div class="fly-detail-info">
-          <!-- <span class="layui-badge">审核中</span> -->
-          <span class="layui-badge layui-bg-green fly-detail-column">动态</span>
+          <span class="layui-badge layui-bg-green fly-detail-column">${posts.smoduleName}</span>
+          <c:if test="${posts.top eq 1}">
+          	<span class="layui-badge layui-bg-black">置顶</span>
+          </c:if>
+          <c:if test="${posts.hot eq 1}">
+         	 <span class="layui-badge layui-bg-red">精帖</span>
+          </c:if>
           
-          <span class="layui-badge" style="background-color: #999;">未结</span>
-          <!-- <span class="layui-badge" style="background-color: #5FB878;">已结</span> -->
-          
-          <span class="layui-badge layui-bg-black">置顶</span>
-          <span class="layui-badge layui-bg-red">精帖</span>
-          
-          <div class="fly-admin-box" data-id="123">
-            <span class="layui-btn layui-btn-xs jie-admin" type="del">删除</span>
-            
-            <span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="1">置顶</span> 
-            <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="0" style="background-color:#ccc;">取消置顶</span> -->
-            
-            <span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="1">加精</span> 
-            <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="0" style="background-color:#ccc;">取消加精</span> -->
-          </div>
+          <shiro:hasRole name="admin">
+	          <div class="fly-admin-box" data-id="123">
+	            <span class="layui-btn layui-btn-xs jie-admin" type="">删除</span>
+	            
+	            <span class="layui-btn layui-btn-xs jie-admin" type="" field="stick" rank="1">置顶</span> 
+	            <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="0" style="background-color:#ccc;">取消置顶</span> -->
+	            
+	            <span class="layui-btn layui-btn-xs jie-admin" type="" field="status" rank="1">加精</span> 
+	            <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="0" style="background-color:#ccc;">取消加精</span> -->
+	          </div>
+         </shiro:hasRole>
           <span class="fly-list-nums"> 
-            <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i> 66</a>
-            <i class="iconfont" title="人气">&#xe60b;</i> 99999
+            <a href="#comment"><i class="iconfont" title="回答">&#xe60c;</i>${posts.replyNum}</a>
+            <i class="iconfont" title="人气">&#xe60b;</i> ${posts.pageView}
           </span>
         </div>
         <div class="detail-about">
@@ -150,18 +148,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <div class="fly-detail-user">
             <a href="../user/home.html" class="fly-link">
               <cite>贤心</cite>
-              <i class="iconfont icon-renzheng" title="认证信息：{{ rows.user.approve }}"></i>
-              <!--<i class="layui-badge fly-badge-vip">VIP3</i>-->
             </a>
-            <span>2017-11-30</span>
+            <span>发帖时间:${posts.uptime}</span>
           </div>
           <div class="detail-hits" id="LAY_jieAdmin" data-id="123">
-            <span style="padding-right: 10px; color: #FF7200">悬赏：60飞吻</span>  
-            <!--<span class="layui-btn layui-btn-xs jie-admin" type="edit"><a href="add.html">编辑此贴</a></span>-->
+            <span style="padding-right: 10px; color: #FF7200">悬赏：${posts.reward}飞吻</span>  
           </div>
         </div>
         <div class="detail-body photos">
-          <p>
+        	${postsc.content}
+         <!--  <p>
             该模版由 你的帖子也写得也太好了（11）倾情提供，。阿克加好友的闪光点回复可见光。
           </p>
           <p>更新日志：</p>
@@ -181,8 +177,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           封面<hr>
           <p>
             <img src="../../res/images/fly.jpg" alt="Fly社区">
-          </p>
-        </div>
+          </p>-->
+        </div> 
       </div>
 
       <div class="fly-panel detail-box" id="flyReply">
@@ -191,7 +187,55 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </fieldset>
 
         <ul class="jieda" id="jieda">
-          <li data-id="111" class="jieda-daan">
+        <c:set var="flag" value="0"></c:set>
+        <c:forEach items="${listr}" var="r" varStatus="vs">
+        	<c:if test="${vs.index eq 0}">
+        	 <c:set var="flag" value="1"></c:set>
+        	</c:if>
+        	<li data-id="111" class="jieda-daan">
+            <a name="item-1111111111"></a>
+            <div class="detail-about detail-about-reply">
+              <a class="fly-avatar" href="">
+                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
+              </a>
+              <div class="fly-detail-user">
+                <a href="" class="fly-link">
+                  <cite>${r.unickname}</cite>
+                </a>
+              </div>
+
+              <div class="detail-hits">
+                <span>${r.replyTime}</span>
+              </div>
+			  <c:if test="${r.top eq 1}">
+               <i class="iconfont icon-caina" title="最佳答案"></i>
+              </c:if>
+            </div>
+            <div class="detail-body jieda-body photos">
+              <p>${r.replyContent}</p>
+            </div>
+            <div class="jieda-reply">
+              <span class="jieda-zan zanok" type="zan">
+                <i class="iconfont icon-zan"></i>
+                <em>${r.likes}</em>
+              </span>
+              <span type="reply">
+                <i class="iconfont icon-svgmoban53"></i>
+                回复
+              </span>
+              <div class="jieda-admin">
+                <!--<span type="edit">编辑</span>-->
+                <span type="del">删除</span>
+                <c:if test="${r.top eq 0}">
+                 <span class="jieda-accept" type="accept">采纳</span>
+                </c:if>
+              </div>
+            </div>
+          </li>
+        
+        </c:forEach>
+        
+          <%-- <li data-id="111" class="jieda-daan">
             <a name="item-1111111111"></a>
             <div class="detail-about detail-about-reply">
               <a class="fly-avatar" href="">
@@ -272,9 +316,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               </div>
             </div>
           </li>
-          
+           --%>
+           
           <!-- 无数据时 -->
-          <!-- <li class="fly-none">消灭零回复</li> -->
+          <c:if test="${flag eq 0}">
+           <li class="fly-none">消灭零回复</li>
+          </c:if>
         </ul>
         
         <div class="layui-form layui-form-pane">
@@ -293,6 +340,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </div>
       </div>
     </div>
+    
     <div class="layui-col-md4">
       <dl class="fly-panel fly-list-one">
         <dt class="fly-panel-title">最近热议</dt>

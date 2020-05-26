@@ -181,9 +181,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             Fly社区采用的是NodeJS。分享出来的只是前端模版
           </div>
         </li> -->
-        <c:if test="${flag eq 0}">
+       	  <c:if test="${flag eq 0}">
           		<div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有任何的回帖</span></div>
-          	</c:if>
+          </c:if>
           <!-- <div class="fly-none" style="min-height: 50px; padding:30px 0; height:auto;"><span>没有回答任何问题</span></div> -->
         </ul>
       </div>

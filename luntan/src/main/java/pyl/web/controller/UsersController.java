@@ -136,7 +136,6 @@ public class UsersController {
 		String uPassword=request.getParameter("upassword");
 		Map<String,Object> map=new HashMap<String, Object>();
 		if("".equals(uEmail) || uEmail==null)return null;
-		
 		String[] arr=null;
 		//拿到主体
 		Subject subject=SecurityUtils.getSubject(); 
@@ -246,7 +245,7 @@ public class UsersController {
 		userservice.updateUsers(map);
 		map.put("state", "1");
 		map.put("msg", "发表成功");
-		map.put("url", "/luntan/static/html/index.jsp");
+		map.put("url", "pyl/lookIndex.do");
 		return map;
 	}
 	
@@ -266,14 +265,22 @@ public class UsersController {
 		List<Posts> listpt=postsService.findPostsByCondition(map);//置顶的
 		
 		map.clear();//清空map
+		map.put("hot", "1");
+		map.put("desc", "");//倒叙
+		map=Myutil.fenPage(map, 10,1);
+		List<Posts> listph=postsService.findPostsByCondition(map);//精华贴
+		
+		
+		map.clear();//清空map
 		List<Smodule> lists=SmoduleService.findSmoduleAll();//所有模块
 		
 		
 		map.put("desc", "");//倒叙
 		map.put("pageSize", 12);
-		List<ReplyNumEmailMax> listMax=replyService.findReplyNumEmailMax(map);
+		List<ReplyNumEmailMax> listMax=replyService.findReplyNumEmailMax(map);//回复数多的
 		
 		model.addAttribute("listpt", listpt);
+		model.addAttribute("listph", listph);
 		model.addAttribute("listpa", listpa);
 		model.addAttribute("listMax", listMax);
 		model.addAttribute("smodule", lists);

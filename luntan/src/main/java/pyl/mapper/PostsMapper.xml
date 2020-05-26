@@ -115,6 +115,8 @@
         </foreach>
     </select>
     
+    
+    
     <!-- 插入数据 
     <insert id="insertPosts" parameterType="Posts">
         INSERT INTO POSTS (

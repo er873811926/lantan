@@ -51,54 +51,6 @@ public class UsersSetController {
 	private ReplyService replyService=null;
 	
 	
-	
-	
-
-	
-	
-	//登录
-	@RequestMapping("/sdfsdf.do")
-	public  @ResponseBody Map<String,Object> login(HttpServletRequest request,HttpServletResponse response){
-		String uEmail=request.getParameter("uemail");
-		String uPassword=request.getParameter("upassword");
-		Map<String,Object> map=new HashMap<String, Object>();
-		if("".equals(uEmail) || uEmail==null)return null;
-		
-		String[] arr=null;
-		//拿到主体
-		Subject subject=SecurityUtils.getSubject(); 
-		//是否认证
-		if(!subject.isAuthenticated()){
-			UsernamePasswordToken token=new UsernamePasswordToken(uEmail,uPassword);
-			token.setRememberMe(true);
-			try {			
-				subject.login(token);
-			} catch (Exception e) {
-				// TODO: handle exception
-				 arr=e.getMessage().split(",");				
-			}
-		}
-		
-		if(arr!=null){
-			if("0".equals(arr[1].substring(7))){
-				map.put("msg",arr[0].substring(4));
-				map.put("state",0);
-			}else{
-				map.put("msg", "帐号或者密码错误");
-				map.put("state", 0);
-			}
-		}else{
-			map.put("msg", "登录成功正在跳转...");
-			map.put("state", 1);
-			map.put("url", "/luntan/static/html/index.jsp");
-		}
-		
-		return map;
-	}
-	
-	
-	
-	
 	//访问用户主页
 	@RequestMapping("/home.do")
 	public String addPosts(HttpServletRequest request,Model model){
@@ -113,7 +65,7 @@ public class UsersSetController {
 		Map<String,Object> map=new HashMap<String, Object>();
 		//查询用户信息
 		
-		map.put("uEmail", uname);
+		map.put("uemail", uname);
 		List<Users> listu=userservice.findUsersByCondition(map);
 		
 		map=Myutil.fenPage(map, 12, 1);//分页
@@ -181,6 +133,48 @@ public class UsersSetController {
 		return map;
 	}
 	
+	//访问用户帖子
+	@RequestMapping("/detail.do")
+	public String detail(HttpServletRequest request,Model model){
+		String uname=request.getParameter("uemail");
+		String postsNo=request.getParameter("postsNo");
+		Subject subject=SecurityUtils.getSubject(); 
+		if(uname==null||"".equals(uname)){
+			return "redirect:/pyl/lookIndex.do";
+		}
+		
+		Map<String,Object> map=new HashMap<String, Object>();
+		//查询用户信息
+		map.put("uemail", uname);
+		List<Users> listu=userservice.findUsersByCondition(map);
+		
+		//查询该用户的帖子
+		map.put("postsNo", postsNo);
+		List<Posts> listp=postsService.findPostsByCondition(map);
+		
+		//查询帖子的内容
+		List<PostsContent> listpc=pcService.findPostsContentByCondition(map);
+		PostsContent pc=listpc.get(0);
+		String ct=pc.getContent().replace("[", "<");
+		ct=ct.replace("]", ">");
+		ct=ct.replace("face<微笑>", "<img src='/luntan/static/res/layui/images/face/0.gif'></img>");
+		
+		pc.setContent(ct);
+		//查询帖子的所有回复
+		map.clear();
+		map.put("postsNo", postsNo);
+		map=Myutil.fenPage(map, 10, 1);//分页
+		map.put("desc", "");
+		List<Reply> listr=replyService.findReplyByCondition(map);
+		
+		
+		model.addAttribute("listr", listr);
+		model.addAttribute("postsc", pc);
+		model.addAttribute("posts", listp.get(0));
+		model.addAttribute("user", (Users)listu.get(0));
+		
+		return "forward:/static/html/jie/detail.jsp";
+	}	
 	
 	
 }

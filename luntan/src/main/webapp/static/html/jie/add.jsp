@@ -198,24 +198,7 @@ layui.config({
 	var score='${uScore}';
 	
 	(function(){yanzhengma()})();
-	function formjiance(){
-		var flag=true;
-		$("input[type='text']").each(function(i){
-			var input=$("input[type='text']").eq(i);
-			flag=true;
-			if($(input).val()==""){
-				flag=false;
-				$(input).css("border-color","red");
-				layer.msg("将信息填写完整",{shift : 6});
-				setTimeout(function(){
-					$(input).css("border-color","#e2e2e2");
-				},1500);
-				
-			}
-		
-		});
-		return flag;		
-	}
+	
 	
 	var pyl_flag_code=false;
 	var ecode=-1;
@@ -253,7 +236,7 @@ layui.config({
 		//文本域的潘墩
 		if(!pyl_flag_content){
 			$("#L_content").css("border-color","red");
-				layer.msg("将信息填写完整",{shift : 6});
+				layer.msg("将信息填写完整",{shift : 6,icon:2});
 				setTimeout(function(){
 					$("#L_content").css("border-color","#e2e2e2");
 				},1350);
@@ -262,7 +245,7 @@ layui.config({
 		if(flag){
 			if(!pyl_flag_code){
 				$('#L_vercode').css("border-color","red");
-					layer.msg("验证码错误",{shift : 6});
+					layer.msg("验证码错误",{shift : 6,icon:2});
 					setTimeout(function(){
 						$('#L_vercode').css("border-color","#e2e2e2");
 					},1000);
@@ -272,7 +255,7 @@ layui.config({
 			var feiwen=$("#feiwen").val();
 			if(parseInt(feiwen)>score){
 				$('#feiwen').css("border-color","red");
-					layer.msg("飞吻余额不够支付",{shift : 6});
+					layer.msg("飞吻余额不够支付",{shift : 6,icon:2});
 					setTimeout(function(){
 						$('#feiwen').css("border-color","#e2e2e2");
 					},1000);
@@ -291,12 +274,12 @@ layui.config({
 				data:{'content':content,'title':title,'type':type,'feiwen':feiwen,'typename':typename,"score":score},
 				success:function(data){
 					if(data.state==0){
-						layer.msg(data.msg, {shift: 6});
+						layer.msg(data.msg, {shift: 6,icon:2});
 						yanzhengma();				
 					}
 					
 					if(data.state==1){
-						layer.msg(data.msg, {shift: 3});
+						layer.msg(data.msg, {shift: 3,icon:1});
 						setTimeout(function(){
 							window.location = data.url;					
 						},1000);  

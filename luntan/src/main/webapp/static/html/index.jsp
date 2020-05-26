@@ -128,12 +128,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <ul class="fly-list">
         	<c:forEach items="${listpt}" var="pt" varStatus="vs">
         		<li>
-		            <a href="userSet/home.do?uemail=${pt.uemail}" class="fly-avatar">
+		            <a href="/luntan/userSet/home.do?uemail=${pt.uemail}" class="fly-avatar">
 		              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
 		            </a>
 		            <h2>
 		              <a class="layui-badge">${pt.smoduleName}</a>
-		              <a href="/luntan/static/html/jie/detail.jsp">${pt.postsTitle}</a>
+		              <a href="userSet/detail.do?postsNo=${pt.postsNo}&uemail=${pt.uemail}">${pt.postsTitle}</a>
 		            </h2>
 		            <div class="fly-list-info">
 		              <a href="userSet/home.do?uemail=${pt.uemail}" link>
@@ -199,7 +199,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <span class="fly-mid"></span>
           <a href="">已结</a>
           <span class="fly-mid"></span> --%>
-          <a href="">精华</a>
           <span class="fly-filter-right layui-hide-xs">
             <a href="" class="layui-this">按最新</a>
             <span class="fly-mid"></span>
@@ -215,7 +214,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		            </a>
 		            <h2>
 		              <a class="layui-badge">${pt.smoduleName}</a>
-		              <a href="/luntan/static/html/jie/detail.jsp">${pt.postsTitle}</a>
+		              <a href="userSet/detail.do?postsNo=${pt.postsNo}&uemail=${pt.uemail}">${pt.postsTitle}</a>
 		            </h2>
 		            <div class="fly-list-info">
 		              <a href="userSet/home.do?uemail=${pt.uemail}" link>
@@ -326,68 +325,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </div>
 
       <div class="fly-panel fly-rank fly-rank-reply" id="LAY_replyRank">
-        <h3 class="fly-panel-title">回贴周榜</h3>
+        <h3 class="fly-panel-title">回贴榜</h3>
         <dl>
           <i class="layui-icon fly-loading layui-anim layui-anim-rotate layui-anim-loop">&#xe63d;</i>
           <dd></dd>
           <dd></dd>
           <dd></dd>
           <dd></dd>
-          <%-- <dd>
-            <a href="user/home.html">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"><cite>贤心</cite><i>106次回答</i>
-            </a>
-          </dd>
-          <dd>
-            <a href="user/home.html">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"><cite>贤心</cite><i>106次回答</i>
-            </a>
-          </dd>
-          <dd>
-            <a href="user/home.html">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"><cite>贤心</cite><i>106次回答</i>
-            </a>
-          </dd>
-          <dd>
-            <a href="user/home.html">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"><cite>贤心</cite><i>106次回答</i>
-            </a>
-          </dd>
-          <dd>
-            <a href="user/home.html">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"><cite>贤心</cite><i>106次回答</i>
-            </a>
-          </dd>
-          <dd>
-            <a href="user/home.html">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"><cite>贤心</cite><i>106次回答</i>
-            </a>
-          </dd>
-          <dd>
-            <a href="user/home.html">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"><cite>贤心</cite><i>106次回答</i>
-            </a>
-          </dd>
-          <dd>
-            <a href="user/home.html">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"><cite>贤心</cite><i>106次回答</i>
-            </a>
-          </dd>
-          <dd>
-            <a href="user/home.html">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"><cite>贤心</cite><i>106次回答</i>
-            </a>
-          </dd>
-          <dd>
-            <a href="user/home.html">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"><cite>贤心</cite><i>106次回答</i>
-            </a>
-          </dd>
-          <dd>
-            <a href="user/home.html">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"><cite>贤心</cite><i>106次回答</i>
-            </a>
-          </dd>
+          <%-- 
           <dd>
             <a href="user/home.html">
               <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"><cite>贤心</cite><i>106次回答</i>
@@ -397,62 +342,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </div>
 
       <dl class="fly-panel fly-list-one">
-        <dt class="fly-panel-title">本周热议</dt>
-        <dd>
+        <dt class="fly-panel-title">精贴榜</dt>
+        <c:set var="flag" value="0"></c:set>
+        <c:forEach items="${listph}" var="h" varStatus="vs">
+        	<c:if test="${vs.index eq 0}">
+        		<c:set var="flag" value="1"></c:set>
+        	</c:if>
+        	<dd>
+         	 <a href="userSet/detail.do?postsNo=${h.postsNo}&uemail=${h.uemail}"> ${h.postsTitle}</a>
+          	 <span><i class="iconfont icon-pinglun1"></i>${h.replyNum}</span>
+       		</dd>
+        </c:forEach>
+        <!-- <dd>
           <a href="jie/detail.html"> 你的帖子也写得太好了</a>
           <span><i class="iconfont icon-pinglun1"></i> 16</span>
         </dd>
-        <dd>
-          <a href="jie/detail.html"> 你的帖子也写得太好了</a>
-          <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-          <a href="jie/detail.html"> 你的帖子也写得太好了</a>
-          <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-          <a href="jie/detail.html"> 你的帖子也写得太好了</a>
-          <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-          <a href="jie/detail.html"> 你的帖子也写得太好了</a>
-          <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-          <a href="jie/detail.html"> 你的帖子也写得太好了</a>
-          <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-          <a href="jie/detail.html"> 你的帖子也写得太好了</a>
-          <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-          <a href="jie/detail.html"> 你的帖子也写得太好了</a>
-          <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-          <a href="jie/detail.html"> 你的帖子也写得太好了</a>
-          <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-          <a href="jie/detail.html"> 你的帖子也写得太好了</a>
-          <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-
+         -->
         <!-- 无数据时 -->
-        <!--
-        <div class="fly-none">没有相关数据</div>
-        -->
+        <c:if test="${flag eq 0}">
+        	<div class="fly-none">没有相关数据</div>
+        </c:if>
       </dl>
 
-      <div class="fly-panel">
+     <!--  <div class="fly-panel">
         <div class="fly-panel-title">
           这里可作为广告区域
         </div>
         <div class="fly-panel-main">
           <a href="http://layim.layui.com/?from=fly" target="_blank" class="fly-zanzhu" time-limit="2017.09.25-2099.01.01" style="background-color: #5FB878;">LayIM 3.0 - layui 旗舰之作</a>
         </div>
-      </div>
+      </div> 
       
       <div class="fly-panel fly-link">
         <h3 class="fly-panel-title">友情链接</h3>
@@ -463,7 +382,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <dd><a href="http://www.layui.com/laydate/" target="_blank">layDate</a><dd>
           <dd><a href="mailto:xianxin@layui-inc.com?subject=%E7%94%B3%E8%AF%B7Fly%E7%A4%BE%E5%8C%BA%E5%8F%8B%E9%93%BE" class="fly-link">申请友链</a><dd>
         </dl>
-      </div>
+      </div>-->
 
     </div>
   </div>
