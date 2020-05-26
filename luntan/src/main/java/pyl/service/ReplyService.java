@@ -3,6 +3,7 @@ package pyl.service;
 import java.util.List;
 import java.util.Map;
 
+import pyl.dto.ReplyNumEmailMax;
 import pyl.pojo.Reply;
 
 public interface ReplyService {
@@ -14,4 +15,5 @@ public interface ReplyService {
 	public void addReply(Reply r);
 	public void updateReply(Map<String,Object> map);
 	public void removeReplyById(int id );
+	public List<ReplyNumEmailMax> findReplyNumEmailMax(Map<String,Object> map);
 }

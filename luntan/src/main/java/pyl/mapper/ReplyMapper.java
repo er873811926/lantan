@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
+import pyl.dto.ReplyNumEmailMax;
 import pyl.pojo.Reply;
 
 @Repository
@@ -17,4 +18,7 @@ public interface ReplyMapper {
 	public void insertReply(Reply r);
 	public void updateReply(Map<String,Object> map);
 	public void deleteReplyById(int id );
+	
+	//查询回帖数
+	public List<ReplyNumEmailMax> findReplyNumEmailMax(Map<String,Object> map);
 }

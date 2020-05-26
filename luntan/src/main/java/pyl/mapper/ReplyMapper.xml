@@ -102,6 +102,18 @@
         </foreach>
     </select>
     
+    <!-- 查询回帖最多的用户和帖子数 -->
+    <select id="findReplyNumEmailMax" resultType="ReplyNumEmailMax" parameterType="map">
+        SELECT COUNT(UEMAIL)as num,UEMAIL from REPLY  GROUP BY UEMAIL 
+        <!--  倒叙 -->
+        <if test="desc!=null ">
+			ORDER BY COUNT(UEMAIL) DESC
+		</if>
+        <if test="pageSize!=null">
+			limit #{pageSize}
+		</if>
+    </select>
+    
     <!-- 插入数据 -->
     <insert id="insertReply" parameterType="Reply">
         INSERT INTO REPLY (

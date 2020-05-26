@@ -99,17 +99,20 @@ public class UsersSetController {
 	
 	
 	
-	//发表帖子
+	//访问用户主页
 	@RequestMapping("/home.do")
-	public String addPosts(Model model){
+	public String addPosts(HttpServletRequest request,Model model){
+		String uname=request.getParameter("uemail");
 		Subject subject=SecurityUtils.getSubject(); 
-		if(!subject.isAuthenticated()){
-			return "redirect:/static/html/user/login.jsp";
+		if(uname==null||"".equals(uname)){
+			uname=subject.getPrincipal().toString();
+			if(uname==null||"".equals(uname)){
+				return "redirect:/static/html/login.jsp";
+			}
 		}
-		
 		Map<String,Object> map=new HashMap<String, Object>();
 		//查询用户信息
-		Object uname=subject.getPrincipal();
+		
 		map.put("uEmail", uname);
 		List<Users> listu=userservice.findUsersByCondition(map);
 		

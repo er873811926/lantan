@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import pyl.dto.ReplyNumEmailMax;
 import pyl.mapper.ReplyMapper;
 import pyl.pojo.Reply;
 import pyl.service.ReplyService;
@@ -51,5 +52,13 @@ public class ReplyServiceImpl implements ReplyService{
 		// TODO Auto-generated method stub
 		replymapper.deleteReplyById(id);
 	}
+
+	@Override
+	public List<ReplyNumEmailMax> findReplyNumEmailMax(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return replymapper.findReplyNumEmailMax(map);
+	}
+
+	
 
 }

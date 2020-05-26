@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import pyl.dto.ReplyNumEmailMax;
 import pyl.pojo.Posts;
 import pyl.pojo.PostsContent;
 import pyl.pojo.Smodule;
@@ -30,6 +31,7 @@ import pyl.pojo.Users;
 import pyl.service.UsersService;
 import pyl.service.PostsContentService;
 import pyl.service.PostsService;
+import pyl.service.ReplyService;
 import pyl.service.SmoduleService;
 import pyl.util.GetHttpIP;
 import pyl.util.MyMD5;
@@ -48,6 +50,8 @@ public class UsersController {
 	private PostsService postsService=null;
 	@Autowired
 	private PostsContentService pcService=null;
+	@Autowired
+	private ReplyService replyService=null;
 	
 	//验证码生成
 	@RequestMapping("/yanZhengMa.do")
@@ -160,7 +164,7 @@ public class UsersController {
 		}else{
 			map.put("msg", "登录成功正在跳转...");
 			map.put("state", 1);
-			map.put("url", "/luntan/static/html/index.jsp");
+			map.put("url", "pyl/lookIndex.do");
 		}
 		
 		return map;
@@ -246,6 +250,36 @@ public class UsersController {
 		return map;
 	}
 	
+	
+	
+	//浏览主页
+	@RequestMapping("/lookIndex.do")
+	public String lookIndex(Model model){
+		Subject subject=SecurityUtils.getSubject(); 
+		Map<String,Object> map=new HashMap<String, Object>();
+		//需要全部的帖子和置顶的帖子，回复最多的人
+		List<Posts> listpa=postsService.findPostsAll();//全部的
+		
+		map.put("top", "1");
+		map.put("desc", "");//倒叙
+		map=Myutil.fenPage(map, 4,1);
+		List<Posts> listpt=postsService.findPostsByCondition(map);//置顶的
+		
+		map.clear();//清空map
+		List<Smodule> lists=SmoduleService.findSmoduleAll();//所有模块
+		
+		
+		map.put("desc", "");//倒叙
+		map.put("pageSize", 12);
+		List<ReplyNumEmailMax> listMax=replyService.findReplyNumEmailMax(map);
+		
+		model.addAttribute("listpt", listpt);
+		model.addAttribute("listpa", listpa);
+		model.addAttribute("listMax", listMax);
+		model.addAttribute("smodule", lists);
+		
+		return "forward:/static/html/index.jsp";
+	}
 	
 	
 }
