@@ -175,7 +175,7 @@ layui.config({
 			pyl_flag_L_username=true; //成功返回不变false，最后注册验证
 			return;
 		}else{
-			layer.msg('输入的昵称长度超过限制', {shift: 6});
+			layer.msg('输入的昵称长度超过限制', {shift: 6,icon:2});
 		}
 		pyl_flag_L_username=false;
 	
@@ -225,7 +225,7 @@ layui.config({
 			pyl_flag_L_repass=true;//成功返回不变false，最后注册验证
 			return;
 		}else{
-			layer.msg('两次密码不同', {shift: 6});
+			layer.msg('两次密码不同', {shift: 6,icon:2});
 		}
 		
 		pyl_flag_L_repass=false;
@@ -310,7 +310,7 @@ layui.config({
 			data:{'uemail':uemail,'upassword':upass,'unickname':uname},
 			success:function(data){
 				if(data.state==0){
-					layer.msg(data.msg, {shift: 6});
+					layer.msg(data.msg, {shift: 6,icon:2});
 					yanzhengma();				
 				}
 					
@@ -324,7 +324,7 @@ layui.config({
 				
 			});
 			}else{
-				layer.msg("将信息填写完整", {shift: 6});
+				layer.msg("将信息填写完整", {shift: 6,icon:2});
 			}
 		});
 	

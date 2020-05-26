@@ -78,7 +78,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <dd><a href="/luntan/static/html/user/message.jsp"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
           <dd><a href="/luntan/static/html/user/home.jsp"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
           <hr style="margin: 5px 0;">
-          <dd><a href="/luntan/static/html/user/reg.jsp" style="text-align: center;">退出</a></dd>
+          <dd><a href="logout.do" style="text-align: center;">退出</a></dd>
         </dl>
       </li>
      
@@ -121,12 +121,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </div>
         <ul class="fly-list">
           <li>
-            <a href="user/home.html" class="fly-avatar">
+            <a href="/luntan/static/html/user/home.jsp" class="fly-avatar">
               <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
             </a>
             <h2>
               <a class="layui-badge">动态</a>
-              <a href="jie/detail.html"> 你的帖子也写得太好了</a>
+              <a href="/luntan/static/html/jie/detail.jsp"> 你的帖子也写得太好了</a>
             </h2>
             <div class="fly-list-info">
               <a href="user/home.html" link>

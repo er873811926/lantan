@@ -17,7 +17,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
 	  <meta charset="utf-8">
-	  <title>痴优_更多优贴</title>
+	  <title>禹霖_更多优贴</title>
 	  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	  <link rel="stylesheet" href="/luntan/static/res/layui/css/layui.css">
 	  <link rel="stylesheet" href="/luntan/static/res/css/global.css">
@@ -441,7 +441,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 
 <div class="fly-footer">
-  <p><a href="" target="_blank">痴优社区</a> 2017 &copy; <a href="" target="_blank">jiandan 出品</a></p>
+  <p><a href="" target="_blank">禹霖社区</a> 2017 &copy; <a href="" target="_blank">jiandan 出品</a></p>
  <%--  <p>
     <a href="http://fly.layui.com/jie/3147/" target="_blank">付费计划</a>
     <a href="http://www.layui.com/template/fly/" target="_blank">获取Fly社区模版</a>

@@ -171,7 +171,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 
 <div class="fly-footer">
-  <p><a href="" target="_blank">痴优社区</a> 2020 &copy; <a href="/fly-3.0/html/index.html" target="_blank">jiandan 出品</a></p>
+  <p><a href="" target="_blank">禹霖社区</a> 2020 &copy; <a href="/fly-3.0/html/index.html" target="_blank">jiandan 出品</a></p>
 </div>
 <script src="/luntan/static/res/layui/layui.js"></script>
 <script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
