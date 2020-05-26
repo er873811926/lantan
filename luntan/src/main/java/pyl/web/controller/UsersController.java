@@ -281,5 +281,83 @@ public class UsersController {
 		return "forward:/static/html/index.jsp";
 	}
 	
+	//自动更新签到数据
+	@RequestMapping("/signInday.do")
+	public  @ResponseBody Map<String,Object> signInday(HttpServletRequest request,HttpServletResponse response){
+		Subject subject=SecurityUtils.getSubject(); 
+		Map<String,Object> map=new HashMap<String, Object>();
+		if(!subject.isAuthenticated()){
+			return map;
+		}
+		String uemail=subject.getPrincipal().toString();
+		//先用map去查数据库
+		map.put("uemail", uemail);
+		List<Users> list=userservice.findUsersByCondition(map);
+		Users user=list.get(0);
+		String signintime=user.getUsignintime();
+		if(signintime==null){
+			map.put("signintime", 0);
+			map.put("uscore", user.getUscore());
+			map.put("msg", "今日签到");
+		}else{
+			System.out.println("3-2");
+			signintime=signintime.substring(0,10).replace("-", "");
+			System.out.println(signintime);
+			int time=Integer.parseInt(signintime);
+			int nowtime=Integer.parseInt(Myutil.playDate(new Date()));
+			System.out.println(nowtime);
+			//签到过的时间等于今天，就显示签到过
+			if(nowtime==time){
+				System.out.println("3-3");
+				map.put("state", 0);
+				map.put("msg", "今日已签到");
+				map.put("signintime", user.getUsigninday());
+				map.put("uscore", user.getUscore());
+			}else{
+				System.out.println("3-3");
+				map.put("state", 1);
+				map.put("msg", "今日签到");
+				map.put("signintime", user.getUsigninday());
+				map.put("uscore", user.getUscore());
+			}
+			return map;
+		}
+		return map;
+	}
+	
+	
+	
+	//点击签到数据
+	@RequestMapping("/signIn.do")
+	public  @ResponseBody Map<String,Object> signIn(HttpServletRequest request,HttpServletResponse response){
+		Subject subject=SecurityUtils.getSubject(); 
+		Map<String,Object> map=new HashMap<String, Object>();
+		if(!subject.isAuthenticated()){
+			map.put("state", 0);
+			map.put("msg", "请先登录");
+			return map;
+		}
+		String uemail=subject.getPrincipal().toString();
+		int signinday= Integer.parseInt(request.getParameter("signdays"));
+		//先用map去查数据库
+		map.put("uemail", uemail);
+		List<Users> list=userservice.findUsersByCondition(map);
+		Users user=list.get(0);
+		
+		//修改数据
+		int score=user.getUscore()+signinday;
+		
+		map.put("uscore", score);
+		map.put("usignintime", Myutil.playTime(new Date()));
+		map.put("usigninday", (signinday+1));
+		
+		
+		userservice.updateUsers(map);
+		map.put("static", "1");
+		map.put("score", (5+signinday));
+		map.put("msg", "今日已签到");
+		
+		return map;
+	}
 	
 }

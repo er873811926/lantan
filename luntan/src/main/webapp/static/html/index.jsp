@@ -28,7 +28,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  <link rel="stylesheet" href="/luntan/static/res/css/global.css">
 </head>
 <body>
-
 <div class="fly-header layui-bg-black">
   <div class="layui-container">
     <a class="fly-logo" href="/luntan/static/html/index.jsp">
@@ -311,16 +310,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <div class="fly-panel-title">
           签到
           <i class="fly-mid"></i> 
-          <!-- <a href="javascript:;" class="fly-link" id="LAY_signinHelp">说明</a>
-          <i class="fly-mid"></i> 
-          <a href="javascript:;" class="fly-link" id="LAY_signinTop">活跃榜<span class="layui-badge-dot"></span></a> -->
-          <span class="fly-signin-days">已连续签到<cite>16</cite>天</span>
+          <shiro:authenticated>
+        	  <span class="fly-signin-days" id="signin-days">已连续签到<cite>16</cite>天</span>
+          </shiro:authenticated>
         </div>
         <div class="fly-panel-main fly-signin-main">
-          <button class="layui-btn layui-btn-danger" id="LAY_signin" title="连续签到可获得额外飞吻（5+连续签到天数）">今日签到</button>
+          <div class="layui-btn layui-btn-danger " id="LAY_signin" title="连续签到可获得额外飞吻（5+连续签到天数）">今日签到</div>
           <span>可获得<cite>5</cite>飞吻</span>
           
-          <!-- 已签到状态 -->
+          <!-- 已签到状态 --> 
           <!--
           <button class="layui-btn layui-btn-disabled">今日已签到</button>
           <span>获得了<cite>20</cite>飞吻</span>
@@ -474,14 +472,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <div class="fly-footer">
   <p><a href="http://fly.layui.com/" target="_blank">禹霖社区</a> 2020 &copy; <a href="http://www.layui.com/" target="_blank">jiandan 出品</a></p>
-  <p>
-  <!--  <a href="http://fly.layui.com/jie/3147/" target="_blank">付费计划</a>
-    <a href="http://www.layui.com/template/fly/" target="_blank">获取Fly社区模版</a>
-    <a href="http://fly.layui.com/jie/2461/" target="_blank">微信公众号</a>-->
-  </p>
 </div>
  
 <script src="/luntan/static/res/layui/layui.js"></script>
+<script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
 <script>
 layui.cache.page = '';
 layui.cache.user = {
@@ -502,8 +496,48 @@ layui.config({
 <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_30088308'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "w.cnzz.com/c.php%3Fid%3D30088308' type='text/javascript'%3E%3C/script%3E"));</script>
 
 </body>
- 
-
-
-
 </html>
+<script type="text/javascript">
+//
+	window.onload = function(){
+		$.ajax({
+			url:'pyl/signInday.do',
+			type:'post',
+			dataType:'json',
+			data:{},
+			success:function(data){
+				$("#LAY_signin").html(data.msg);
+				$("#signin-days").children(":first").html(data.signintime);
+				console.log(1);
+			}
+		});
+		
+				console.log(2);
+	 }
+
+
+	//点击签到
+	$("#LAY_signin").click(function(){
+		var signdays=$("#signin-days").children(":first").html();
+		$.ajax({
+			url:'pyl/signIn.do',
+			type:'post',
+			dataType:'json',
+			data:{"signdays":signdays},
+			success:function(data){
+				if(data.state==0){
+					layer.msg(data.msg, {shift: 4});
+					return ;
+				}
+				$("#LAY_signin").html(data.msg).addClass("layui-btn-disabled");
+				$("#signin-days").children(":first").html(data.signinday);
+				var span=$("#LAY_signin").siblings("span").eq(0);
+				$(span).empty().append("获得了<cite>"+data.score+"</cite>飞吻")
+			}
+		});
+	
+	
+	});
+
+
+</script>
