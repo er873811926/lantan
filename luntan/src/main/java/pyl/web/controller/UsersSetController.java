@@ -157,7 +157,7 @@ public class UsersSetController {
 		PostsContent pc=listpc.get(0);
 		String ct=pc.getContent().replace("[", "<");
 		ct=ct.replace("]", ">");
-		ct=ct.replace("face<微笑>", "<img src='/luntan/static/res/layui/images/face/0.gif'></img>");
+		ct=Myutil.replacFace(ct);//替换表情
 		
 		pc.setContent(ct);
 		//查询帖子的所有回复
