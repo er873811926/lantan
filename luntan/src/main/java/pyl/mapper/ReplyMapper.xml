@@ -118,21 +118,25 @@
 		</if>
     </select>
     
+    <!-- 查询该帖子所有的回帖总数 -->
+    <select id="findReplyMaxNum" resultType="_int" parameterType="map">
+        SELECT COUNT(POSTS_NO) FROM REPLY WHERE 1=1
+        <if test="postsNo != null and postsNo != ''">
+            AND POSTS_NO = #{postsNo}
+        </if>
+    </select>
+    
     <!-- 插入数据 -->
     <insert id="insertReply" parameterType="Reply">
         INSERT INTO REPLY (
-            POSTS_NO, REPLY_CONTENT, UEMAIL, IP, REPLY_TIME, HOT, LIKES, 
-            TOP, BAN,POSTS_TITLE,UNICKNAME
+            POSTS_NO, REPLY_CONTENT, UEMAIL, IP, REPLY_TIME,  
+      POSTS_TITLE,UNICKNAME
         ) VALUES (
             #{postsNo},
             #{replyContent},
             #{uemail},
             #{ip},
             #{replyTime},
-            #{hot},
-            #{likes},
-            #{top},
-            #{ban},
             #{postsTitle},
             #{unickname}
         )

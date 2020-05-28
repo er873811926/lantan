@@ -1,5 +1,6 @@
 package pyl.web.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -174,18 +175,59 @@ public class UsersSetController {
 		//查询帖子的所有回复
 		map.clear();
 		map.put("postsNo", postsNo);
-		map=Myutil.fenPage(map, 10, 1);//分页
+		int pageNo=1;
+		int pageSize=10;
+		int pageMax=replyService.findReplyMaxNum(map);
+		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
+		try {
+			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+			if(pageNo>pageMax)pageNo=1;
+		} catch (Exception e) {
+			// TODO: handle exception
+			pageNo=1;
+		}
+		//查询所有置顶的
+		map.put("top", 1);
+		map.put("postsNo", postsNo);
+		map=Myutil.fenPage(map, pageSize, pageNo);//分页
+		List<Reply> listrtop=replyService.findReplyByCondition(map);
+		int topnum=0;
+		if(!listrtop.isEmpty()){
+			topnum=listrtop.size();
+		}
+		
+		map.clear();
+		map.put("top", 0);
+		map.put("postsNo", postsNo);
+		pageSize=pageSize-topnum;
+		if(pageSize<0){
+			pageSize=0;
+		}
+		map=Myutil.fenPage(map, pageSize, pageNo);//分页
 		map.put("desc", "");
 		List<Reply> listr=replyService.findReplyByCondition(map);
 		
 		
+		//判断是否进入自己的帖子
+		String currentemail=subject.getPrincipal().toString();//当前登录的帐号
+		if(currentemail!=null&&!"".equals(currentemail)&&uname.equals(currentemail)){
+			model.addAttribute("delete",1);
+		}
+		
+		
+		
+		
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("pageMax", pageMax);
 		model.addAttribute("listr", listr);
+		model.addAttribute("listrtop", listrtop);
 		model.addAttribute("postsc", pc);
 		model.addAttribute("posts", listp.get(0));
 		model.addAttribute("user", (Users)listu.get(0));
 		
 		return "forward:/static/html/jie/detail.jsp";
 	}	
+	
 	
 	
 }

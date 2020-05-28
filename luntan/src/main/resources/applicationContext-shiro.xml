@@ -94,16 +94,10 @@
               #/static/html/** = anon
                 /pyl/*.do = anon
                 /userSet/*.do = anon
-                /static/html/index.jsp = roles[admin]
-                
-                
-                
-               # /login.do = anon
                /logout.do = logout
-               # /mm.jsp = roles[mm]
-                #/nn.jsp = roles[nn]
-                #/static/html/user/admini-posts.jsp =roles[admin]
-                #/static/html/user/admini-users.jsp =roles[admin]
+                
+                /static/html/user/admini-posts.jsp =roles[admin]
+                /static/html/user/admini-users.jsp =roles[admin]
                 # everything else requires authentication:
                 /** = authc
             </value>

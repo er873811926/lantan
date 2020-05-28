@@ -30,12 +30,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <body>
 <div class="fly-header layui-bg-black">
   <div class="layui-container">
-    <a class="fly-logo" href="/luntan/static/html/index.jsp">
+    <a class="fly-logo" href="pyl/lookIndex.do">
       <img src="/luntan/static/res/images/logo.png" alt="layui">
     </a>
     <ul class="layui-nav fly-nav layui-hide-xs">
       <li class="layui-nav-item layui-this">
-        <a href="/luntan/static/html/index.jsp"><i class="iconfont icon-jiaoliu"></i>首页</a>
+        <a href="pyl/lookIndex.do"><i class="iconfont icon-jiaoliu"></i>首页</a>
       </li>
       <shiro:hasRole name="admin">
 	      <li class="layui-nav-item layui-this">

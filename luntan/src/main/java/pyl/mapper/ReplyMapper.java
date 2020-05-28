@@ -21,4 +21,7 @@ public interface ReplyMapper {
 	
 	//查询回帖数
 	public List<ReplyNumEmailMax> findReplyNumEmailMax(Map<String,Object> map);
+	
+	//查询回帖总数
+	public int findReplyMaxNum(Map<String,Object> map);
 }

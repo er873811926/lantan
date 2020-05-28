@@ -14,6 +14,8 @@ public interface ReplyService {
 	public List<Reply> findReplyByIds(List<Integer> id);
 	public void addReply(Reply r);
 	public void updateReply(Map<String,Object> map);
+	//查询某贴子的回帖总数
+	public int findReplyMaxNum(Map<String,Object> map);
 	public void removeReplyById(int id );
 	public List<ReplyNumEmailMax> findReplyNumEmailMax(Map<String,Object> map);
 }

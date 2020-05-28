@@ -59,6 +59,12 @@ public class ReplyServiceImpl implements ReplyService{
 		return replymapper.findReplyNumEmailMax(map);
 	}
 
+	@Override
+	public int findReplyMaxNum(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return replymapper.findReplyMaxNum(map);
+	}
+
 	
 
 }

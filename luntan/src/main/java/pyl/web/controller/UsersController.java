@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pyl.dto.ReplyNumEmailMax;
 import pyl.pojo.Posts;
 import pyl.pojo.PostsContent;
+import pyl.pojo.Reply;
 import pyl.pojo.Smodule;
 import pyl.pojo.Users;
 import pyl.service.UsersService;
@@ -161,6 +162,10 @@ public class UsersController {
 				map.put("state", 0);
 			}
 		}else{
+			map.put("uemail", uEmail);
+			List<Users> lists=userservice.findUsersByCondition(map);
+			subject.getSession().setAttribute("currentNickName", lists.get(0).getUnickname());
+//			subject.getSession().setAttribute("currentEmail", uEmail);
 			map.put("msg", "登录成功正在跳转...");
 			map.put("state", 1);
 			map.put("url", "pyl/lookIndex.do");
@@ -374,11 +379,34 @@ public class UsersController {
 	@RequestMapping("/replyCaoZuo")
 	public @ResponseBody Map<String,Object> replyCaoZuo(HttpServletRequest request,HttpServletResponse response){
 		String type=request.getParameter("type");
-		if("submitReply".equals(type)){}
+		Subject subject=SecurityUtils.getSubject();
+		Map<String, Object> map= new HashMap<String, Object>();
+		if("submitReply".equals(type)){
+			Reply r=new Reply();
+			String uemail=request.getParameter(subject.getPrincipal().toString());
+			String replyTime=Myutil.playTime(new Date());
+			String content =request.getParameter("content");
+			content=Myutil.replacFace(content);
+			r.setPostsNo(request.getParameter("postsNo"));
+			r.setReplyContent(content);
+			r.setPostsTitle(request.getParameter("postsTitle"));
+			r.setUemail(uemail);
+			r.setUnickname(request.getParameter("unickname"));
+			r.setIp(GetHttpIP.getIpAddress(request));
+			r.setReplyTime(replyTime);
+			replyService.addReply(r);
+			map.put("uemail", uemail);
+			map.put("content", content);
+			map.put("replyTime", replyTime);
+			map.put("state", 1);
+		}
+		
+		if("deleteReply".equals(type)){
+			System.out.println(123123);
+			
+		}
 		
 		
-		
-		
-		return null;
+		return map;
 	}
 }

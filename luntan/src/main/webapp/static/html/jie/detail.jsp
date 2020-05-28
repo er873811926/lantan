@@ -42,43 +42,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <ul class="layui-nav fly-nav-user">
       
       <!-- 未登入的状态 -->
-      <!--
+      <shiro:notAuthenticated> 
       <li class="layui-nav-item">
-        <a class="iconfont icon-touxiang layui-hide-xs" href="user/login.html"></a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="user/login.html">登入</a>
+        <a class="iconfont icon-touxiang layui-hide-xs" href="/luntan/static/html/user/login.jsp"></a>
       </li>
       <li class="layui-nav-item">
-        <a href="user/reg.html">注册</a>
+        <a href="/luntan/static/html/user/login.jsp">登入</a>
       </li>
-      <li class="layui-nav-item layui-hide-xs">
-        <a href="/app/qq/" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" title="QQ登入" class="iconfont icon-qq"></a>
+      <li class="layui-nav-item">
+        <a href="/luntan/static/html/user/reg.jsp">注册</a>
       </li>
-      <li class="layui-nav-item layui-hide-xs">
-        <a href="/app/weibo/" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" title="微博登入" class="iconfont icon-weibo"></a>
-      </li>
-       -->
+
+    </shiro:notAuthenticated>
       
-      <!--搜索-->
-       <li class="layui-nav-item layui-hide-xs">
-        <span class="fly-search"><i class="layui-icon"></i></span> 
-      </li>
-      <!-- 登入后的状态 -->
+         <!-- 登入后的状态 -->
+      <shiro:authenticated>
       <li class="layui-nav-item">
-        <a class="fly-nav-avatar" href="/fly-3.0/html/user/home.html">
-          <cite class="layui-hide-xs">贤心</cite>
+        <a class="fly-nav-avatar" href="userSet/home.do">
+          <cite class="layui-hide-xs">上单</cite>
           <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
-         <!-- <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>-->
-          <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
+          <img src="/luntan/static/res/images/userPhoto.png">
         </a>
         <dl class="layui-nav-child">
-          <dd><a href="../user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a href="../user/message.html"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-          <dd><a href="../user/home.html"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+          <dd><a href="/luntan/static/html/user/set.jsp"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+          <dd><a href="/luntan/static/html/user/message.jsp"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+          <dd><a href="/luntan/static/html/user/home.jsp"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
           <hr style="margin: 5px 0;">
-          <dd><a href="" style="text-align: center;">退出</a></dd>
+          <dd><a href="logout.do" style="text-align: center;">退出</a></dd>
         </dl>
+      </li>
+       </shiro:authenticated>
       </li>
     </ul>
   </div>
@@ -187,19 +180,88 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           </p>-->
         </div> 
       </div>
-
+	<div class="layui-form layui-form-pane">
+          <form action="/jie/reply/" method="post">
+            <div class="layui-form-item layui-form-text">
+              <a name="comment"></a>
+              <div class="layui-input-block">
+                <textarea id="L_content" name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor" style="height: 150px;"></textarea>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <input type="hidden" name="jid" value="123">
+              <div class="layui-btn" id="pyl_reply" type="submitReply">提交回复</div>
+            </div>
+          </form>
+     </div>
       <div class="fly-panel detail-box" id="flyReply">
         <fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
           <legend>回帖</legend>
         </fieldset>
+        
+        <!-- 放置置顶的 -->
+		<ul class="jieda" id="jieda">
+        <c:set var="flag" value="0"></c:set>
+        <c:forEach items="${listrtop}" var="top" varStatus="vs">        	
+        	<li data-id="111" class="jieda-daan" style="border-bottom: 1px solid black;">
+            <a name="item-1111111111"></a>
+            <div class="detail-about detail-about-reply">
+              <a class="fly-avatar" href="/luntan/userSet/home.do?uemail=${top.uemail}">
+                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
+              </a>
+              <div class="fly-detail-user">
+                <a href="/luntan/userSet/home.do?uemail=${top.uemail}" class="fly-link">
+                  <cite>${top.unickname}</cite>
+                </a>
+              </div>
 
+              <div class="detail-hits">
+                <span>${top.replyTime}</span>
+              </div>
+			  <c:if test="${top.top eq 1}">
+               <i class="iconfont icon-caina" title="优秀答案"></i>
+              </c:if>
+            </div>
+            <div class="detail-body jieda-body photos">
+              <p>${top.replyContent}</p>
+            </div>
+            <div class="jieda-reply">
+              <span class="jieda-zan zanok" type="zan">
+                <i class="iconfont icon-zan"></i>
+                <em>${top.likes}</em>
+              </span>
+              <span type="reply">
+                <i class="iconfont icon-svgmoban53"></i>
+                回复
+              </span>
+              <div class="jieda-admin">
+                <c:if test="${delete eq 1}">
+                 <span type="del">删除</span>
+              	</c:if>
+              	<c:if test="${delete ne 1}">
+              		<shiro:hasRole name="admin">
+              		<span class="deleteReply" type="deleteReply" email="${r.uemail}">删除</span>
+              		</shiro:hasRole>
+              	</c:if>
+                <c:if test="${top.top eq 0}">
+                 <c:if test="${delete eq 1}">
+                 <span class="deleteReply" type="deleteReply" email="${r.uemail}">删除</span>
+                 </c:if>
+                </c:if>
+              </div>
+            </div>
+          </li>
+        
+        </c:forEach>
+        </ul>
+        
         <ul class="jieda" id="jieda">
         <c:set var="flag" value="0"></c:set>
         <c:forEach items="${listr}" var="r" varStatus="vs">
         	<c:if test="${vs.index eq 0}">
         	 <c:set var="flag" value="1"></c:set>
         	</c:if>
-        	<li data-id="111" class="jieda-daan">
+        	<li data-id="111" class="jieda-daan" style="border-bottom: 1px solid black;">
             <a name="item-1111111111"></a>
             <div class="detail-about detail-about-reply">
               <a class="fly-avatar" href="/luntan/userSet/home.do?uemail=${r.uemail}">
@@ -231,9 +293,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 回复
               </span>
               <div class="jieda-admin">
-                <span type="del">删除</span>
+              	<c:if test="${delete eq 1}">
+                 <span class="deleteReply" type="deleteReply" email="${r.uemail}">删除</span>
+              	</c:if>
+              	<c:if test="${delete ne 1}">
+              		<shiro:hasRole name="admin">
+              		<span class="deleteReply" type="deleteReply" email="${r.uemail}">删除</span>
+              		</shiro:hasRole>
+              	</c:if>
                 <c:if test="${r.top eq 0}">
+                 <c:if test="${delete eq 1}">
                  <span class="jieda-accept" type="accept" title="第一个被采纳的人才有赏吻">采纳</span>
+                 </c:if>
                 </c:if>
               </div>
             </div>
@@ -330,7 +401,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           </c:if>
         </ul>
         
-        <div class="layui-form layui-form-pane">
+        <!-- <div class="layui-form layui-form-pane">
           <form action="/jie/reply/" method="post">
             <div class="layui-form-item layui-form-text">
               <a name="comment"></a>
@@ -340,10 +411,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </div>
             <div class="layui-form-item">
               <input type="hidden" name="jid" value="123">
-              <div class="layui-btn" id="pyl_reply">提交回复</div>
+              <div class="layui-btn" id="pyl_reply" type="submitReply">提交回复</div>
             </div>
           </form>
-        </div>
+        </div> -->
+         <center class="">
+            <div class="layui-btn  layui-btn-xs" id="prepage">
+			  <i class="layui-icon">&#xe603;</i>
+			</div>
+			<div class="layui-inline">
+			<select id="changepage">
+				 <c:forEach begin="1" end="${pageMax}" var="a">
+				 	<c:if test="${pageNo eq a}">
+					  <option value="${a}" selected>${a}</option>
+				 	</c:if>
+				 <c:if test="${pageNo ne a}">
+					  <option value="${a}">${a}</option>
+				  </c:if>
+				 </c:forEach>
+			</select>  
+			</div>
+			<div class="layui-btn  layui-btn-xs" id="nextpage">
+			  <i class="layui-icon">&#xe602;</i>
+			</div>
+       </center> 
       </div>
     </div>
     
@@ -407,7 +498,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </div>
 
       <div class="fly-panel" style="padding: 20px 0; text-align: center;">
-        <img src="../../res/images/weixin.jpg" style="max-width: 100%;" alt="layui">
+        <!-- <img src="../../res/images/weixin.jpg" style="max-width: 100%;" alt="layui"> -->
         <p style="position: relative; color: #666;">微信扫码</p>
       </div>
 
@@ -452,46 +543,97 @@ layui.config({
 <script type="text/javascript">
 	var postsTitle="${posts.postsTitle}";
 	var smoduleName="${posts.smoduleName}";
-	var unickname="${posts.unickname}";
+	var unickname="${sessionScope.currentNickName}";
 	var postsNo="${posts.postsNo}";
+	var postsuemali="${posts.uemail}";
+	var pageNo="${pageNo}";
+	var pageMax="${pageMax}";
 	
 	$("#pyl_reply").click(function(){
+		if(unickname==null||unickname==""){alert("请先登录");return;}
 		if($("#L_content").val()==""){
 			$('#L_content').css("border-color","red");
 			setTimeout(function(){
 				$('#L_content').css("border-color","#e2e2e2");
-				return;
 			},1000);
+			return;
 		}
 		var content=$('#L_content').val();
-		$.ajax({
-				url:'pyl/savePosts.do',
-				type:'post',
-				dataType:'json',
-				data:{'content':content,'title':title,'type':type,'feiwen':feiwen,'typename':typename,"score":score},
-				success:function(data){
-					if(data.state==0){
-						layer.msg(data.msg, {shift: 6,icon:2});
-						yanzhengma();				
-					}
-					
-					if(data.state==1){
-						layer.msg(data.msg, {shift: 3,icon:1});
-						setTimeout(function(){
-							window.location = data.url;					
-						},1000);  
-					}
-				},	
-			});
-		
+		$('#L_content').val("");
+		var data={'content':content,'postsTitle':postsTitle,'type':'submitReply','smoduleName':smoduleName,'unickname':unickname,'postsNo':postsNo};
+		myajax('pyl/replyCaoZuo.do',data);
 	})
 	
 
 
 
 
+	function myajax(seturl,setdata){
+		var rurl=seturl;
+		var rdata=setdata;
+		$.ajax({
+				url:rurl,
+				type:'post',
+				dataType:'json',
+				data:rdata,
+				success:function(data){
+					if(data.state==0){
+						layer.msg(data.msg, {shift: 6,icon:2});
+					}
+					
+					if(data.state==1){
+						layer.msg(data.msg, {shift: 3,icon:1});
+						$("#jieda li").eq(0).before('<li data-id="111" class="jieda-daan"><a name="item-1111111111"></a><div class="detail-about detail-about-reply"><a class="fly-avatar" href="/luntan/userSet/home.do?uemail='+data.uemail+'}"><img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=""></a><div class="fly-detail-user"><a href="/luntan/userSet/home.do?uemail="'+data.uemail+'" class="fly-link"><cite>'+unickname+'</cite></a></div><div class="detail-hits"><span>'+data.replyTime+'</span></div></div><div class="detail-body jieda-body photos"><p>'+data.content+'</p></div><div class="jieda-reply"><span class="jieda-zan zanok" type="zan"><i class="iconfont icon-zan"></i><em>0</em></span><span type="reply"><i class="iconfont icon-svgmoban53"></i>回复</span><div class="jieda-admin"><span type="del">删除</span><c:if test="${r.top eq 0}"><span class="jieda-accept" type="accept" title="第一个被采纳的人才有赏吻">采纳</span></c:if></div></div></li>'); 
+					}
+				},	
+			});
+	}
+
+$("#changepage").change(function(){
+ 	//获取被选中的option标签
+ 	var vs = $('select  option:selected').val();
+ 	window.location="userSet/detail.do?&uemail="+postsuemali+"&pageNo="+vs;
+})
+
+//下一页
+$("#nextpage").click(function(){
+	console.log("xx");
+	pageNo=Number(pageNo)+1;
+	if(pageNo>pageMax){
+		pageNo=pageMax;
+		return;
+	}
+	window.location="userSet/detail.do?pageNo="+pageNo+"&uemail="+postsuemali;
+})
+
+//上一页
+$("#prepage").click(function(){
+	pageNo=Number(pageNo)-1;
+	
+	if(pageNo<=0){
+		pageNo=1;
+		return;
+	}
+	window.location="userSet/detail.do?pageNo="+pageNo+"&uemail="+postsuemali;
+})
+
+
+
+//删除回复
+$(".deleteReply").click(function(){
+	if(confirm("你确定删除")){
+		var replyemail= $(".deleteReply").attr("email");
+		var type= $(".deleteReply").attr("type");
+		var data1={"postsuemali":postsuemali,"replyemail":replyemail,"type":type};
+		myajax('pyl/replyCaoZuo.do',data);
+	}
+
+});
+
+
+
+
 
 </script>
-
 
 
