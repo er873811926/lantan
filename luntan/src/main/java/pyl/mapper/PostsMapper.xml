@@ -157,18 +157,6 @@
     <update id="updatePosts" parameterType="map">
         UPDATE POSTS
         <set>
-            <if test="postsNo != null">
-                POSTS_NO = #{postsNo},
-            </if>
-            <if test="postsTitle != null">
-                POSTS_TITLE = #{postsTitle},
-            </if>
-            <if test="smoduleId != null">
-                SMODULE_ID = #{smoduleId},
-            </if>
-            <if test="smoduleName != null">
-                SMODULE_NAME = #{smoduleName},
-            </if>
             <if test="ip != null">
                 IP = #{ip},
             </if>
@@ -187,9 +175,7 @@
             <if test="replyNum != null">
                 REPLY_NUM = #{replyNum},
             </if>
-            <if test="uemail != null">
-                UEMAIL = #{uemail}
-            </if>
+            
             <if test="uptime != null">
                 UPTIME = #{uptime}
             </if>
@@ -198,7 +184,7 @@
             </if>
             
         </set>
-        WHERE POSTS_ID = #{postsId}
+        WHERE UEMAIL = #{uemail} and POSTS_NO = #{postsNo}
     </update>
     
     <!-- 根据主键删除数据 -->

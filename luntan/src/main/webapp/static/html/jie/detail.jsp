@@ -29,12 +29,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <div class="fly-header layui-bg-black">
   <div class="layui-container">
-    <a class="fly-logo" href="/">
+    <a class="fly-logo" href="pyl/lookIndex.do">
       <img src="/luntan/static/res/images/logo.png" alt="layui">
     </a>
     <ul class="layui-nav fly-nav layui-hide-xs">
       <li class="layui-nav-item layui-this">
-        <a href="/"><i class="iconfont icon-jiaoliu"></i>首页</a>
+        <a href="pyl/lookIndex.do"><i class="iconfont icon-jiaoliu"></i>首页</a>
       </li>
     
     </ul>
@@ -129,11 +129,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	          <div class="fly-admin-box" data-id="123">
 	            <span class="layui-btn layui-btn-xs jie-admin" type="">删除</span>
 	            
-	            <span class="layui-btn layui-btn-xs jie-admin" type="" field="stick" rank="1">置顶</span> 
-	            <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="stick" rank="0" style="background-color:#ccc;">取消置顶</span> -->
-	            
-	            <span class="layui-btn layui-btn-xs jie-admin" type="" field="status" rank="1">加精</span> 
-	            <!-- <span class="layui-btn layui-btn-xs jie-admin" type="set" field="status" rank="0" style="background-color:#ccc;">取消加精</span> -->
+	            <c:if test="${posts.top eq 0}">
+	            	<span class="layui-btn layui-btn-xs jie-admin" type="" field="" rank="1">置顶</span> 
+	            </c:if>
+	            <c:if test="${posts.top eq 1}">
+	             <span class="layui-btn layui-btn-xs jie-admin" type="" field="" rank="0" style="background-color:#ccc;">取消置顶</span>
+	            </c:if>
+	            <c:if test="${posts.hot eq 0}">
+	            	<span class="layui-btn layui-btn-xs jie-admin" type="" field="" rank="1">加精</span> 
+	            </c:if>
+	            <c:if test="${posts.hot eq 1}">
+	           		 <span class="layui-btn layui-btn-xs jie-admin" type="" field="" rank="0" style="background-color:#ccc;">取消加精</span>
+	            </c:if>
 	          </div>
          </shiro:hasRole>
           <span class="fly-list-nums"> 
@@ -142,7 +149,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           </span>
         </div>
         <div class="detail-about">
-          <a class="fly-avatar" href="../user/home.html">
+          <a class="fly-avatar" href="/luntan/userSet/home.do?uemail=${posts.uemail}">
             <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
           </a>
           <div class="fly-detail-user">
@@ -195,11 +202,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	<li data-id="111" class="jieda-daan">
             <a name="item-1111111111"></a>
             <div class="detail-about detail-about-reply">
-              <a class="fly-avatar" href="">
+              <a class="fly-avatar" href="/luntan/userSet/home.do?uemail=${r.uemail}">
                 <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
               </a>
               <div class="fly-detail-user">
-                <a href="" class="fly-link">
+                <a href="/luntan/userSet/home.do?uemail=${r.uemail}" class="fly-link">
                   <cite>${r.unickname}</cite>
                 </a>
               </div>
@@ -208,7 +215,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <span>${r.replyTime}</span>
               </div>
 			  <c:if test="${r.top eq 1}">
-               <i class="iconfont icon-caina" title="最佳答案"></i>
+               <i class="iconfont icon-caina" title="优秀答案"></i>
               </c:if>
             </div>
             <div class="detail-body jieda-body photos">
@@ -224,10 +231,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 回复
               </span>
               <div class="jieda-admin">
-                <!--<span type="edit">编辑</span>-->
                 <span type="del">删除</span>
                 <c:if test="${r.top eq 0}">
-                 <span class="jieda-accept" type="accept">采纳</span>
+                 <span class="jieda-accept" type="accept" title="第一个被采纳的人才有赏吻">采纳</span>
                 </c:if>
               </div>
             </div>
@@ -334,7 +340,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </div>
             <div class="layui-form-item">
               <input type="hidden" name="jid" value="123">
-              <button class="layui-btn" lay-filter="*" lay-submit>提交回复</button>
+              <div class="layui-btn" id="pyl_reply">提交回复</div>
             </div>
           </form>
         </div>
@@ -414,6 +420,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 
 <script src="/luntan/static/res/layui/layui.js"></script>
+<script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
 <script>
 layui.cache.page = 'jie';
 layui.cache.user = {
@@ -440,7 +447,51 @@ layui.config({
   */
 });
 </script>
-
 </body>
-
 </html>
+<script type="text/javascript">
+	var postsTitle="${posts.postsTitle}";
+	var smoduleName="${posts.smoduleName}";
+	var unickname="${posts.unickname}";
+	var postsNo="${posts.postsNo}";
+	
+	$("#pyl_reply").click(function(){
+		if($("#L_content").val()==""){
+			$('#L_content').css("border-color","red");
+			setTimeout(function(){
+				$('#L_content').css("border-color","#e2e2e2");
+				return;
+			},1000);
+		}
+		var content=$('#L_content').val();
+		$.ajax({
+				url:'pyl/savePosts.do',
+				type:'post',
+				dataType:'json',
+				data:{'content':content,'title':title,'type':type,'feiwen':feiwen,'typename':typename,"score":score},
+				success:function(data){
+					if(data.state==0){
+						layer.msg(data.msg, {shift: 6,icon:2});
+						yanzhengma();				
+					}
+					
+					if(data.state==1){
+						layer.msg(data.msg, {shift: 3,icon:1});
+						setTimeout(function(){
+							window.location = data.url;					
+						},1000);  
+					}
+				},	
+			});
+		
+	})
+	
+
+
+
+
+
+</script>
+
+
+

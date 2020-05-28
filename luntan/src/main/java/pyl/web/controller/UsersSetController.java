@@ -25,12 +25,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pyl.pojo.Posts;
 import pyl.pojo.PostsContent;
 import pyl.pojo.Reply;
+import pyl.pojo.Role;
+import pyl.pojo.RoleRelation;
 import pyl.pojo.Smodule;
 import pyl.pojo.Users;
 import pyl.service.UsersService;
 import pyl.service.PostsContentService;
 import pyl.service.PostsService;
 import pyl.service.ReplyService;
+import pyl.service.RoleRelationService;
 import pyl.service.SmoduleService;
 import pyl.util.GetHttpIP;
 import pyl.util.MyMD5;
@@ -49,7 +52,8 @@ public class UsersSetController {
 	private PostsContentService pcService=null;
 	@Autowired
 	private ReplyService replyService=null;
-	
+	@Autowired
+	private RoleRelationService roleRelationService=null;
 	
 	//访问用户主页
 	@RequestMapping("/home.do")
@@ -64,9 +68,11 @@ public class UsersSetController {
 		}
 		Map<String,Object> map=new HashMap<String, Object>();
 		//查询用户信息
-		
 		map.put("uemail", uname);
 		List<Users> listu=userservice.findUsersByCondition(map);
+		//用户的全选
+		List<RoleRelation> listrole=roleRelationService.findRoleRelationByCondition(map);
+		
 		
 		map=Myutil.fenPage(map, 12, 1);//分页
 		map.put("desc", "");
@@ -74,6 +80,7 @@ public class UsersSetController {
 		List<Reply> listr=replyService.findReplyByCondition(map);
 		
 		
+		model.addAttribute("listrole", listrole);
 		model.addAttribute("listr", listr);
 		model.addAttribute("listp", listp);
 		
@@ -113,6 +120,7 @@ public class UsersSetController {
 		posts.setSmoduleId(Integer.parseInt(smoduleId));
 		posts.setSmoduleName(smoduleName);
 		posts.setUemail(uEmail);
+		posts.setIp(GetHttpIP.getIpAddress(request));
 		
 		//postsContent类创建
 		PostsContent postsC=new PostsContent();
@@ -151,13 +159,16 @@ public class UsersSetController {
 		//查询该用户的帖子
 		map.put("postsNo", postsNo);
 		List<Posts> listp=postsService.findPostsByCondition(map);
+		Posts p1=listp.get(0);
+		map.put("pageView", p1.getPageView()+1);
+		postsService.updatePosts(map);
+		
 		
 		//查询帖子的内容
 		List<PostsContent> listpc=pcService.findPostsContentByCondition(map);
 		PostsContent pc=listpc.get(0);
-		String ct=pc.getContent().replace("[", "<");
-		ct=ct.replace("]", ">");
-		ct=Myutil.replacFace(ct);//替换表情
+		String ct=pc.getContent();
+		ct=Myutil.replacFace(ct);//替换表情和标签和换行
 		
 		pc.setContent(ct);
 		//查询帖子的所有回复

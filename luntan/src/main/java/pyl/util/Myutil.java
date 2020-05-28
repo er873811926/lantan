@@ -27,13 +27,16 @@ public class Myutil {
 	
 	public static String replacFace(String face){
 		String str=face;
-		Pattern p=Pattern.compile("face<(\\d+)>");
+		Pattern p=Pattern.compile("face\\[(\\d+)\\]");
 		Matcher m=p.matcher(face);
 		while(m.find()){
 			String n=m.group(1);
 			System.out.println(n);
-			str=str.replace("face<"+n+">", "<img src='/luntan/static/res/layui/images/face/"+n+".gif'></img>");
+			str=str.replace("face["+n+"]", "<img src='/luntan/static/res/layui/images/face/"+n+".gif'></img>");
 		}
+		str=str.replace("[pre]", "<pre>");
+		str=str.replace("[/pre]", "</pre>");
+		str=str.replace("[hr]", "<hr>");
 		return str;
 	}
 	

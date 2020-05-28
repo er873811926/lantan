@@ -369,4 +369,16 @@ public class UsersController {
 		return map;
 	}
 	
+	
+	//回复的所有操作
+	@RequestMapping("/replyCaoZuo")
+	public @ResponseBody Map<String,Object> replyCaoZuo(HttpServletRequest request,HttpServletResponse response){
+		String type=request.getParameter("type");
+		if("submitReply".equals(type)){}
+		
+		
+		
+		
+		return null;
+	}
 }

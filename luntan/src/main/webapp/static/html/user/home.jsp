@@ -90,10 +90,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </c:if>
     
 	    <!--特殊身份显示-->
-    <shiro:hasRole name="admin">
+	 <c:forEach items="${listrole}" var="role">
+   	   <c:if test="${role.roleName eq 'admin'}">
 	    <span style="color:#c00;">（管理员）</span>
 	    <%-- <span style="color:#5FB878;">（社区之光）</span> --%>
-    </shiro:hasRole>
+       </c:if>
+     </c:forEach>
     <c:if test="${requestScope.user.uban eq '1'}">
    		 <span>（该号已被封）</span>
     </c:if>
