@@ -48,9 +48,9 @@ public class ReplyServiceImpl implements ReplyService{
 	}
 
 	@Override
-	public void removeReplyById(int id) {
+	public void removeReplyByMap(Map<String,Object> map) {
 		// TODO Auto-generated method stub
-		replymapper.deleteReplyById(id);
+		replymapper.deleteReplyByMap(map);
 	}
 
 	@Override

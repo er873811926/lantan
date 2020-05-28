@@ -131,7 +131,6 @@ public class UsersController {
 	
 	//登录
 	@RequestMapping("/login.do")
-	@ExceptionHandler
 	public  @ResponseBody Map<String,Object> login(HttpServletRequest request,HttpServletResponse response){
 		String uEmail=request.getParameter("uemail");
 		String uPassword=request.getParameter("upassword");
@@ -383,7 +382,8 @@ public class UsersController {
 		Map<String, Object> map= new HashMap<String, Object>();
 		if("submitReply".equals(type)){
 			Reply r=new Reply();
-			String uemail=request.getParameter(subject.getPrincipal().toString());
+			String uemail=subject.getPrincipal().toString();
+			System.out.println(uemail);
 			String replyTime=Myutil.playTime(new Date());
 			String content =request.getParameter("content");
 			content=Myutil.replacFace(content);
@@ -402,8 +402,16 @@ public class UsersController {
 		}
 		
 		if("deleteReply".equals(type)){
-			System.out.println(123123);
-			
+			String postsNo =request.getParameter("postsNo");
+			String uemail =request.getParameter("uemail");
+			String replyTime =request.getParameter("replyTime");
+			map.clear();
+			map.put("postsNo", postsNo);
+			map.put("replyTime", replyTime);
+			map.put("uemail", uemail);
+			replyService.removeReplyByMap(map);
+			map.clear();
+			map.put("state",2);
 		}
 		
 		

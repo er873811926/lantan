@@ -236,18 +236,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               </span>
               <div class="jieda-admin">
                 <c:if test="${delete eq 1}">
-                 <span type="del">删除</span>
+                 <span class="deleteReply" reemail="${top.uemail}" time="${top.replyTime}" type="deleteReply" >删除</span>
               	</c:if>
               	<c:if test="${delete ne 1}">
               		<shiro:hasRole name="admin">
-              		<span class="deleteReply" type="deleteReply" email="${r.uemail}">删除</span>
+              		<span class="deleteReply" reemail="${top.uemail}" time="${top.replyTime}" type="deleteReply">删除</span>
               		</shiro:hasRole>
               	</c:if>
-                <c:if test="${top.top eq 0}">
+                <%-- <c:if test="${top.top eq 0}">
                  <c:if test="${delete eq 1}">
-                 <span class="deleteReply" type="deleteReply" email="${r.uemail}">删除</span>
+                 <span class="deleteReply" time="${top.replyTime}" type="deleteReply" reeamil="${top.uemail}">删除</span>
                  </c:if>
-                </c:if>
+                </c:if> --%>
               </div>
             </div>
           </li>
@@ -294,16 +294,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               </span>
               <div class="jieda-admin">
               	<c:if test="${delete eq 1}">
-                 <span class="deleteReply" type="deleteReply" email="${r.uemail}">删除</span>
+                 <span class="deleteReply" reemail="${r.uemail}" time="${r.replyTime}" type="deleteReply" >删除</span>
               	</c:if>
               	<c:if test="${delete ne 1}">
               		<shiro:hasRole name="admin">
-              		<span class="deleteReply" type="deleteReply" email="${r.uemail}">删除</span>
+              		<span class="deleteReply" reemail="${r.uemail}"  time="${r.replyTime}" type="deleteReply" >删除</span>
               		</shiro:hasRole>
               	</c:if>
                 <c:if test="${r.top eq 0}">
                  <c:if test="${delete eq 1}">
-                 <span class="jieda-accept" type="accept" title="第一个被采纳的人才有赏吻">采纳</span>
+                 <span class="jieda-accept" time="${r.replyTime}" type="accept" title="第一个被采纳的人才有赏吻">采纳</span>
                  </c:if>
                 </c:if>
               </div>
@@ -578,12 +578,15 @@ layui.config({
 				data:rdata,
 				success:function(data){
 					if(data.state==0){
-						layer.msg(data.msg, {shift: 6,icon:2});
+						alert("操作失败");
 					}
 					
 					if(data.state==1){
-						layer.msg(data.msg, {shift: 3,icon:1});
-						$("#jieda li").eq(0).before('<li data-id="111" class="jieda-daan"><a name="item-1111111111"></a><div class="detail-about detail-about-reply"><a class="fly-avatar" href="/luntan/userSet/home.do?uemail='+data.uemail+'}"><img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=""></a><div class="fly-detail-user"><a href="/luntan/userSet/home.do?uemail="'+data.uemail+'" class="fly-link"><cite>'+unickname+'</cite></a></div><div class="detail-hits"><span>'+data.replyTime+'</span></div></div><div class="detail-body jieda-body photos"><p>'+data.content+'</p></div><div class="jieda-reply"><span class="jieda-zan zanok" type="zan"><i class="iconfont icon-zan"></i><em>0</em></span><span type="reply"><i class="iconfont icon-svgmoban53"></i>回复</span><div class="jieda-admin"><span type="del">删除</span><c:if test="${r.top eq 0}"><span class="jieda-accept" type="accept" title="第一个被采纳的人才有赏吻">采纳</span></c:if></div></div></li>'); 
+						location.reload(); 
+						//$("#jieda li").eq(0).before('<li data-id="111" class="jieda-daan"><a name="item-1111111111"></a><div class="detail-about detail-about-reply"><a class="fly-avatar" href="/luntan/userSet/home.do?uemail='+data.uemail+'}"><img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=""></a><div class="fly-detail-user"><a href="/luntan/userSet/home.do?uemail="'+data.uemail+'" class="fly-link"><cite>'+unickname+'</cite></a></div><div class="detail-hits"><span>'+data.replyTime+'</span></div></div><div class="detail-body jieda-body photos"><p>'+data.content+'</p></div><div class="jieda-reply"><span class="jieda-zan zanok" type="zan"><i class="iconfont icon-zan"></i><em>0</em></span><span type="reply"><i class="iconfont icon-svgmoban53"></i>回复</span><div class="jieda-admin"><span type="del">删除</span><c:if test="${r.top eq 0}"><span class="jieda-accept" type="accept" title="第一个被采纳的人才有赏吻">采纳</span></c:if></div></div></li>'); 
+					}
+					if(data.state==2){
+						location.reload(); 
 					}
 				},	
 			});
@@ -620,15 +623,28 @@ $("#prepage").click(function(){
 
 
 //删除回复
-$(".deleteReply").click(function(){
+$(".deleteReply").each(function(i){
+	$(".deleteReply").eq(i).click(function(){
+	if(confirm("你确定删除")){
+		var replyemail= $(this).attr("reemail");
+		console.log(replyemail);
+		var type= $(this).attr("type");
+		var replyTime= $(this).attr("time");
+		var data1={"postsNo":postsNo,"uemail":replyemail,"type":type,"replyTime":replyTime};
+		myajax('pyl/replyCaoZuo.do',data1);
+	}
+});
+});
+/* $(".deleteReply").click(function(){
 	if(confirm("你确定删除")){
 		var replyemail= $(".deleteReply").attr("email");
 		var type= $(".deleteReply").attr("type");
-		var data1={"postsuemali":postsuemali,"replyemail":replyemail,"type":type};
-		myajax('pyl/replyCaoZuo.do',data);
+		var replyTime= $(".deleteReply").attr("time");
+		var data1={"postsNo":postsNo,"uemail":replyemail,"type":type,"replyTime":replyTime};
+		myajax('pyl/replyCaoZuo.do',data1);
 	}
 
-});
+}); */
 
 
 

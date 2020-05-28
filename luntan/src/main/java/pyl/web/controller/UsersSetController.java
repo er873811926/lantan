@@ -170,22 +170,14 @@ public class UsersSetController {
 		PostsContent pc=listpc.get(0);
 		String ct=pc.getContent();
 		ct=Myutil.replacFace(ct);//替换表情和标签和换行
-		
 		pc.setContent(ct);
+		
 		//查询帖子的所有回复
 		map.clear();
 		map.put("postsNo", postsNo);
 		int pageNo=1;
 		int pageSize=10;
 		int pageMax=replyService.findReplyMaxNum(map);
-		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
-		try {
-			pageNo=Integer.parseInt(request.getParameter("pageNo"));
-			if(pageNo>pageMax)pageNo=1;
-		} catch (Exception e) {
-			// TODO: handle exception
-			pageNo=1;
-		}
 		//查询所有置顶的
 		map.put("top", 1);
 		map.put("postsNo", postsNo);
@@ -194,23 +186,36 @@ public class UsersSetController {
 		int topnum=0;
 		if(!listrtop.isEmpty()){
 			topnum=listrtop.size();
+			pageMax-=topnum;
+		}
+		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
+		
+		try {
+			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+			if(pageNo>pageMax)pageNo=pageMax;
+		} catch (Exception e) {
+			// TODO: handle exception
+			pageNo=1;
 		}
 		
 		map.clear();
-		map.put("top", 0);
+		map.put("top", "0");
 		map.put("postsNo", postsNo);
-		pageSize=pageSize-topnum;
+//		pageSize=pageSize-topnum;
 		if(pageSize<0){
 			pageSize=0;
 		}
+		
 		map=Myutil.fenPage(map, pageSize, pageNo);//分页
 		map.put("desc", "");
 		List<Reply> listr=replyService.findReplyByCondition(map);
 		
-		
 		//判断是否进入自己的帖子
-		String currentemail=subject.getPrincipal().toString();//当前登录的帐号
-		if(currentemail!=null&&!"".equals(currentemail)&&uname.equals(currentemail)){
+		String currentemail="";
+		if(subject.getPrincipal()!=null)
+			currentemail=subject.getPrincipal().toString();//当前登录的帐号
+		
+		if(!"".equals(currentemail)&&uname.equals(currentemail)){
 			model.addAttribute("delete",1);
 		}
 		

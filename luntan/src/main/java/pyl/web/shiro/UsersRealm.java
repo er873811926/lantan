@@ -76,7 +76,6 @@ public class UsersRealm extends AuthorizingRealm{
 		Set<String> roles=new HashSet<String>();
 		if(!list.isEmpty()){
 			for (RoleRelation r : list) {
-				System.out.println(r.getRoleName());
 				roles.add(r.getRoleName());
 			}
 		}

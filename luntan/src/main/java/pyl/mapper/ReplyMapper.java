@@ -17,7 +17,8 @@ public interface ReplyMapper {
 	public List<Reply> findReplyByIds(List<Integer> id);
 	public void insertReply(Reply r);
 	public void updateReply(Map<String,Object> map);
-	public void deleteReplyById(int id );
+	
+	public void deleteReplyByMap(Map<String,Object> map);
 	
 	//查询回帖数
 	public List<ReplyNumEmailMax> findReplyNumEmailMax(Map<String,Object> map);

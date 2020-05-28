@@ -69,13 +69,13 @@
             AND SMODULE_NAME LIKE CONCAT('%', #{smoduleName}, '%')
         </if>
         <if test="ip != null and ip != ''">
-            AND IP LIKE CONCAT('%', #{ip}, '%')
+            AND IP = #{ip}
         </if>
         <if test="top != null and top != ''">
-            AND TOP LIKE CONCAT('%', #{top}, '%')
+            AND TOP = #{top}
         </if>
         <if test="hot != null and hot != ''">
-            AND HOT LIKE CONCAT('%', #{hot}, '%')
+            AND HOT =#{hot}
         </if>
         <if test="pageView != null">
             AND PAGE_VIEW = #{pageView}

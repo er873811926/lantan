@@ -55,7 +55,7 @@
         <include refid="allColumns" />
         FROM REPLY WHERE 1 = 1
         <if test="postsNo != null and postsNo != ''">
-            AND POSTS_NO LIKE CONCAT('%', #{postsNo}, '%')
+            AND POSTS_NO =#{postsNo}
         </if>
         <if test="replyContent != null and replyContent != ''">
             AND REPLY_CONTENT LIKE CONCAT('%', #{replyContent}, '%')
@@ -70,16 +70,16 @@
             AND REPLY_TIME = #{replyTime}
         </if>
         <if test="hot != null and hot != ''">
-            AND HOT LIKE CONCAT('%', #{hot}, '%')
+            AND HOT = #{hot}
         </if>
         <if test="likes != null">
             AND LIKES = #{likes}
         </if>
         <if test="top != null and top != ''">
-            AND TOP LIKE CONCAT('%', #{top}, '%')
+            AND TOP = #{top}
         </if>
         <if test="ban != null and ban != ''">
-            AND BAN LIKE CONCAT('%', #{ban}, '%')
+            AND BAN = #{ban}
         </if>
         <if test="postsTitle != null and postsTitle != ''">
             AND POSTS_TITLE LIKE CONCAT('%', #{postsTitle}, '%')
@@ -182,8 +182,17 @@
     </update>
     
     <!-- 根据主键删除数据 -->
-    <delete id="deleteReplyById" parameterType="int">
-        DELETE FROM REPLY WHERE REPLY_ID = #{replyId}
+    <delete id="deleteReplyByMap" parameterType="map">
+        DELETE FROM REPLY WHERE  1=1
+		 <if test="uemail != null and uemail != ''">
+            AND UEMAIL = #{uemail}
+        </if>
+		 <if test="postsNo != null and postsNo != ''">
+            AND POSTS_NO = #{postsNo}
+        </if>
+		 <if test="replyTime != null and replyTime != ''">
+            AND REPLY_TIME = #{replyTime}
+        </if>
     </delete>
     
 </mapper>

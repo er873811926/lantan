@@ -31,7 +31,6 @@ public class Myutil {
 		Matcher m=p.matcher(face);
 		while(m.find()){
 			String n=m.group(1);
-			System.out.println(n);
 			str=str.replace("face["+n+"]", "<img src='/luntan/static/res/layui/images/face/"+n+".gif'></img>");
 		}
 		str=str.replace("[pre]", "<pre>");
