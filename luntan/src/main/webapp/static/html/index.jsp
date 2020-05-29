@@ -10,7 +10,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
   <head>
     <base href="<%=basePath%>">
-    
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
@@ -79,9 +78,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <img src="data:image/jpeg;base64,${uphoto}">
         </a>
         <dl class="layui-nav-child">
-          <dd><a href="/luntan/static/html/user/set.jsp"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a href="/luntan/static/html/user/message.jsp"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-          <dd><a href="/luntan/static/html/user/home.jsp"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+          <dd><a href="pyl/playSet.do"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+          <dd><a href="pyl/userMessage.do"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+          <dd><a href="userSet/home.do"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
           <hr style="margin: 5px 0;">
           <dd><a href="logout.do" style="text-align: center;">退出</a></dd>
         </dl>
@@ -99,16 +98,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <c:forEach items="${smodule}" var="s">
                <li><a href="/luntan/static/html/jie/index.jsp?sid=${s.smoduleId}">${s.smoduleName }</a></li> 
       </c:forEach>
-     <!--  <li><a href="/luntan/static/html/jie/index.jsp">提问</a></li> 
-      <li><a href="/luntan/static/html/jie/index.jsp">分享<span class="layui-badge-dot"></span></a></li> 
-      <li><a href="/luntan/static/html/jie/index.jsp">讨论</a></li> 
-      <li><a href="/luntan/static/html/jie/index.jsp">公告</a></li> -->  
       <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
       
       <!-- 用户登入后显示 -->
        <shiro:authenticated>
-	      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/luntan/static/html/user/index.jsp">我发表的贴</a></li> 
-	      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/luntan/static/html/user/index.jsp#collection">我收藏的贴</a></li> 
+	      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="pyl/findMyPosts.do?state=0">我发表的贴</a></li> 
+	      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="pyl/findMyPosts.do?state=1">我收藏的贴</a></li> 
        </shiro:authenticated>
     </ul> 
     

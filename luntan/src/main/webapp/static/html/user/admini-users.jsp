@@ -139,12 +139,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<col width="110">
 								<col width="">
 								<col width="">
+								<col width="">
 								<col width="80">
 							</colgroup>
 							<thead>
 								<tr>
 									<th>昵称</th>
 									<th>邮箱</th>
+									<th>登录时间</th>
 									<th>签名</th>
 									<th>操作</th>
 								</tr>
@@ -153,11 +155,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								<tr>
 									<td class="uname">贤心的风风光光和见解</td>
 									<td>2016-11-29</td>
+									<td>2016-11-29</td>
 									<td>人生就像是一场修行</td>
 									<td><div class="layui-btn pyl_ban" value="0">禁用</div></td>
 								</tr>
 								<tr>
 									<td>许闲心</td>
+									<td>2016-11-28</td>
 									<td>2016-11-28</td>
 									<td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
 									<td><div class="layui-btn pyl_ban" value="1">启用</div></td>

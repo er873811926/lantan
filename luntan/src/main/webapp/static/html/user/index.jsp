@@ -1,4 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -137,38 +139,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     --%>
     <div class="layui-tab layui-tab-brief" lay-filter="user">
       <ul class="layui-tab-title" id="LAY_mine">
-        <li data-type="mine-jie" lay-id="index" class="layui-this">我发的帖（<span>89</span>）</li>
-        <li data-type="collection" data-url="/collection/find/" lay-id="collection">我收藏的帖（<span>16</span>）</li>
+      	<c:if test="${state eq 0}">
+         <li data-type="mine-jie" lay-id="index" class="layui-this">我发的帖<span></span></li>
+         <li data-type="collection" data-url="/collection/find/" lay-id="collection">我收藏的帖<span></span></li>
+        </c:if>
+        <c:if test="${state eq 1}">
+        <li data-type="mine-jie" lay-id="index" >我发的帖<span></span></li>
+        <li data-type="collection" data-url="/collection/find/" class="layui-this" lay-id="collection">我收藏的帖<span></span></li>
+        </c:if>
       </ul>
       <div class="layui-tab-content" style="padding: 20px 0;">
         <div class="layui-tab-item layui-show">
           <ul class="mine-view jie-row">
+          	<c:forEach items="${listp}" var="pt">
             <li>
-              <a class="jie-title" href="../jie/detail.html" target="_blank">你的帖子也写得也太好了</a>
-              <i>2017/3/14 上午8:30:00</i>
-              <a class="mine-edit" href="/jie/edit/8116">编辑</a>
-              <em>661阅/10答</em>
+              <a class="jie-title" href="userSet/detail.do?postsNo=${pt.postsNo}&uemail=${pt.uemail}" target="_blank">${pt.postsTitle}</a>
+              <i>${pt.uptime}</i>
+              <em>${pt.pageView}阅 / ${pt.replyNum}答</em>
             </li>
-            <li>
-              <a class="jie-title" href="../jie/detail.html" target="_blank">你的帖子也写得也太好了</a>
-              <i>2017/3/14 上午8:30:00</i>
-              <a class="mine-edit" href="/jie/edit/8116">编辑</a>
-              <em>661阅/10答</em>
-            </li>
-            <li>
-              <a class="jie-title" href="../jie/detail.html" target="_blank">你的帖子也写得也太好了</a>
-              <i>2017/3/14 上午8:30:00</i>
-              <a class="mine-edit" href="/jie/edit/8116">编辑</a>
-              <em>661阅/10答</em>
-            </li>
+            </c:forEach>
           </ul>
           <div id="LAY_page"></div>
         </div>
         <div class="layui-tab-item">
           <ul class="mine-view jie-row">
-            <li>
-              <a class="jie-title" href="../jie/detail.html" target="_blank">你的帖子也写得也太好了</a>
-              <i>收藏于23小时前</i>  </li>
+        	 <c:forEach items="${listuc}" var="uc">
+           	 <li>
+              	<a class="jie-title" href="../jie/detail.html" target="_blank">${uc.postsTitle}</a>
+             </li>
+             </c:forEach>
           </ul>
           <div id="LAY_page1"></div>
         </div>

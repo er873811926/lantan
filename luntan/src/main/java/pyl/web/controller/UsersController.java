@@ -180,6 +180,8 @@ public class UsersController {
 		}else{
 			map.put("uemail", uEmail);
 			List<Users> lists=userservice.findUsersByCondition(map);
+			map.put("logintime", Myutil.playTime(new Date()));
+			userservice.updateUsers(map);
 			subject.getSession().setAttribute("currentNickName", lists.get(0).getUnickname());
 			subject.getSession().setAttribute("uphoto", lists.get(0).getUphoto());
 			map.put("msg", "登录成功正在跳转...");
@@ -624,7 +626,8 @@ public class UsersController {
 		
 		int pageNo=1;
 		int pageSize=10;
-		int pageMax=postsService.findPostsMaxNum(map);
+		int numMax=postsService.findPostsMaxNum(map);
+		int pageMax=numMax;
 		map=Myutil.fenPage(map, pageSize, pageNo);//分页
 		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
 		try {
@@ -636,6 +639,7 @@ public class UsersController {
 		}
 		List<Posts> listsou= postsService.findPostsByCondition(map);
 		
+		model.addAttribute("numMax",numMax);
 		model.addAttribute("pageNo",pageNo);
 		model.addAttribute("pageMax",pageMax);
 		model.addAttribute("smodule",smodule);
@@ -644,5 +648,92 @@ public class UsersController {
 		return "forward:/static/html/user/sou.jsp";
 	}
 	
+	@RequestMapping("/findMyPosts.do")
+	public String findMyPosts(HttpServletRequest request,HttpServletResponse response,Model model){
+		Subject subject =SecurityUtils.getSubject();
+		if(subject.getPrincipal()==null){
+			return "redirect:pyl/lookIndex.do";
+		}
+		String state=request.getParameter("state");
+		String uemail=subject.getPrincipal().toString();
+		Map<String,Object> map=new HashMap<String, Object>();
+		//查询所有的帖子
+		map.put("uemail", uemail);
+		List<Posts> listp=postsService.findPostsByCondition(map);
+		model.addAttribute("listp", listp);
+		
+		//查询所有的帖子
+		model.addAttribute("postsstate", state);
+		List<UserCollect> listuc=ucService.findUserCollectByCondition(map);
+		model.addAttribute("listuc", listuc);
+		return "forward:/static/html/user/index.jsp";
+	}
+	
+	
+	@RequestMapping("/playSet.do")
+	public String findMyCollect(HttpServletRequest request,HttpServletResponse response,Model model){
+		Subject subject =SecurityUtils.getSubject();
+		if(subject.getPrincipal()==null){
+			return "redirect:pyl/lookIndex.do";
+		}
+		
+		String uemail=subject.getPrincipal().toString();
+		Map<String,Object> map=new HashMap<String, Object>();
+		List<Users> listu=userservice.findUsersByCondition(map);
+		
+		model.addAttribute("oneu", listu.get(0));
+		
+		return "forward:/static/html/user/set.jsp";
+	}
+	
+	
+	@RequestMapping("/setUser.do")
+	public @ResponseBody Map<String,Object> setUser(HttpServletRequest request,HttpServletResponse response,Model model){
+		Subject subject =SecurityUtils.getSubject();
+		System.out.println(subject.getPrincipal());
+		Map<String,Object> map=new HashMap<String, Object>();
+		if(subject.getPrincipal()==null){
+			System.out.println(1);
+			return map;
+		}
+		
+		String uemail=subject.getPrincipal().toString();
+		map.put("uemail", uemail);
+		List<Users>listu=userservice.findUsersByCondition(map);
+		String umaxim=request.getParameter("umaxim");
+		String usex=request.getParameter("usex");
+		String uaddress=request.getParameter("uaddress");
+		String unickname=request.getParameter("unickname");
+		if(!listu.isEmpty()){
+			map.put("umaxim", umaxim);
+			map.put("unickname", unickname);
+			map.put("usex", usex);
+			map.put("uaddress", uaddress);
+			
+			userservice.updateUsers(map);
+		}
+		map.clear();
+		
+		map.put("state", 1);
+		map.put("msg", "修改成功");
+		
+		return map;
+	}
+	
+	
+	
+//	@RequestMapping("/findMyCollect.do")
+//	public String findMyCollect(Model model){
+//		Subject subject =SecurityUtils.getSubject();
+//		if(subject.getPrincipal()==null){
+//			return "redirect:pyl/lookIndex.do";
+//		}
+//		
+//		String uemail=subject.getPrincipal().toString();
+//		Map<String,Object> map=new HashMap<String, Object>();
+//		
+//		
+//		return "forward:/static/html/user/index.jsp#collection";
+//	}
 	
 }

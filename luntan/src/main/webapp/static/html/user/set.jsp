@@ -1,4 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -23,7 +25,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  <link rel="stylesheet" href="/luntan/static/res/layui/css/layui.css">
 	  <link rel="stylesheet" href="/luntan/static/res/css/global.css">
 </head>
-<body onload="aa()">
+<body>
 
 <div class="fly-header layui-bg-black">
   <div class="layui-container">
@@ -171,29 +173,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <div class="layui-form-item">
               <label for="L_username" class="layui-form-label">昵称</label>
               <div class="layui-input-inline">
-                <input type="text" id="L_username" name="username" required lay-verify="required" autocomplete="off" value="" class="layui-input">
+                <input type="text" id="L_username" name="username" required lay-verify="required" autocomplete="off" value="${oneu.unickname}" class="layui-input">
               </div>
               <div class="layui-inline">
                 <div class="layui-input-inline">
-                  <input type="radio" name="sex" value="0" checked title="男">
-                  <input type="radio" name="sex" value="1" title="女">
+                <c:if test="${oneu.usex eq '男'}">
+                  <input type="radio" name="sex" value="男" checked title="男">
+                  <input type="radio" name="sex" value="女" title="女">
+                </c:if>  
+                <c:if test="${oneu.usex ne '男'}">
+                  <input type="radio" name="sex" value="男"  title="男">
+                  <input type="radio" name="sex" value="女" checked title="女">
+                </c:if>  
                 </div>
               </div>
             </div>
             <div class="layui-form-item">
               <label for="L_city" class="layui-form-label">城市</label>
+              
               <div class="layui-input-inline">
-                <input type="text" id="L_city" name="city" autocomplete="off" value="" class="layui-input">
+                <input type="text" id="L_city" name="city"  autocomplete="off" value="${oneu.uaddress}" class="layui-input">
               </div>
             </div>
             <div class="layui-form-item layui-form-text">
               <label for="L_sign" class="layui-form-label">签名</label>
               <div class="layui-input-block">
-                <textarea placeholder="随便写些什么刷下存在感" id="L_sign"  name="sign" autocomplete="off" class="layui-textarea" style="height: 80px;"></textarea>
+                <textarea placeholder="随便写些什么刷下存在感" id="L_sign"  name="sign" autocomplete="off" class="layui-textarea" style="height: 80px;">${oneu.umaxim}</textarea>
               </div>
             </div>
             <div class="layui-form-item">
-              <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+              <div id="updateUser" class="layui-btn" key="set-mine" >确认修改</div>
             </div>
           </div>
           
@@ -204,7 +213,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <button type="button" class="layui-btn upload-img">
                   <i class="layui-icon">&#xe67c;</i>上传头像
                 </button>
-                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
+                <img src="data:image/jpeg;base64,${users.uphoto}">
                 <span class="loading"></span>
               </div>
             </div>
@@ -252,6 +261,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 
 <script src="/luntan/static/res/layui/layui.js"></script>
+<script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
+<script src="/luntan/static/res/pyl.js"></script>
 <script>
 layui.cache.page = 'user';
 layui.cache.user = {
@@ -270,11 +281,37 @@ layui.config({
 </script>
 </body>
 </html>
-<script src="/luntan/static/res/pyl.js"></script>
+
 <script type="text/javascript">
-	function aa(){
-		layer.msg("修改成功",{shift:6,icon:2});
-	
+	function myajax(seturl,setdata){
+		var rurl=seturl;
+		var rdata=setdata;
+		$.ajax({
+				url:rurl,
+				type:'post',
+				dataType:'json',
+				data:rdata,
+				success:function(data){
+					if(data.state==1){
+						alert(data.msg);
+					}
+					
+				}	
+			});
 	}
+	$("#updateUser").click(function(){
+		if(confirm("确认修改吗")){
+			var unickname=$("#L_username").val();
+			var usex=$("input[type='radio']:checked").val();
+			var umaxim=$("#L_sign").val();
+			var uaddress=$("#L_city").val();
+			console.log(usex);
+			console.log(umaxim);
+			var content ={"unickname":unickname,"usex":usex,"umaxim":umaxim,"uaddress":uaddress};
+			myajax("pyl/setUser.do",content);
+		}
+	});
+
+
 
 </script>

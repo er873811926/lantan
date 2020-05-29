@@ -122,9 +122,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <div class="layui-col-md8">
       <div class="fly-panel" style="margin-bottom: 0;">
         <div class="fly-panel-title fly-filter">
-          <a href="" class="layui-this">搜索的相关内容</a>
+          <div class="layui-this">你搜索的关键字"<span style="color:blue;">${souword}<span>"</div>
           <span class="fly-mid"></span>       
-          <span>包含:${souword}</span>
+          <span>共有-<span style="color:blue;">${numMax}<span>-记录</span>
           
         </div>
 		
