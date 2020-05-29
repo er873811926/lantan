@@ -52,4 +52,10 @@ public class PostsServiceImpl implements PostsService{
 		postsmapper.deletePostsById(id);
 	}
 
+	@Override
+	public int findPostsMaxNum(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return postsmapper.findPostsMaxNum(map);
+	}
+
 }

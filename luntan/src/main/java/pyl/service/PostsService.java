@@ -13,5 +13,6 @@ public interface PostsService {
 	public List<Posts> findPostsByIds(List<Integer> id);
 	public void addPosts(Posts p);
 	public void updatePosts(Map<String,Object> map);
+	public int findPostsMaxNum(Map<String,Object> map);
 	public void removePostsById(int id );
 }

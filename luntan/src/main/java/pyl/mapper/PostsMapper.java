@@ -16,5 +16,6 @@ public interface PostsMapper {
 	public List<Posts> findPostsByIds(List<Integer> id);
 	public void insertPosts(Posts p);
 	public void updatePosts(Map<String,Object> map);
+	public int findPostsMaxNum(Map<String,Object> map);
 	public void deletePostsById(int id );
 }

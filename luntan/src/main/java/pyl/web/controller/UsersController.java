@@ -24,16 +24,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pyl.dto.ReplyNumEmailMax;
+import pyl.pojo.Likes;
 import pyl.pojo.Posts;
 import pyl.pojo.PostsContent;
 import pyl.pojo.Reply;
 import pyl.pojo.Smodule;
+import pyl.pojo.UserCollect;
 import pyl.pojo.Users;
 import pyl.service.UsersService;
+import pyl.service.LikesService;
 import pyl.service.PostsContentService;
 import pyl.service.PostsService;
 import pyl.service.ReplyService;
 import pyl.service.SmoduleService;
+import pyl.service.UserCollectService;
 import pyl.util.GetHttpIP;
 import pyl.util.MyMD5;
 import pyl.util.MyUUID;
@@ -53,6 +57,10 @@ public class UsersController {
 	private PostsContentService pcService=null;
 	@Autowired
 	private ReplyService replyService=null;
+	@Autowired
+	private LikesService likesService=null;
+	@Autowired
+	private UserCollectService ucService=null;
 	
 	//验证码生成
 	@RequestMapping("/yanZhengMa.do")
@@ -383,11 +391,11 @@ public class UsersController {
 		if("submitReply".equals(type)){
 			Reply r=new Reply();
 			String uemail=subject.getPrincipal().toString();
-			System.out.println(uemail);
 			String replyTime=Myutil.playTime(new Date());
 			String content =request.getParameter("content");
+			String postsNo=request.getParameter("postsNo");
 			content=Myutil.replacFace(content);
-			r.setPostsNo(request.getParameter("postsNo"));
+			r.setPostsNo(postsNo);
 			r.setReplyContent(content);
 			r.setPostsTitle(request.getParameter("postsTitle"));
 			r.setUemail(uemail);
@@ -395,9 +403,17 @@ public class UsersController {
 			r.setIp(GetHttpIP.getIpAddress(request));
 			r.setReplyTime(replyTime);
 			replyService.addReply(r);
-			map.put("uemail", uemail);
-			map.put("content", content);
-			map.put("replyTime", replyTime);
+			
+			//修改帖子的回复数
+			map.put("postsNo", postsNo);
+			List<Posts> listpo=postsService.findPostsByCondition(map);
+			map.put("replyNum", listpo.get(0).getReplyNum()+1);
+			postsService.updatePosts(map);
+			
+			map.clear();
+//			map.put("uemail", uemail);
+//			map.put("content", content);
+//			map.put("replyTime", replyTime);
 			map.put("state", 1);
 		}
 		
@@ -414,7 +430,210 @@ public class UsersController {
 			map.put("state",2);
 		}
 		
+		if("caina".equals(type)){
+			String postsNo =request.getParameter("postsNo");
+			String uemail =request.getParameter("uemail");
+			String replyTime =request.getParameter("replyTime");
+			String reward =request.getParameter("reward");
+			map.put("postsNo", postsNo);
+			map.put("top", "1");
+			List<Reply> listy=replyService.findReplyByCondition(map);
+			map.clear();
+			if(listy.isEmpty()){
+				map.put("uemail", uemail);
+				List<Users> listu=userservice.findUsersByCondition(map);
+				Users u=listu.get(0);
+				int score=u.getUscore();
+				score+=Integer.parseInt(reward);
+				map.put("uscore", score);
+				userservice.updateUsers(map);
+				map.clear();
+			}
+			
+			map.put("postsNo", postsNo);
+			map.put("replyTime", replyTime);
+			map.put("uemail", uemail);
+			replyService.findReplyByCondition(map);
+			
+			map.put("top", "1");
+			replyService.updateReply(map);
+			//对次帐号积分添加
+			map.clear();
+			map.put("state",3);
+		}
+		
+		//点赞
+		if("likes".equals(type)){
+			String postsNo =request.getParameter("postsNo");
+			String uemail =request.getParameter("uemail");
+//			String replyTime =request.getParameter("replyTime");
+			String replyId =request.getParameter("replyId");
+			String uemail1=subject.getPrincipal().toString();
+
+			map.put("replyId", replyId);
+			map.put("uemail", uemail1);
+			List<Likes> listlike=likesService.findLikesByCondition(map);
+			if(!listlike.isEmpty()){
+				map.clear();
+				map.put("state", "4");
+				map.put("msg", "你点过赞了");
+				return map;
+			}
+			Likes l= new Likes();
+			l.setReplyId(Integer.parseInt(replyId));
+			l.setUemail(uemail1);
+			likesService.addLikes(l);
+			
+			map.clear();
+			map.put("postsNo", postsNo);
+//			map.put("replyTime", replyTime);
+			map.put("uemail", uemail);
+			map.put("replyId", replyId);System.out.println(replyId);
+			
+			List<Reply> listr =replyService.findReplyByCondition(map);
+			
+			Reply r=listr.get(0);
+			map.put("likes", r.getLikes()+1);
+			replyService.updateReply(map);
+			
+			map.put("state", 5);
+			
+		}
+		
+		
+		//置顶帖子
+		if("top".equals(type)){
+			String postsNo =request.getParameter("postsNo");
+			String uemail =request.getParameter("uemail");
+//			String replyTime =request.getParameter("replyTime");
+			String replyId =request.getParameter("replyId");
+			String uemail1=subject.getPrincipal().toString();
+			
+			map.put("replyId", replyId);
+			map.put("uemail", uemail1);
+			List<Likes> listlike=likesService.findLikesByCondition(map);
+			if(!listlike.isEmpty()){
+				map.clear();
+				map.put("state", "4");
+				map.put("msg", "你点过赞了");
+				return map;
+			}
+			Likes l= new Likes();
+			l.setReplyId(Integer.parseInt(replyId));
+			l.setUemail(uemail1);
+			likesService.addLikes(l);
+			
+			map.clear();
+			map.put("postsNo", postsNo);
+//			map.put("replyTime", replyTime);
+			map.put("uemail", uemail);
+			map.put("replyId", replyId);System.out.println(replyId);
+			
+			List<Reply> listr =replyService.findReplyByCondition(map);
+			
+			Reply r=listr.get(0);
+			map.put("likes", r.getLikes()+1);
+			replyService.updateReply(map);
+			
+			map.put("state", 5);
+			
+		}
+		
 		
 		return map;
 	}
+	
+	//帖子的的所有操作
+	@RequestMapping("/postsCaoZuo")
+	public @ResponseBody Map<String,Object> postsCaoZuo(HttpServletRequest request,HttpServletResponse response){
+		String type=request.getParameter("type");
+		Subject subject=SecurityUtils.getSubject();
+		Map<String, Object> map= new HashMap<String, Object>();
+		if("deletePosts".equals(type)){
+			String postsId =request.getParameter("postsId");
+			postsService.removePostsById(Integer.parseInt(postsId));
+			map.put("state", 6);
+			map.put("url", "pyl/lookIndex.do");
+		}
+		
+		//置顶帖子
+		if("topPosts".equals(type)){
+			String postsId =request.getParameter("postsId");
+			String top =request.getParameter("top");
+			map.put("postsId", postsId);
+			map.put("top", Integer.parseInt(top));
+			postsService.updatePosts(map);
+			map.put("state", 7);
+		}
+		
+		//加精帖子
+		if("hotPosts".equals(type)){
+			String postsId =request.getParameter("postsId");
+			String hot =request.getParameter("hot");
+			map.put("postsId", postsId);
+			map.put("hot", Integer.parseInt(hot));
+			postsService.updatePosts(map);
+			map.put("state", 8);
+		}
+		
+		//收藏帖子
+		if("soucang".equals(type)){
+			String postsNo =request.getParameter("postsNo");
+			String postsTitle =request.getParameter("postsTitle");
+			String vangvalue =request.getParameter("vangvalue");
+			String uemail=subject.getPrincipal().toString();
+			if("1".equals(vangvalue)){
+				UserCollect uc=new UserCollect();
+				uc.setPostsNo(postsNo);
+				uc.setPostsTitle(postsTitle);
+				uc.setUemail(uemail);
+				ucService.addUserCollect(uc);
+				
+			}else{
+				map.put("postsNo", postsNo);
+				map.put("uemail", uemail);
+				List<UserCollect> uc=ucService.findUserCollectByCondition(map);
+				if(!uc.isEmpty()){
+					ucService.removeUserCollectById(uc.get(0).getCollectId());
+				}
+			}
+			postsService.updatePosts(map);
+			map.put("state", 9);
+		}
+				
+		return map;
+	}
+	
+	
+	//搜索帖子
+	@RequestMapping("/souPosts.do")
+	public String souPosts(HttpServletRequest request,HttpServletResponse response,Model model){
+		String souword=request.getParameter("souword");
+		Map<String, Object> map= new HashMap<String, Object>();
+		map.put("postsTitle", souword);
+		List<Smodule> smodule=SmoduleService.findSmoduleAll();//所有模块
+		
+		int pageNo=1;
+		int pageSize=10;
+		int pageMax=postsService.findPostsMaxNum(map);
+		map=Myutil.fenPage(map, pageSize, pageNo);//分页
+		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
+		try {
+			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+			if(pageNo>pageMax)pageNo=pageMax;
+		} catch (Exception e) {
+			// TODO: handle exception
+			pageNo=1;
+		}
+		List<Posts> listsou= postsService.findPostsByCondition(map);
+		
+		model.addAttribute("pageNo",pageNo);
+		model.addAttribute("pageMax",pageMax);
+		model.addAttribute("smodule",smodule);
+		model.addAttribute("listsou",listsou);
+		model.addAttribute("souword",souword);
+		return "forward:/static/html/user/sou.jsp";
+	}
+	
+	
 }

@@ -23,19 +23,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import pyl.pojo.Likes;
 import pyl.pojo.Posts;
 import pyl.pojo.PostsContent;
 import pyl.pojo.Reply;
 import pyl.pojo.Role;
 import pyl.pojo.RoleRelation;
 import pyl.pojo.Smodule;
+import pyl.pojo.UserCollect;
 import pyl.pojo.Users;
 import pyl.service.UsersService;
+import pyl.service.LikesService;
 import pyl.service.PostsContentService;
 import pyl.service.PostsService;
 import pyl.service.ReplyService;
 import pyl.service.RoleRelationService;
 import pyl.service.SmoduleService;
+import pyl.service.UserCollectService;
 import pyl.util.GetHttpIP;
 import pyl.util.MyMD5;
 import pyl.util.MyUUID;
@@ -55,6 +59,10 @@ public class UsersSetController {
 	private ReplyService replyService=null;
 	@Autowired
 	private RoleRelationService roleRelationService=null;
+	@Autowired
+	private LikesService likesService=null;
+	@Autowired
+	private UserCollectService ucService=null;
 	
 	//访问用户主页
 	@RequestMapping("/home.do")
@@ -219,9 +227,27 @@ public class UsersSetController {
 			model.addAttribute("delete",1);
 		}
 		
+		map.clear();
+		List<Likes> listlike=null;
+		if(subject.getPrincipal()!=null){
+			String email=subject.getPrincipal().toString();
+			map.put("email", email);
+			listlike=likesService.findLikesByCondition(map);
+		}
+		
+		map.clear();
+		map.put("postsNo", postsNo);
+		map.put("uemail", uname);
+		//查询是否收藏
+		List<UserCollect> clist=ucService.findUserCollectByCondition(map);
+		if(clist.isEmpty()){
+			model.addAttribute("uc", "1");
+		}else{
+			model.addAttribute("uc", "0");
+		}
 		
 		
-		
+		model.addAttribute("listlike", listlike);
 		model.addAttribute("pageNo", pageNo);
 		model.addAttribute("pageMax", pageMax);
 		model.addAttribute("listr", listr);

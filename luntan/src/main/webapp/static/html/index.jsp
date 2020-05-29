@@ -46,8 +46,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     
     <ul class="layui-nav fly-nav-user">
       <%--搜索--%>
-       <li class="layui-nav-item layui-hide-xs">
-        <span class="fly-search"><i class="layui-icon"></i></span> 
+      <li class="layui-nav-item layui-hide-xs">
+      	<input id="soucontent" type="text" name="title" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
+      </li>
+      <li class="layui-nav-item layui-hide-xs">
+        <div class="layui-btn" id="sou">
+        	<i class="layui-icon">&#xe615;</i>
+        </div> 
       </li>
       
       <!-- 未登入的状态 -->
@@ -70,7 +75,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <li class="layui-nav-item">
         <a class="fly-nav-avatar" href="userSet/home.do">
           <cite class="layui-hide-xs">上单</cite>
-          <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
           <img src="/luntan/static/res/images/userPhoto.png">
         </a>
         <dl class="layui-nav-child">
@@ -108,7 +112,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </ul> 
     
     <div class="fly-column-right layui-hide-xs"> 
-      <span class="fly-search"><i class="layui-icon"></i></span> 
       <a href="pyl/addPosts.do" class="layui-btn">发表新帖</a> 
     </div> 
     <!-- <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;"> 
@@ -278,7 +281,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
     <div class="layui-col-md4">
 
-      <div class="fly-panel">
+      <!-- <div class="fly-panel">
         <h3 class="fly-panel-title">温馨通道</h3>
         <ul class="fly-panel-main fly-list-static">
           <li>
@@ -301,7 +304,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <a href="http://fly.layui.com/jie/4281/" target="_blank"> 帖子好 及 Gitee (码云) 仓库，欢迎Star</a>
           </li>
         </ul>
-      </div>
+      </div> -->
 
 
       <div class="fly-panel fly-signin">
@@ -458,6 +461,22 @@ layui.config({
 	
 	
 	});
+
+//点击搜索
+$("#sou").click(function(){
+	var souword =$("#soucontent").val();
+	if(content==""){return;}
+	window.location="pyl/souPosts.do?souword="+souword;
+
+
+});
+
+
+
+
+
+
+
 
 
 </script>

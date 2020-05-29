@@ -115,6 +115,14 @@
         </foreach>
     </select>
     
+    <!-- 查询该帖子的回帖总数 -->
+    <select id="findPostsMaxNum" resultType="_int" parameterType="map">
+        SELECT COUNT(POSTS_ID) FROM POSTS WHERE 1=1
+        <if test="postsTitle != null and postsTitle != ''">
+            AND POSTS_TITLE LIKE CONCAT('%', #{postsTitle}, '%')
+        </if>
+        
+    </select>
     
     
     <!-- 插入数据 
@@ -167,7 +175,7 @@
                 HOT = #{hot},
             </if>
             <if test="pageView != null">
-                PAGE_VIEW = #{pageView}
+                PAGE_VIEW = #{pageView},
             </if>
             <if test="reward != null">
                 REWARD = #{reward},
@@ -175,16 +183,25 @@
             <if test="replyNum != null">
                 REPLY_NUM = #{replyNum},
             </if>
-            
             <if test="uptime != null">
-                UPTIME = #{uptime}
+                UPTIME = #{uptime},
             </if>
             <if test="unickname != null">
                 UNICKNAME = #{unickname}
             </if>
             
         </set>
-        WHERE UEMAIL = #{uemail} and POSTS_NO = #{postsNo}
+        WHERE  1=1
+        <if test="postsNo != null">
+               AND POSTS_NO = #{postsNo}
+         </if>
+        <if test="uemail != null">
+               AND UEMAIL = #{uemail}
+         </if>
+        <if test="postsId != null">
+               AND POSTS_ID = #{postsId}
+         </if>
+        
     </update>
     
     <!-- 根据主键删除数据 -->

@@ -108,7 +108,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <div class="layui-row layui-col-space15">
     <div class="layui-col-md8 content detail">
       <div class="fly-panel detail-box">
-        <h1>${posts.postsTitle}</h1>
+        <h1>
+        <c:if test="${uc eq '1'}">
+        	<span id="soucang" type="soucang" cangvalue="1" title="未收藏" class="layui-btn layui-btn-radius"><i class="layui-icon">&#xe600;</i>收藏</span>
+        </c:if>
+        <c:if test="${uc eq '0'}">
+        	<span title="已收藏" class="layui-badge layui-bg-black"><i class="layui-icon">&#xe658;</i>取消收藏</span>
+		</c:if>
+        ${posts.postsTitle}
+        </h1>
         <div class="fly-detail-info">
           <span class="layui-badge layui-bg-green fly-detail-column">${posts.smoduleName}</span>
           <c:if test="${posts.top eq 1}">
@@ -120,19 +128,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           
           <shiro:hasRole name="admin">
 	          <div class="fly-admin-box" data-id="123">
-	            <span class="layui-btn layui-btn-xs jie-admin" type="">删除</span>
+	            <span class="layui-btn layui-btn-xs jie-admin" id="deletePosts"type="deletePosts">删除</span>
 	            
 	            <c:if test="${posts.top eq 0}">
-	            	<span class="layui-btn layui-btn-xs jie-admin" type="" field="" rank="1">置顶</span> 
+	            	<span class="layui-btn layui-btn-xs jie-admin" id="topPosts" topvalue="1" type="topPosts">置顶</span> 
 	            </c:if>
 	            <c:if test="${posts.top eq 1}">
-	             <span class="layui-btn layui-btn-xs jie-admin" type="" field="" rank="0" style="background-color:#ccc;">取消置顶</span>
+	             <span class="layui-btn layui-btn-xs jie-admin" id="topPosts" topvalue="0" type="topPosts" style="background-color:#ccc;">取消置顶</span>
 	            </c:if>
 	            <c:if test="${posts.hot eq 0}">
-	            	<span class="layui-btn layui-btn-xs jie-admin" type="" field="" rank="1">加精</span> 
+	            	<span class="layui-btn layui-btn-xs jie-admin" id="hotPosts" hotvalue="1" type="hotPosts" >加精</span> 
 	            </c:if>
 	            <c:if test="${posts.hot eq 1}">
-	           		 <span class="layui-btn layui-btn-xs jie-admin" type="" field="" rank="0" style="background-color:#ccc;">取消加精</span>
+	           		 <span class="layui-btn layui-btn-xs jie-admin" id="hotPosts" hotvalue="0" type="hotPosts"  style="background-color:#ccc;">取消加精</span>
 	            </c:if>
 	          </div>
          </shiro:hasRole>
@@ -202,7 +210,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <!-- 放置置顶的 -->
 		<ul class="jieda" id="jieda">
         <c:set var="flag" value="0"></c:set>
-        <c:forEach items="${listrtop}" var="top" varStatus="vs">        	
+        <c:forEach items="${listrtop}" var="top" varStatus="vs"> 
+        	<c:if test="${vs.index eq 0}">
+        	 <c:set var="flag" value="1"></c:set>
+        	</c:if>       	
         	<li data-id="111" class="jieda-daan" style="border-bottom: 1px solid black;">
             <a name="item-1111111111"></a>
             <div class="detail-about detail-about-reply">
@@ -226,8 +237,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               <p>${top.replyContent}</p>
             </div>
             <div class="jieda-reply">
-              <span class="jieda-zan zanok" type="zan">
-                <i class="iconfont icon-zan"></i>
+             	 <c:set var="zaned" value="0"></c:set>
+	            <!-- 如果有相同id表示已经赞过了 -->
+	            <c:forEach items="${listlike}" var="like">
+	             <c:if test="${like.replyId eq top.replyId}">
+	             	<c:set var="zaned" value="1"></c:set>
+	              <span class="likes zanok" replyId="${top.replyId}" type="likes">
+	              </c:if>
+	            </c:forEach>
+            	<!-- 没有相同id表示没赞过了 -->
+            	<c:if test="${zaned eq 0}">
+            	 	<span class="likes" replyId="${top.replyId}" type="likes">
+            	</c:if>
+                <i class="iconfont icon-zan "></i>
                 <em>${top.likes}</em>
               </span>
               <span type="reply">
@@ -256,7 +278,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </ul>
         
         <ul class="jieda" id="jieda">
-        <c:set var="flag" value="0"></c:set>
         <c:forEach items="${listr}" var="r" varStatus="vs">
         	<c:if test="${vs.index eq 0}">
         	 <c:set var="flag" value="1"></c:set>
@@ -284,8 +305,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               <p>${r.replyContent}</p>
             </div>
             <div class="jieda-reply">
-              <span class="jieda-zan zanok" type="zan">
-                <i class="iconfont icon-zan"></i>
+            <c:set var="zaned" value="0"></c:set>
+            <!-- 如果有相同id表示已经赞过了 -->
+            <c:forEach items="${listlike}" var="like">
+             <c:if test="${like.replyId eq r.replyId}">
+             	<c:set var="zaned" value="1"></c:set>
+              <span class="likes zanok" replyId="${r.replyId}" type="likes">
+              </c:if>
+            </c:forEach>
+            	<!-- 没有相同id表示没赞过了 -->
+            	<c:if test="${zaned eq 0}">
+            	 	<span class="likes" replyId="${r.replyId}" type="likes">
+            	</c:if>
+                <i class="iconfont icon-zan" ></i>
                 <em>${r.likes}</em>
               </span>
               <span type="reply">
@@ -303,7 +335,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               	</c:if>
                 <c:if test="${r.top eq 0}">
                  <c:if test="${delete eq 1}">
-                 <span class="jieda-accept" time="${r.replyTime}" type="accept" title="第一个被采纳的人才有赏吻">采纳</span>
+                 <span class="caina" time="${r.replyTime}" reemail="${r.uemail}" type="caina" title="第一个被采纳的人才有赏吻">采纳</span>
                  </c:if>
                 </c:if>
               </div>
@@ -439,7 +471,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
     
     <div class="layui-col-md4">
-      <dl class="fly-panel fly-list-one">
+      <%-- <dl class="fly-panel fly-list-one">
         <dt class="fly-panel-title">最近热议</dt>
         <dd>
           <a href="">你的帖子也写得也太好了</a>
@@ -482,18 +514,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <span><i class="iconfont icon-pinglun1"></i> 16</span>
         </dd>
 
-        <!-- 无数据时 -->
-        <!--
+        无数据时
+        
         <div class="fly-none">没有相关数据</div>
-        -->
-      </dl>
+       
+      </dl> --%>
 
       <div class="fly-panel">
         <div class="fly-panel-title">
           这里可作为广告区域
         </div>
         <div class="fly-panel-main">
-          <a href="http://layim.layui.com/?from=fly" target="_blank" class="fly-zanzhu" time-limit="2017.09.25-2099.01.01" style="background-color: #5FB878;">LayIM 3.0 - layui 旗舰之作</a>
+          <a href="http://www.huse.edu.cn" target="_blank" class="fly-zanzhu" time-limit="2017.09.25-2099.01.01" style="background-color: #5FB878;">电子信息与工程学院</a>
         </div>
       </div>
 
@@ -546,9 +578,13 @@ layui.config({
 	var unickname="${sessionScope.currentNickName}";
 	var postsNo="${posts.postsNo}";
 	var postsuemali="${posts.uemail}";
+	var postsId="${posts.postsId}";
 	var pageNo="${pageNo}";
 	var pageMax="${pageMax}";
+	var reward="${posts.reward}";
 	
+	
+	//提交回复
 	$("#pyl_reply").click(function(){
 		if(unickname==null||unickname==""){alert("请先登录");return;}
 		if($("#L_content").val()==""){
@@ -583,9 +619,27 @@ layui.config({
 					
 					if(data.state==1){
 						location.reload(); 
-						//$("#jieda li").eq(0).before('<li data-id="111" class="jieda-daan"><a name="item-1111111111"></a><div class="detail-about detail-about-reply"><a class="fly-avatar" href="/luntan/userSet/home.do?uemail='+data.uemail+'}"><img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=""></a><div class="fly-detail-user"><a href="/luntan/userSet/home.do?uemail="'+data.uemail+'" class="fly-link"><cite>'+unickname+'</cite></a></div><div class="detail-hits"><span>'+data.replyTime+'</span></div></div><div class="detail-body jieda-body photos"><p>'+data.content+'</p></div><div class="jieda-reply"><span class="jieda-zan zanok" type="zan"><i class="iconfont icon-zan"></i><em>0</em></span><span type="reply"><i class="iconfont icon-svgmoban53"></i>回复</span><div class="jieda-admin"><span type="del">删除</span><c:if test="${r.top eq 0}"><span class="jieda-accept" type="accept" title="第一个被采纳的人才有赏吻">采纳</span></c:if></div></div></li>'); 
 					}
 					if(data.state==2){
+						location.reload(); 
+					}
+					if(data.state==3){
+						location.reload(); 
+					}
+					if(data.state==4){
+						alert(data.msg); 
+						layer.msg(date.msg);
+					}
+					if(data.state==5){
+						location.reload(); 
+					}
+					if(data.state==6){
+						window.location=data.url; 
+					}
+					if(data.state==7){
+						location.reload(); 
+					}
+					if(data.state==8){
 						location.reload(); 
 					}
 				},	
@@ -635,16 +689,89 @@ $(".deleteReply").each(function(i){
 	}
 });
 });
-/* $(".deleteReply").click(function(){
-	if(confirm("你确定删除")){
-		var replyemail= $(".deleteReply").attr("email");
-		var type= $(".deleteReply").attr("type");
-		var replyTime= $(".deleteReply").attr("time");
-		var data1={"postsNo":postsNo,"uemail":replyemail,"type":type,"replyTime":replyTime};
+
+
+//采纳回复
+$(".caina").each(function(i){
+	$(".caina").eq(i).click(function(){
+	if(confirm("你确定采纳这个回帖")){
+		var replyemail= $(this).attr("reemail");
+		console.log(replyemail);
+		var type= $(this).attr("type");
+		var replyTime= $(this).attr("time");
+		var data1={"postsNo":postsNo,"uemail":replyemail,"type":type,"replyTime":replyTime,"reward":reward};
 		myajax('pyl/replyCaoZuo.do',data1);
 	}
+});
+});
 
-}); */
+
+//点赞回复
+$(".likes").each(function(i){
+	$(".likes").eq(i).click(function(){
+	if(unickname==null||unickname==""){alert("请先登录");return;}
+	
+	var replyId= $(this).attr("replyId");
+	/* var likenum= $(this).children("em").html(); */
+	console.log(replyId);
+	var type= $(this).attr("type");
+	/* var replyTime= $(this).attr("time"); */
+	var data1={"postsNo":postsNo,"type":type,"replyId":replyId};
+	myajax('pyl/replyCaoZuo.do',data1);
+	
+});
+});
+
+
+
+
+
+
+//删除帖子
+$("#deletePosts").click(function(){
+	if(confirm("确定删除该帖子")){
+		var type= $(this).attr("type");
+		if(unickname==null||unickname==""){alert("请先登录");return;}
+		var data1={"postsId":postsId,"type":type};
+		myajax('pyl/postsCaoZuo.do',data1);
+	}
+});
+
+//置顶帖子
+$("#topPosts").click(function(){
+	if(confirm("确定置顶该帖子")){
+		if(unickname==null||unickname==""){alert("请先登录");return;}
+		var type= $(this).attr("type");
+		var topvalue= $(this).attr("topvalue");
+		
+		var data1={"postsId":postsId,"type":type,"top":topvalue};
+		myajax('pyl/postsCaoZuo.do',data1);
+	}
+});
+
+//加精帖子
+$("#hotPosts").click(function(){
+	if(confirm("确定加精该帖子")){
+		if(unickname==null||unickname==""){alert("请先登录");return;}
+		var type= $(this).attr("type");
+		var hotvalue= $(this).attr("hotvalue");
+		console.log(hotvalue);
+		console.log(postsId);
+		var data1={"postsId":postsId,"type":type,"hot":hotvalue};
+		myajax('pyl/postsCaoZuo.do',data1);
+	}
+});
+
+
+//收藏帖子
+$("#soucang").click(function(){
+	if(unickname==null||unickname==""){alert("请先登录");return;}
+	var type= $(this).attr("type");
+	var vangvalue= $(this).attr("cangvalue");
+	var data1={"postsNo":postsNo,"type":type,"postsTitle":postsTitle,"vangvalue":vangvalue};
+	myajax('pyl/postsCaoZuo.do',data1);
+	
+});
 
 
 
