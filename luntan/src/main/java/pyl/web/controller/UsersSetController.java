@@ -236,14 +236,20 @@ public class UsersSetController {
 		}
 		
 		map.clear();
-		map.put("postsNo", postsNo);
-		map.put("uemail", uname);
-		//查询是否收藏
-		List<UserCollect> clist=ucService.findUserCollectByCondition(map);
-		if(clist.isEmpty()){
-			model.addAttribute("uc", "1");
+		if(subject.getPrincipal()!=null){
+			String uemail=subject.getPrincipal().toString();
+			map.put("postsNo", postsNo);
+			map.put("uemail", uemail);
+			//查询是否收藏
+			List<UserCollect> clist=ucService.findUserCollectByCondition(map);
+			
+			if(clist.isEmpty()){
+				model.addAttribute("ucollerct", 1);
+			}else{
+				model.addAttribute("ucollerct", 0);
+			}
 		}else{
-			model.addAttribute("uc", "0");
+			model.addAttribute("ucollerct", 1);
 		}
 		
 		

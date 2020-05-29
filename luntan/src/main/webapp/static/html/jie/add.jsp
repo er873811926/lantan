@@ -175,6 +175,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 <script src="/luntan/static/res/layui/layui.js"></script>
 <script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
+<script src="/luntan/static/res/pyl.js"></script>
 <script>
 layui.cache.page = 'jie';
 layui.cache.user = {

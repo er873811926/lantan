@@ -36,9 +36,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </ul>
     
     <ul class="layui-nav fly-nav-user">
-      <!--搜索-->
-       <li class="layui-nav-item layui-hide-xs">
-        <span class="fly-search"><i class="layui-icon"></i></span> 
+       <%--搜索--%>
+      <li class="layui-nav-item layui-hide-xs">
+      	<input id="soucontent" type="text" name="title" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
+      </li>
+      <li class="layui-nav-item layui-hide-xs">
+        <div class="layui-btn" id="sou">
+        	<i class="layui-icon">&#xe615;</i>
+        </div> 
       </li>
       <!-- 登入后的状态 -->
       <li class="layui-nav-item">
@@ -113,6 +118,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <script src="/luntan/static/res/layui/layui.js"></script>
 <script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
+<script src="/luntan/static/res/pyl.js"></script>
 <script>
 layui.cache.page = 'user';
 layui.cache.user = {

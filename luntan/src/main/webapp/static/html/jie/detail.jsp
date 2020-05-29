@@ -59,9 +59,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <shiro:authenticated>
       <li class="layui-nav-item">
         <a class="fly-nav-avatar" href="userSet/home.do">
-          <cite class="layui-hide-xs">上单</cite>
-          <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
-          <img src="/luntan/static/res/images/userPhoto.png">
+          <cite class="layui-hide-xs">${currentNickName}</cite>
+          <img src="data:image/jpeg;base64,${uphoto}">
         </a>
         <dl class="layui-nav-child">
           <dd><a href="/luntan/static/html/user/set.jsp"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
@@ -109,11 +108,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <div class="layui-col-md8 content detail">
       <div class="fly-panel detail-box">
         <h1>
-        <c:if test="${uc eq '1'}">
+        <c:if test="${ucollerct eq 1}">
         	<span id="soucang" type="soucang" cangvalue="1" title="未收藏" class="layui-btn layui-btn-radius"><i class="layui-icon">&#xe600;</i>收藏</span>
         </c:if>
-        <c:if test="${uc eq '0'}">
-        	<span title="已收藏" class="layui-badge layui-bg-black"><i class="layui-icon">&#xe658;</i>取消收藏</span>
+        <c:if test="${ucollerct eq 0}">
+        	<span id="soucang" type="soucang" cangvalue="0" title="已收藏" class="layui-btn layui-btn-radius"><i class="layui-icon">&#xe658;</i>取消收藏</span>
 		</c:if>
         ${posts.postsTitle}
         </h1>
@@ -544,6 +543,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <script src="/luntan/static/res/layui/layui.js"></script>
 <script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
+<script src="/luntan/static/res/pyl.js"></script>
 <script>
 layui.cache.page = 'jie';
 layui.cache.user = {
@@ -640,6 +640,9 @@ layui.config({
 						location.reload(); 
 					}
 					if(data.state==8){
+						location.reload(); 
+					}
+					if(data.state==9){
 						location.reload(); 
 					}
 				},	

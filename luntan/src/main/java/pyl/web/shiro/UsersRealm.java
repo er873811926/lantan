@@ -50,11 +50,11 @@ public class UsersRealm extends AuthorizingRealm{
 		Object credentials="";
 		if(!list.isEmpty()){
 			Users u=list.get(0);
-			principal=u.getUemail();
-			credentials =u.getUpassword();
 			if(u.getUban().equals("1")){
 				throw new LockedAccountException("msg:帐号被禁用,static:0");
 			}
+			principal=u.getUemail();
+			credentials =u.getUpassword();
 		}else{
 			throw new UnknownAccountException("msg:帐号不存在,static:0,");
 		}

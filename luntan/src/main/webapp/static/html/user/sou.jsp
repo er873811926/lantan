@@ -71,8 +71,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <shiro:authenticated>
       <li class="layui-nav-item">
         <a class="fly-nav-avatar" href="userSet/home.do">
-          <cite class="layui-hide-xs">上单</cite>
-          <img src="/luntan/static/res/images/userPhoto.png">
+          <cite class="layui-hide-xs">${currentNickName}</cite>
+          <img src="data:image/jpeg;base64,${uphoto}">
         </a>
         <dl class="layui-nav-child">
           <dd><a href="/luntan/static/html/user/set.jsp"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
@@ -289,14 +289,15 @@ layui.config({
 </script>
 </body>
 </html>
+<script src="/luntan/static/res/pyl.js"></script>
 <script type="text/javascript">
 
-//点击搜索
+/* //点击搜索
 $("#sou").click(function(){
 	var content =$("#soucontent").val();
 	if(content==""){return;}
 	window.location="pyl/souPosts.do?content="+content;
-});
+}); */
 
 
 

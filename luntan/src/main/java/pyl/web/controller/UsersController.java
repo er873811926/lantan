@@ -39,6 +39,7 @@ import pyl.service.ReplyService;
 import pyl.service.SmoduleService;
 import pyl.service.UserCollectService;
 import pyl.util.GetHttpIP;
+import pyl.util.ImageUtil;
 import pyl.util.MyMD5;
 import pyl.util.MyUUID;
 import pyl.util.Myutil;
@@ -119,6 +120,14 @@ public class UsersController {
 		user.setUsex("男");
 		user.setUaddress("");
 		user.setUmaxim("");
+		Subject subject=SecurityUtils.getSubject();
+		String path=request.getServletContext().getRealPath("/");
+		path+="static/res/images/userPhoto.png";
+		System.out.println(path);
+		String uphoto=ImageUtil.convertImageToByte(path, "png");
+		user.setUphoto(uphoto);
+		
+		
 		try{
 			userservice.addUsers(user);
 		}catch(Exception e){
@@ -172,7 +181,7 @@ public class UsersController {
 			map.put("uemail", uEmail);
 			List<Users> lists=userservice.findUsersByCondition(map);
 			subject.getSession().setAttribute("currentNickName", lists.get(0).getUnickname());
-//			subject.getSession().setAttribute("currentEmail", uEmail);
+			subject.getSession().setAttribute("uphoto", lists.get(0).getUphoto());
 			map.put("msg", "登录成功正在跳转...");
 			map.put("state", 1);
 			map.put("url", "pyl/lookIndex.do");
@@ -597,7 +606,7 @@ public class UsersController {
 					ucService.removeUserCollectById(uc.get(0).getCollectId());
 				}
 			}
-			postsService.updatePosts(map);
+//			postsService.updatePosts(map);
 			map.put("state", 9);
 		}
 				
