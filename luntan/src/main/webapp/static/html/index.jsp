@@ -27,7 +27,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  <link rel="stylesheet" href="/luntan/static/res/css/global.css">
 </head>
 
-<script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
+
 
 
 <body>
@@ -50,7 +50,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <ul class="layui-nav fly-nav-user">
       <%--搜索--%>
       <li class="layui-nav-item layui-hide-xs">
-      	<input id="soucontent" type="text" name="title" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
+      	<input id="soucontent" type="text" name="s" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
       </li>
       <li class="layui-nav-item layui-hide-xs">
         <div class="layui-btn" id="sou">
@@ -129,7 +129,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	<c:forEach items="${listpt}" var="pt" varStatus="vs">
         		<li>
 		            <a href="/luntan/userSet/home.do?uemail=${pt.uemail}" class="fly-avatar">
-		              <img uid="${pt.uemail}" onclick="loadphoto(this);" class="user_photo" src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+		              <img  class="user_photo" src="data:image/jpeg;base64,${pt.uphoto}" alt="贤心">
+		              <!-- <img  class="user_photo" src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心"> -->
 		            </a>
 		            <h2>
 		              <a class="layui-badge">${pt.smoduleName}</a>
@@ -177,7 +178,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	<c:forEach items="${listpa}" var="pa" varStatus="vs">
         		<li>
 		            <a href="userSet/home.do?uemail=${pa.uemail}" class="fly-avatar">
-		              <img uid="${pa.uemail}" onclick="loadphoto(this);" class="user_photo" src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+		               <img  class="user_photo" src="data:image/jpeg;base64,${pa.uphoto}" alt="贤心">
 		            </a>
 		            <h2>
 		              <a class="layui-badge">${pa.smoduleName}</a>
@@ -313,7 +314,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="fly-footer">
   <p><a href="http://fly.layui.com/" target="_blank">禹霖社区</a> 2020 &copy; <a href="http://www.layui.com/" target="_blank">jiandan 出品</a></p>
 </div>
- 
+ <script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
 <script src="/luntan/static/res/layui/layui.js"></script>
 <script src="/luntan/static/res/pyl.js"></script>
 <script>
@@ -337,6 +338,7 @@ layui.config({
 
 </body>
 </html>
+
 <script type="text/javascript">
 //
 	window.onload = function(){

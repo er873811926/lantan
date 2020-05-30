@@ -171,6 +171,8 @@ public class UsersSetController {
 		//查询该用户的帖子
 		map.put("postsNo", postsNo);
 		List<Posts> listp=postsService.findPostsByCondition(map);
+		listp=getPhoto(listp, userservice);
+		
 		Posts p1=listp.get(0);
 		map.put("pageView", p1.getPageView()+1);
 		postsService.updatePosts(map);
@@ -201,6 +203,10 @@ public class UsersSetController {
 		}
 		map=Myutil.fenPage(map, pageSize, pageNo);//分页
 		List<Reply> listrtop=replyService.findReplyByCondition(map);
+		//设置头像
+		listrtop=getReplyPhoto(listrtop, userservice);
+		
+		
 		int topnum=0;
 		if(!listrtop.isEmpty()){
 			topnum=listrtop.size();
@@ -220,6 +226,8 @@ public class UsersSetController {
 		map=Myutil.fenPage(map, pageSize, pageNo);//分页
 		map.put("desc", "");
 		List<Reply> listr=replyService.findReplyByCondition(map);
+		//设置头像
+		listr=getReplyPhoto(listr, userservice);
 		
 		//判断是否进入自己的帖子
 		String currentemail="";
@@ -269,8 +277,32 @@ public class UsersSetController {
 	}	
 	
 	
+	//方法展示头像
+	public List<Reply> getReplyPhoto(List<Reply> listp,UsersService userservice){
+		List<Reply> list=listp;
+		Map<String, Object> map=new HashMap<String, Object>();
+		for (Reply p : list) {
+			map.put("uemail", p.getUemail());
+			List<Users> listu=userservice.findUsersByCondition(map);
+			p.setUphoto(listu.get(0).getUphoto());
+//				System.out.println(p.getUphoto());
+		}
+		
+		return list;
+	}
 	
-	
-	
+	//方法展示头像
+		public List<Posts> getPhoto(List<Posts> listp,UsersService userservice){
+			List<Posts> list=listp;
+			Map<String, Object> map=new HashMap<String, Object>();
+			for (Posts p : list) {
+				map.put("uemail", p.getUemail());
+				List<Users> listu=userservice.findUsersByCondition(map);
+				p.setUphoto(listu.get(0).getUphoto());
+//				System.out.println(p.getUphoto());
+			}
+			
+			return list;
+		}
 	
 }

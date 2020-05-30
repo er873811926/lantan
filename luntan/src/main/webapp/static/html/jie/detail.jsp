@@ -36,13 +36,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <li class="layui-nav-item layui-this">
         <a href="pyl/lookIndex.do"><i class="iconfont icon-jiaoliu"></i>首页</a>
       </li>
-    
+      <shiro:hasRole name="admin">
+	      <li class="layui-nav-item layui-this">
+	        <a href="pyl/allUsers.do"><i class="iconfont layui-icon">&#xe62b;</i>管理</a>
+	      </li>
+      </shiro:hasRole>
     </ul>
     
     <ul class="layui-nav fly-nav-user">
-      
-      <!-- 未登入的状态 -->
-      <shiro:notAuthenticated> 
+      <%--搜索--%>
+      <li class="layui-nav-item layui-hide-xs">
+      	<input id="soucontent" type="text" name="s" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
+      </li>
+      <li class="layui-nav-item layui-hide-xs">
+        <div class="layui-btn" id="sou">
+        	<i class="layui-icon">&#xe615;</i>
+        </div> 
+      </li>     
+      <%-- 未登入的状态 --%>   
+	<shiro:notAuthenticated> 
       <li class="layui-nav-item">
         <a class="iconfont icon-touxiang layui-hide-xs" href="/luntan/static/html/user/login.jsp"></a>
       </li>
@@ -52,7 +64,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <li class="layui-nav-item">
         <a href="/luntan/static/html/user/reg.jsp">注册</a>
       </li>
-
     </shiro:notAuthenticated>
       
          <!-- 登入后的状态 -->
@@ -60,46 +71,45 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <li class="layui-nav-item">
         <a class="fly-nav-avatar" href="userSet/home.do">
           <cite class="layui-hide-xs">${currentNickName}</cite>
+          <%-- <img src="${uphoto}"> --%>
           <img src="data:image/jpeg;base64,${uphoto}">
         </a>
         <dl class="layui-nav-child">
-          <dd><a href="/luntan/static/html/user/set.jsp"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a href="/luntan/static/html/user/message.jsp"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-          <dd><a href="/luntan/static/html/user/home.jsp"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+          <dd><a href="pyl/playSet.do"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+          <dd><a href="pyl/userMessage.do"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+          <dd><a href="userSet/home.do"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
           <hr style="margin: 5px 0;">
           <dd><a href="logout.do" style="text-align: center;">退出</a></dd>
         </dl>
       </li>
        </shiro:authenticated>
-      </li>
+     
     </ul>
   </div>
 </div>
 
-<div class="layui-hide-xs">
-  <div class="fly-panel fly-column">
-    <div class="layui-container">
-      <ul class="layui-clear">
-	    <li class="layui-hide-xs layui-this"><a href="javascript:;">首页</a></li> 
-	    <li><a href="jie/index.html">提问</a></li> 
-	    <li><a href="jie/index.html">分享<span class="layui-badge-dot"></span></a></li> 
-	    <li><a href="jie/index.html">讨论</a></li> 
-	    <li><a href="jie/index.html">公告</a></li> 
-        <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li> 
-        
-        <!-- 用户登入后显示 -->
-        <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="../user/index.html">我发表的贴</a></li> 
-        <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="../user/index.html#collection">我收藏的贴</a></li> 
-      </ul> 
+<div class="fly-panel fly-column">
+  <div class="layui-container">
+    <ul class="layui-clear">
+      <li class="layui-hide-xs"><a href="pyl/morePosts.do">综合</a></li> 
+      <c:forEach items="${smodule}" var="s">
+               <li><a href="pyl/morePosts.do?sid=${s.smoduleId}&sname=${s.smoduleName}">${s.smoduleName }</a></li> 
+      </c:forEach>
+      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
       
-      <div class="fly-column-right layui-hide-xs"> 
-        <span class="fly-search"><i class="layui-icon"></i></span> 
-        <a href="add.html" class="layui-btn">发表新帖</a> 
-      </div> 
-      <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;"> 
-        <a href="add.html" class="layui-btn">发表新帖</a> 
-      </div> 
-    </div>
+      <!-- 用户登入后显示 -->
+       <shiro:authenticated>
+	      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="pyl/findMyPosts.do?state=0">我发表的贴</a></li> 
+	      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="pyl/findMyPosts.do?state=1">我收藏的贴</a></li> 
+       </shiro:authenticated>
+    </ul> 
+    
+    <div class="fly-column-right layui-hide-xs"> 
+      <a href="pyl/addPosts.do" class="layui-btn">发表新帖</a> 
+    </div> 
+    <!-- <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;"> 
+      <a href="" class="layui-btn">发表新帖</a> 
+    </div>  -->
   </div>
 </div>
 
@@ -150,7 +160,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </div>
         <div class="detail-about">
           <a class="fly-avatar" href="/luntan/userSet/home.do?uemail=${posts.uemail}">
-            <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+            <img  class="user_photo" src="data:image/jpeg;base64,${posts.uphoto}" alt="贤心">
           </a>
           <div class="fly-detail-user">
             <a href="../user/home.html" class="fly-link">
@@ -217,7 +227,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <a name="item-1111111111"></a>
             <div class="detail-about detail-about-reply">
               <a class="fly-avatar" href="/luntan/userSet/home.do?uemail=${top.uemail}">
-                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
+                <img  class="user_photo" src="data:image/jpeg;base64,${top.uphoto}" alt="贤心">
               </a>
               <div class="fly-detail-user">
                 <a href="/luntan/userSet/home.do?uemail=${top.uemail}" class="fly-link">
@@ -285,7 +295,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <a name="item-1111111111"></a>
             <div class="detail-about detail-about-reply">
               <a class="fly-avatar" href="/luntan/userSet/home.do?uemail=${r.uemail}">
-                <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt=" ">
+                <img  class="user_photo" src="data:image/jpeg;base64,${r.uphoto}" alt="贤心">
               </a>
               <div class="fly-detail-user">
                 <a href="/luntan/userSet/home.do?uemail=${r.uemail}" class="fly-link">

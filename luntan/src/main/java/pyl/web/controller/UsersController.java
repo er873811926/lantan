@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -296,11 +298,15 @@ public class UsersController {
 		map.put("desc", "");//倒叙
 		map=Myutil.fenPage(map, 12,1);
 		List<Posts> listpa=postsService.findPostsByCondition(map);//全部的
+		//设置头像
+		listpa=getPhoto(listpa, userservice);
 		
 		map.put("top", "1");
 		map.put("desc", "");//倒叙
 		map=Myutil.fenPage(map, 4,1);
 		List<Posts> listpt=postsService.findPostsByCondition(map);//置顶的
+		//设置头像
+		listpt=getPhoto(listpt, userservice);
 		
 		map.clear();//清空map
 		map.put("hot", "1");
@@ -662,6 +668,8 @@ public class UsersController {
 			pageNo=1;
 		}
 		List<Posts> listsou= postsService.findPostsByCondition(map);
+		//设置头像
+		listsou=getPhoto(listsou, userservice);
 		
 		model.addAttribute("numMax",numMax);
 		model.addAttribute("pageNo",pageNo);
@@ -672,6 +680,7 @@ public class UsersController {
 		return "forward:/static/html/user/sou.jsp";
 	}
 	
+	//自己发表的帖子
 	@RequestMapping("/findMyPosts.do")
 	public String findMyPosts(HttpServletRequest request,HttpServletResponse response,Model model){
 		Subject subject =SecurityUtils.getSubject();
@@ -693,7 +702,7 @@ public class UsersController {
 		return "forward:/static/html/user/index.jsp";
 	}
 	
-	
+	//展示基本设置
 	@RequestMapping("/playSet.do")
 	public String findMyCollect(HttpServletRequest request,HttpServletResponse response,Model model){
 		Subject subject =SecurityUtils.getSubject();
@@ -711,6 +720,7 @@ public class UsersController {
 	}
 	
 	
+	//修改个人设置
 	@RequestMapping("/setUser.do")
 	public @ResponseBody Map<String,Object> setUser(HttpServletRequest request,HttpServletResponse response,Model model){
 		Subject subject =SecurityUtils.getSubject();
@@ -745,7 +755,7 @@ public class UsersController {
 	}
 	
 	
-	
+	//更换头像
 	@RequestMapping("/updatePhoto.do")
 	public @ResponseBody Map<String,Object> uploadPhoto(HttpServletRequest request,HttpServletResponse response,Model model){
 		Subject subject =SecurityUtils.getSubject();
@@ -768,6 +778,8 @@ public class UsersController {
 		map.put("msg", "头像修改成功");
 		return map;
 	}
+	
+	//换密码
 	@RequestMapping("/updatePass.do")
 	public @ResponseBody Map<String,Object> updatePass(HttpServletRequest request,HttpServletResponse response,Model model){
 		Subject subject =SecurityUtils.getSubject();
@@ -834,7 +846,7 @@ public class UsersController {
 		return "forward:/static/html/user/message.jsp";
 	}	
 	
-	
+	//清空消息
 	@RequestMapping("/clearAllMsg.do")
 	public @ResponseBody Map<String, Object> clearAllMsg(HttpServletRequest request,Model model){
 		Subject subject=SecurityUtils.getSubject(); 
@@ -855,6 +867,7 @@ public class UsersController {
 		return map;
 	}
 	
+	//删除一条消息
 	@RequestMapping("/clearOneMsg.do")
 	public @ResponseBody Map<String, Object> clearOneMsg(HttpServletRequest request,Model model){
 		Subject subject=SecurityUtils.getSubject(); 
@@ -908,7 +921,6 @@ public class UsersController {
 		}
 		
 		
-		
 		int pageNo=1;
 		int pageSize=10;
 		if(smoduleName!=null){
@@ -926,12 +938,15 @@ public class UsersController {
 		map=Myutil.fenPage(map, pageSize, pageNo);//分页
 		map.put("desc", "");
 		List<Posts> listp=postsService.findPostsByCondition(map);
+		//设置头像
+		listp=getPhoto(listp, userservice);
+		
 		
 		map.clear();
 		map.put("hot", "1");
 		map.put("desc", "");//倒叙
 		map=Myutil.fenPage(map, 10,1);
-		List<Posts> listph=postsService.findPostsByCondition(map);//置顶的
+		List<Posts> listph=postsService.findPostsByCondition(map);//精华贴的
 		
 		
 		model.addAttribute("listph",listph);
@@ -943,24 +958,15 @@ public class UsersController {
 	}	
 	
 	
-	//更多帖子
-	@RequestMapping("/loadphoto.do")
-	public @ResponseBody Map<String, Object> loadphoto(HttpServletRequest request,Model model){
-		Map<String, Object> map=new HashMap<String, Object>();
-		String uemail=request.getParameter("uemail");
-		map.put("uemail", uemail);
-		List<Users> listu=userservice.findUsersByCondition(map);
-		map.clear();
-		System.out.println(listu.get(0).getUemail());
-		map.put("uphoto", listu.get(0).getUphoto());
-		
-		return map;
-	}	
+	
 	
 	@RequestMapping("/allUsers.do")
 	public String allUsers(HttpServletRequest request,Model model){
 		Subject subject =SecurityUtils.getSubject();
 		Map<String,Object> map=new HashMap<String, Object>();
+		if(!subject.isAuthenticated()){
+			return "redirect:pyl/lookIndex.do";
+		}
 		if(!subject.hasRole("admin")){
 			return "redirect:pyl/lookIndex.do";
 		}
@@ -1044,6 +1050,9 @@ public class UsersController {
 	public String allPosts(HttpServletRequest request,Model model){
 		Subject subject =SecurityUtils.getSubject();
 		Map<String,Object> map=new HashMap<String, Object>();
+		if(!subject.isAuthenticated()){
+			return "redirect:pyl/lookIndex.do";
+		}
 		if(!subject.hasRole("admin")){
 			return "redirect:pyl/lookIndex.do";
 		}
@@ -1093,42 +1102,54 @@ public class UsersController {
 		return map;
 	}	
 //	
-//	//搜索用户
-//	@RequestMapping("/searchUsers.do")
-//	public  String searchUsers(HttpServletRequest request,Model model){
-//		Subject subject =SecurityUtils.getSubject();
-//		Map<String,Object> map=new HashMap<String, Object>();
-//		if(!subject.hasRole("admin")){
-//			return "redirect:pyl/lookIndex.do";
-//		}
-//		String searchname=request.getParameter("name");
-//		String searchuemail=request.getParameter("email");
-//		
-//		map.put("uemail", searchuemail);
-//		map.put("unickname", searchname);
-//		int pageNo=1;
-//		int pageSize=8;
-//		int pageMax=userservice.findUsersMaxNum(map);
-//		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
-//		try {
-//			pageNo=Integer.parseInt(request.getParameter("pageNo"));
-//		} catch (Exception e) {
-//			// TODO: handle exception
-//			pageNo=1;
-//		}
-//		if(pageNo>pageMax)pageNo=pageMax;
-//		map=Myutil.fenPage(map, pageSize, pageNo);//分页
-//		map.put("desc", "");
-//		map.put("uemaillike", "");
-//		List<Users> listu=userservice.findUsersByCondition(map);
-//		map.clear();
-//		model.addAttribute("currentemail", subject.getPrincipal().toString());
-//		model.addAttribute("pageNo", pageNo);
-//		model.addAttribute("pageMax", pageMax);
-//		model.addAttribute("listu", listu);
-//		model.addAttribute("searchname", searchname);
-//		model.addAttribute("searchuemail", searchuemail);
-//		return "forward:/static/html/user/admini-users.jsp";
-//	}	
+//	//搜索帖子
+	@RequestMapping("/searchPosts.do")
+	public  String searchPosts(HttpServletRequest request,Model model){
+		Subject subject =SecurityUtils.getSubject();
+		Map<String,Object> map=new HashMap<String, Object>();
+		
+		if(!subject.hasRole("admin")){
+			return "redirect:pyl/lookIndex.do";
+		}
+		
+		String postsTitle=request.getParameter("postsTitle");
+		map.put("postsTitle", postsTitle);
+		int pageNo=1;
+		int pageSize=8;
+		int pageMax=postsService.findPostsMaxNum(map);
+		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
+		try {
+			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+		} catch (Exception e) {
+			// TODO: handle exception
+			pageNo=1;
+		}
+		if(pageNo>pageMax)pageNo=pageMax;
+		map=Myutil.fenPage(map, pageSize, pageNo);//分页
+		map.put("desc", "");
+		map.put("postsTitle", postsTitle);
+		List<Posts> listp=postsService.findPostsByCondition(map);
+		map.clear();
+		model.addAttribute("currentemail", subject.getPrincipal().toString());
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("pageMax", pageMax);
+		model.addAttribute("listp", listp);
+		model.addAttribute("postsTitle", postsTitle);
+		return "forward:/static/html/user/admini-posts.jsp";
+	}	
 	
+	
+	//方法展示头像
+	public List<Posts> getPhoto(List<Posts> listp,UsersService userservice){
+		List<Posts> list=listp;
+		Map<String, Object> map=new HashMap<String, Object>();
+		for (Posts p : list) {
+			map.put("uemail", p.getUemail());
+			List<Users> listu=userservice.findUsersByCondition(map);
+			p.setUphoto(listu.get(0).getUphoto());
+//			System.out.println(p.getUphoto());
+		}
+		
+		return list;
+	}
 }

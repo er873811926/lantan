@@ -232,7 +232,7 @@ function yanzhengma(){
 function formjiance(){
 	var flag=true;
 	$("input[type='text']").each(function(i){
-		var input=$("input").eq(i);
+		var input=$("input[name!='s']").eq(i);
 		if($(input).val()==""){
 			flag=false;
 			$(input).css("border-color","red");

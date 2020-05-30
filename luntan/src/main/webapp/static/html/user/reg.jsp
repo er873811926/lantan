@@ -38,7 +38,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <ul class="layui-nav fly-nav-user">
        <%--搜索--%>
       <li class="layui-nav-item layui-hide-xs">
-      	<input id="soucontent" type="text" name="title" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
+      	<input id="soucontent" type="text" name="s" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
       </li>
       <li class="layui-nav-item layui-hide-xs">
         <div class="layui-btn" id="sou">

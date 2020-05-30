@@ -4,5 +4,4 @@ $("#sou").click(function(){
 	if(souword==""){return;}
 	window.location="pyl/souPosts.do?souword="+souword;
 
-
 });

@@ -618,7 +618,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
     ,click: function(type){
       if(type === 'bar1'){
         /*layer.msg('打开 index.js，开启发表新帖的路径');*/
-        location.href = '/luntan/static/html/jie/add.jsp';
+        location.href = 'pyl/addPosts.do';
       }
     }
   });

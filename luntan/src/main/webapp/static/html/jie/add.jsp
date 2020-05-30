@@ -37,7 +37,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </li>
       <shiro:hasRole name="admin">
 	      <li class="layui-nav-item layui-this">
-	        <a href="/luntan/static/html/user/admini-users.jsp"><i class="iconfont layui-icon">&#xe62b;</i>管理</a>
+	        <a href="pyl/allUsers.do"><i class="iconfont layui-icon">&#xe62b;</i>管理</a>
 	      </li>
       </shiro:hasRole>
     </ul>
@@ -45,16 +45,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <ul class="layui-nav fly-nav-user">
       <%--搜索--%>
       <li class="layui-nav-item layui-hide-xs">
-      	<input id="soucontent" type="text" name="title" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
+      	<input id="soucontent" type="text" name="s" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
       </li>
       <li class="layui-nav-item layui-hide-xs">
         <div class="layui-btn" id="sou">
         	<i class="layui-icon">&#xe615;</i>
         </div> 
-      </li>
-      
-      <!-- 未登入的状态 -->
-     
+      </li>     
+      <%-- 未登入的状态 --%>   
 	<shiro:notAuthenticated> 
       <li class="layui-nav-item">
         <a class="iconfont icon-touxiang layui-hide-xs" href="/luntan/static/html/user/login.jsp"></a>
@@ -65,7 +63,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <li class="layui-nav-item">
         <a href="/luntan/static/html/user/reg.jsp">注册</a>
       </li>
-
     </shiro:notAuthenticated>
       
          <!-- 登入后的状态 -->
@@ -77,9 +74,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <img src="data:image/jpeg;base64,${uphoto}">
         </a>
         <dl class="layui-nav-child">
-          <dd><a href="/luntan/static/html/user/set.jsp"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a href="/luntan/static/html/user/message.jsp"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-          <dd><a href="/luntan/static/html/user/home.jsp"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+          <dd><a href="pyl/playSet.do"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+          <dd><a href="pyl/userMessage.do"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+          <dd><a href="userSet/home.do"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
           <hr style="margin: 5px 0;">
           <dd><a href="logout.do" style="text-align: center;">退出</a></dd>
         </dl>
@@ -89,6 +86,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </ul>
   </div>
 </div>
+
 <div class="layui-container fly-marginTop">
   <div class="fly-panel" pad20 style="padding-top: 5px;">
   <!-- 是否已经登录 -->

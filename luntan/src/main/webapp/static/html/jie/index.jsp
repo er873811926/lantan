@@ -36,7 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </li>
       <shiro:hasRole name="admin">
 	      <li class="layui-nav-item layui-this">
-	        <a href="/luntan/static/html/user/admini-users.jsp"><i class="iconfont layui-icon">&#xe62b;</i>管理</a>
+	        <a href="pyl/allUsers.do"><i class="iconfont layui-icon">&#xe62b;</i>管理</a>
 	      </li>
       </shiro:hasRole>
     </ul>
@@ -44,7 +44,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <ul class="layui-nav fly-nav-user">
       <%--搜索--%>
       <li class="layui-nav-item layui-hide-xs">
-      	<input id="soucontent" type="text" name="title" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
+      	<input id="soucontent" type="text" name="s" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
       </li>
       <li class="layui-nav-item layui-hide-xs">
         <div class="layui-btn" id="sou">
@@ -89,23 +89,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="fly-panel fly-column">
   <div class="layui-container">
     <ul class="layui-clear">
-   	  <c:if test="${smoduleName eq '综合'}">
-         <li class="layui-hide-xs layui-this"><a href="pyl/morePosts.do">综合</a></li>	
-      </c:if>
-   	  <c:if test="${smoduleName ne '综合'}">
-         <li class="layui-hide-xs"><a href="pyl/morePosts.do">综合</a></li>	
-      </c:if>
+    	<c:if test="${smoduleName eq '综合'}">
+    	  <li class="layui-hide-xs layui-this"><a href="pyl/morePosts.do">综合</a></li> 
+    	</c:if>
+    	<c:if test="${smoduleName ne '综合'}">
+    	  <li class="layui-hide-xs"><a href="pyl/morePosts.do">综合</a></li> 
+    	</c:if>
+    	<c:if test=""></c:if>
+    	<c:if test=""></c:if>
+    	<c:if test=""></c:if>
       <c:forEach items="${lists}" var="s">
-      			<c:if test="${smoduleName eq s.smoduleName}">
-              	 <li class="layui-hide-xs  layui-this" ><a href="pyl/morePosts.do?sid=${s.smoduleId}&sname=${s.smoduleName}">${s.smoduleName }</a></li> 
-               </c:if>
-      			<c:if test="${smoduleName ne s.smoduleName}">
-              	 <li class="layui-hide-xs" ><a href="pyl/morePosts.do?sid=${s.smoduleId}&sname=${s.smoduleName}">${s.smoduleName }</a></li> 
-               </c:if>
+		    	<c:if test="${smoduleName eq s.smoduleName}">
+             	  <li class="layui-hide-xs layui-this"><a href="pyl/morePosts.do?sid=${s.smoduleId}&sname=${s.smoduleName}">${s.smoduleName }</a></li> 
+		    	</c:if>
+		    	<c:if test="${smoduleName ne s.smoduleName}">
+             	  <li class="layui-hide-xs"><a href="pyl/morePosts.do?sid=${s.smoduleId}&sname=${s.smoduleName}">${s.smoduleName }</a></li> 
+		    	</c:if>
       </c:forEach>
-      
-      
       <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
+      
       <!-- 用户登入后显示 -->
        <shiro:authenticated>
 	      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="pyl/findMyPosts.do?state=0">我发表的贴</a></li> 
@@ -122,13 +124,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </div>
 </div>
 
+
 <div class="layui-container">
   <div class="layui-row layui-col-space15">
     <div class="layui-col-md8">
       <div class="fly-panel" style="margin-bottom: 0;">
         
         <div class="fly-panel-title fly-filter">
-          <a href="" class="layui-this">${smoduleName}</a>
+          <a class="layui-this">${smoduleName}</a>
           <span class="fly-filter-right layui-hide-xs">
             <a href="" class="layui-this">按最新</a>
             <span class="fly-mid"></span>
@@ -144,7 +147,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         		</c:if>
         		<li>
 		            <a href="userSet/home.do?uemail=${pt.uemail}" class="fly-avatar">
-		              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+		              <img  class="user_photo" src="data:image/jpeg;base64,${pt.uphoto}" alt="贤心">
 		            </a>
 		            <h2>
 		              <a class="layui-badge">${pt.smoduleName}</a>
@@ -250,8 +253,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="fly-footer">
   <p><a href="" target="_blank">禹霖社区</a> 2017 &copy; <a href="" target="_blank">yulin 出品</a></p>
 </div>
-
+<script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
 <script src="/luntan/static/res/layui/layui.js"></script>
+<script src="/luntan/static/res/pyl.js"></script>
 <script>
 layui.cache.page = 'jie';
 layui.cache.user = {

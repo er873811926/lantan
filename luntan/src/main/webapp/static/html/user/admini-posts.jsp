@@ -25,9 +25,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<link rel="stylesheet" href="/luntan/static/res/css/global.css">
 	</head>
 
-	<body>
+<body>
 
-		<div class="fly-header layui-bg-black">
+<div class="fly-header layui-bg-black">
   <div class="layui-container">
     <a class="fly-logo" href="pyl/lookIndex.do">
       <img src="/luntan/static/res/images/logo.png" alt="layui">
@@ -38,7 +38,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </li>
       <shiro:hasRole name="admin">
 	      <li class="layui-nav-item layui-this">
-	        <a href="/luntan/static/html/user/admini-users.jsp"><i class="iconfont layui-icon">&#xe62b;</i>管理</a>
+	        <a href="pyl/allUsers.do"><i class="iconfont layui-icon">&#xe62b;</i>管理</a>
 	      </li>
       </shiro:hasRole>
     </ul>
@@ -46,16 +46,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <ul class="layui-nav fly-nav-user">
       <%--搜索--%>
       <li class="layui-nav-item layui-hide-xs">
-      	<input id="soucontent" type="text" name="title" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
+      	<input id="soucontent" type="text" name="s" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
       </li>
       <li class="layui-nav-item layui-hide-xs">
         <div class="layui-btn" id="sou">
         	<i class="layui-icon">&#xe615;</i>
         </div> 
-      </li>
-      
-      <!-- 未登入的状态 -->
-     
+      </li>     
+      <%-- 未登入的状态 --%>   
 	<shiro:notAuthenticated> 
       <li class="layui-nav-item">
         <a class="iconfont icon-touxiang layui-hide-xs" href="/luntan/static/html/user/login.jsp"></a>
@@ -66,7 +64,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <li class="layui-nav-item">
         <a href="/luntan/static/html/user/reg.jsp">注册</a>
       </li>
-
     </shiro:notAuthenticated>
       
          <!-- 登入后的状态 -->
@@ -78,9 +75,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
           <img src="data:image/jpeg;base64,${uphoto}">
         </a>
         <dl class="layui-nav-child">
-          <dd><a href="/luntan/static/html/user/set.jsp"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a href="/luntan/static/html/user/message.jsp"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-          <dd><a href="/luntan/static/html/user/home.jsp"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+          <dd><a href="pyl/playSet.do"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+          <dd><a href="pyl/userMessage.do"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+          <dd><a href="userSet/home.do"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
           <hr style="margin: 5px 0;">
           <dd><a href="logout.do" style="text-align: center;">退出</a></dd>
         </dl>
@@ -96,7 +93,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<ul class="layui-nav layui-nav-tree layui-inline" lay-filter="user">
 				
 				<li class="layui-nav-item " >
-					<a href="/luntan/static/html/user/admini-users.jsp">
+					<a href="pyl/allUsers.do">
 						<i class="layui-icon">&#xe613;</i> 用户管理
 					</a>
 				</li>
@@ -123,7 +120,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<div class="layui-form-item">
 					    
 					    <div class="layui-input-inline">
-					      <input type="text" name="title" required  lay-verify="required" placeholder="请输入帐号或者昵称" autocomplete="off" class="layui-input">
+					      <input type="text" id="postsTitle" value="${postsTitle}" placeholder="请输入帖子标题"  class="layui-input">
 					    </div>
 					    <div class="layui-btn" id="mysearch">
 					    	搜索<i class="layui-icon">&#xe615;</i>
@@ -153,8 +150,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<tbody>
 								<c:forEach items="${listp}" var="p">
 								<tr>
-									<td class="email">${p.unickname}</td>
-									<td class="postsNo" value="${p.postsNo}"><a href="">${p.postsTitle}</a></td>
+									<td class="email"><a href="userSet/home.do?uemail=${p.uemail}">${p.unickname}</a></td>
+									<td class="postsNo" postsname="${p.postsTitle}" value="${p.postsNo}"><a href="userSet/detail.do?postsNo=${p.postsNo}&uemail=${p.uemail}">${p.postsTitle}</a></td>
 									<td value="${p.smoduleId}">${p.smoduleName}</td>
 									<c:if test="${p.top eq 0}">
 										<td><div class="layui-btn pyl_top" value="1">置顶</div></td>
@@ -229,9 +226,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 
 </html>
-<script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
-
-
+<script src="/luntan/static/res/pyl.js"></script>
 <script type="text/javascript">
 	var flag=false;
 	$(".pyl_hot").each(function(i){
@@ -245,9 +240,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			if(confirm('是否加精：'+postsname)){
 				if(hot==1){
 					$(this).attr("value",0);
-					$(this).html("加精");
-				}else{
 					$(this).html("取消加精");
+				}else{
+					$(this).html("加精");
 					$(this).attr("value",1);
 				}
 				$.ajax({
@@ -270,16 +265,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			if(flag){return;}
 			flag=true;
 			var postsNo=$(this).parent().siblings(".postsNo").attr("value");
-			var postsname=$(this).parent().siblings(".email").html();
+			var postsname=$(this).parent().siblings(".postsNo").attr("postsname");
 			var top=$(this).attr("value");
 			
 			if(confirm('是否置顶：'+postsname)){
-				if(hot==1){
-					$(this).attr("value",0);
+				if(top==0){
+					$(this).attr("value",1);
 					$(this).html("置顶");
 				}else{
 					$(this).html("取消置顶");
-					$(this).attr("value",1);
+					$(this).attr("value",0);
 				}
 				$.ajax({
 					url:'pyl/topPosts.do',
@@ -298,4 +293,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	})
 	
 	
+	//搜索点击
+	$("#mysearch").click(function(){
+		var postsTitle=$("#postsTitle").val();
+		if(postsTitle==""){
+			window.location="pyl/allPosts.do";
+		}else{
+			window.location="pyl/searchPosts.do?postsTitle="+postsTitle;
+		}
+	});
 </script>
