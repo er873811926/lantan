@@ -26,6 +26,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  <link rel="stylesheet" href="/luntan/static/res/layui/css/layui.css">
 	  <link rel="stylesheet" href="/luntan/static/res/css/global.css">
 </head>
+
+<script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
+
+
 <body>
 <div class="fly-header layui-bg-black">
   <div class="layui-container">
@@ -38,7 +42,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </li>
       <shiro:hasRole name="admin">
 	      <li class="layui-nav-item layui-this">
-	        <a href="/luntan/static/html/user/admini-users.jsp"><i class="iconfont layui-icon">&#xe62b;</i>管理</a>
+	        <a href="pyl/allUsers.do"><i class="iconfont layui-icon">&#xe62b;</i>管理</a>
 	      </li>
       </shiro:hasRole>
     </ul>
@@ -91,9 +95,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="fly-panel fly-column">
   <div class="layui-container">
     <ul class="layui-clear">
-      <li class="layui-hide-xs layui-this"><a href="">首页</a></li> 
+      <li class="layui-hide-xs"><a href="pyl/morePosts.do">综合</a></li> 
       <c:forEach items="${smodule}" var="s">
-               <li><a href="/luntan/static/html/jie/index.jsp?sid=${s.smoduleId}">${s.smoduleName }</a></li> 
+               <li><a href="pyl/morePosts.do?sid=${s.smoduleId}&sname=${s.smoduleName}">${s.smoduleName }</a></li> 
       </c:forEach>
       <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
       
@@ -125,7 +129,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	<c:forEach items="${listpt}" var="pt" varStatus="vs">
         		<li>
 		            <a href="/luntan/userSet/home.do?uemail=${pt.uemail}" class="fly-avatar">
-		              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+		              <img uid="${pt.uemail}" onclick="loadphoto(this);" class="user_photo" src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
 		            </a>
 		            <h2>
 		              <a class="layui-badge">${pt.smoduleName}</a>
@@ -153,48 +157,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		          </li>
         	
         	</c:forEach>
-          <%-- <li>
-            <a href="/luntan/static/html/user/home.jsp" class="fly-avatar">
-              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
-            </a>
-            <h2>
-              <a class="layui-badge">动态</a>
-              <a href="/luntan/static/html/jie/detail.jsp"> 你的帖子也写得太好了</a>
-            </h2>
-            <div class="fly-list-info">
-              <a href="user/home.html" link>
-                <cite>贤心</cite>
-                <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
-               <!-- <i class="layui-badge fly-badge-vip">VIP3</i>-->
-              </a>
-              <span>刚刚</span>
-              
-              <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> 60</span>
-              <span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
-              <span class="fly-list-nums"> 
-                <i class="iconfont icon-pinglun1" title="回答"></i> 66
-              </span>
-            </div>
-            <div class="fly-list-badge">
-              <!--
-              <span class="layui-badge layui-bg-black">置顶</span>
-              <span class="layui-badge layui-bg-red">精帖</span>
-              -->
-            </div>
-          </li>
-          --%>
+          
         </ul>
       </div>
 
       <div class="fly-panel" style="margin-bottom: 0;">
-        
         <div class="fly-panel-title fly-filter">
           <a href="" class="layui-this">综合</a>
           <span class="fly-mid"></span>
-         <%--  <a href="">未结</a>
-          <span class="fly-mid"></span>
-          <a href="">已结</a>
-          <span class="fly-mid"></span> --%>
           <span class="fly-filter-right layui-hide-xs">
             <a href="" class="layui-this">按最新</a>
             <span class="fly-mid"></span>
@@ -204,31 +174,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
         <ul class="fly-list"> 
 			<%-- 循环放置帖子信息--%>
-        	<c:forEach items="${listpa}" var="pt" varStatus="vs">
+        	<c:forEach items="${listpa}" var="pa" varStatus="vs">
         		<li>
-		            <a href="userSet/home.do?uemail=${pt.uemail}" class="fly-avatar">
-		              <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
+		            <a href="userSet/home.do?uemail=${pa.uemail}" class="fly-avatar">
+		              <img uid="${pa.uemail}" onclick="loadphoto(this);" class="user_photo" src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
 		            </a>
 		            <h2>
-		              <a class="layui-badge">${pt.smoduleName}</a>
-		              <a href="userSet/detail.do?postsNo=${pt.postsNo}&uemail=${pt.uemail}">${pt.postsTitle}</a>
+		              <a class="layui-badge">${pa.smoduleName}</a>
+		              <a href="userSet/detail.do?postsNo=${pa.postsNo}&uemail=${pa.uemail}">${pa.postsTitle}</a>
 		            </h2>
 		            <div class="fly-list-info">
-		              <a href="userSet/home.do?uemail=${pt.uemail}" link>
-		                <cite>${pt.unickname}</cite>
+		              <a href="userSet/home.do?uemail=${pa.uemail}" link>
+		                <cite>${pa.unickname}</cite>
 		              </a>
-		              <span>${pt.uptime}</span>
+		              <span>${pa.uptime}</span>
 		              
-		              <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i>${pt.reward}</span>
+		              <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i>${pa.reward}</span>
 		              <span class="fly-list-nums"> 
-		                <i class="iconfont icon-pinglun1" title="回复"></i>${pt.replyNum}
+		                <i class="iconfont icon-pinglun1" title="回复"></i>${pa.replyNum}
 		              </span>
 		            </div>
 		            <div class="fly-list-badge">
 		              <%--
 		              <span class="layui-badge layui-bg-black">置顶</span>
 		              --%>
-		              <c:if test="${pt.hot eq '1'}">
+		              <c:if test="${pa.hot eq '1'}">
 		              	<span class="layui-badge layui-bg-red">精帖</span>
 		              </c:if>
 		            </div>
@@ -238,7 +208,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         </ul>
         <div style="text-align: center">
           <div class="laypage-main">
-            <a href="jie/index.html" class="laypage-next">更多求解</a>
+            <a href="pyl/morePosts.do" class="laypage-next">更多求解</a>
           </div>
         </div>
 
@@ -246,30 +216,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
     <div class="layui-col-md4">
 
-      <!-- <div class="fly-panel">
+      <%-- <div class="fly-panel">
         <h3 class="fly-panel-title">温馨通道</h3>
         <ul class="fly-panel-main fly-list-static">
           <li>
             <a href="http://fly.layui.com/jie/4281/" target="_blank"> 帖子好 及 Gitee (码云) 仓库，欢迎Star</a>
           </li>
-          <li>
-            <a href="http://fly.layui.com/jie/5366/" target="_blank">
-               帖子好问题的处理和实用干货集锦
-            </a>
-          </li>
-          <li>
-            <a href="http://fly.layui.com/jie/4281/" target="_blank"> 帖子好 及 Gitee (码云) 仓库，欢迎Star</a>
-          </li>
-          <li>
-            <a href="http://fly.layui.com/jie/5366/" target="_blank">
-               帖子好问题的处理和实用干货集锦
-            </a>
-          </li>
-          <li>
-            <a href="http://fly.layui.com/jie/4281/" target="_blank"> 帖子好 及 Gitee (码云) 仓库，欢迎Star</a>
-          </li>
         </ul>
-      </div> -->
+      </div> --%>
 
 
       <div class="fly-panel fly-signin">
@@ -361,7 +315,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
  
 <script src="/luntan/static/res/layui/layui.js"></script>
-<script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
 <script src="/luntan/static/res/pyl.js"></script>
 <script>
 layui.cache.page = 'user';
@@ -426,16 +379,24 @@ layui.config({
 		});
 	
 	
-	});
+	}); 
+	
+window.onload(function(){
+    $('.user_photo').trigger("click");
+});
 
-/* //点击搜索
-$("#sou").click(function(){
-	var souword =$("#soucontent").val();
-	if(souword==""){return;}
-	window.location="pyl/souPosts.do?souword="+souword;
-
-
-}); */
-
+ //加载头像
+function loadphoto(i){
+		var uemail=$(i).attr("uemail");
+		$.ajax({
+			url:'pyl/loadphoto.do',
+			type:'post',
+			dataType:'json',
+			data:{"uemail":uemail},
+			success:function(data){
+				$(img).attr("src",'data:image/jpeg;base64,'+data.uphoto);
+			}
+		});
+}
 
 </script>

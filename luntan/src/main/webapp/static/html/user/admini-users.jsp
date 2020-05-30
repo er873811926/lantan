@@ -1,4 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -152,24 +154,44 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								</tr>
 							</thead>
 							<tbody>
+								<c:forEach items="${listu}" var="us">
+								<c:if test="${us.uemail ne currentemail}">
 								<tr>
-									<td class="uname">贤心的风风光光和见解</td>
-									<td>2016-11-29</td>
-									<td>2016-11-29</td>
-									<td>人生就像是一场修行</td>
-									<td><div class="layui-btn pyl_ban" value="0">禁用</div></td>
+									<td class="uname">${us.unickname}</td>
+									<td class="uemail">${us.uemail}</td>
+									<td>${us.logintime}</td>
+									<td>${us.umaxim}</td>
+									<c:if test="${us.ban eq 0}">
+									<td><div class="layui-btn pyl_ban" value="1">禁用</div></td>
+									</c:if>
+									<c:if test="${us.ban eq 1}">
+									<td><div class="layui-btn pyl_ban" value="0">启用</div></td>
+									</c:if>
 								</tr>
-								<tr>
-									<td>许闲心</td>
-									<td>2016-11-28</td>
-									<td>2016-11-28</td>
-									<td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
-									<td><div class="layui-btn pyl_ban" value="1">启用</div></td>
-								</tr>
-								
-								
+								</c:if>
+								</c:forEach>
 							</tbody>
 						</table>
+						<center class="">
+				            <div class="layui-btn  layui-btn-xs" id="prepage">
+							  <i class="layui-icon">&#xe603;</i>
+							</div>
+							<div class="layui-inline">
+							<select id="changepage">
+								 <c:forEach begin="1" end="${pageMax}" var="a">
+								 	<c:if test="${pageNo eq a}">
+									  <option value="${a}" selected>${a}</option>
+								 	</c:if>
+								 <c:if test="${pageNo ne a}">
+									  <option value="${a}">${a}</option>
+								  </c:if>
+								 </c:forEach>
+							</select>  
+							</div>
+							<div class="layui-btn  layui-btn-xs" id="nextpage">
+							  <i class="layui-icon">&#xe602;</i>
+							</div>
+				      	 </center> 
 					</div>
 				</div>
 			</div>
@@ -210,16 +232,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</body>
 
 </html>
-<script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
+
 <script type="text/javascript">
 	$(".pyl_ban").each(function(i){
 		$(".pyl_ban").eq(i).click(function(){
-			
 			var name=$(this).parent().siblings(".uname").html();
-			
+			var uemail=$(this).parent().siblings(".uemail").html();
+			var ban=$(this).attr("value");
 			if(confirm('是否禁用用户：'+name)){
-				$(this).html("启用");
-//				$(this).parent().parent().remove();
+				$.ajax({
+					url:'pyl/banUser.do',
+					type:'post',
+					dataType:'json',
+					data:{"uemail":uemail,"ban":ban},
+					success:function(data){
+						if(data.state==0){
+							$(this).html("禁用");
+							$(this).attr("value",1);
+						}
+						if(data.state==1){
+							$(this).html("启用");
+							$(this).attr("value",0);
+						}
+					}
+				
+				});
 						
 			}
 		})

@@ -17,4 +17,5 @@ public interface UsersMapper {
 	public void insertUsers(Users u);
 	public void updateUsers(Map<String,Object> map);
 	public void deleteUsersById(int id );
+	public int findUsersMaxNum(Map<String,Object> map);
 }

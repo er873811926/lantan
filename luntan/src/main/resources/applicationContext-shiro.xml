@@ -96,7 +96,6 @@
                 /pyl/*.do = anon
                 /userSet/*.do = anon
                /logout.do = logout
-                
                 /static/html/user/admini-posts.jsp =roles[admin]
                 /static/html/user/admini-users.jsp =roles[admin]
                 # everything else requires authentication:

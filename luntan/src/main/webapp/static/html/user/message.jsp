@@ -206,7 +206,6 @@ layui.config({
 <script src="/luntan/static/res/pyl.js"></script>
 <script type="text/javascript">
 
-
 function myajax(seturl,setdata){
 		var rurl=seturl;
 		var rdata=setdata;
@@ -221,6 +220,10 @@ function myajax(seturl,setdata){
 					}
 					if(data.state==1){
 						alert(data.msg);
+						location.reload();
+					}
+					if(data.state==2){
+						location.reload();
 					}
 				},	
 		});
@@ -243,4 +246,32 @@ function clearOneMsg(id){
 	}
 }
 
+
+$("#changepage").change(function(){
+ 	//获取被选中的option标签
+ 	var vs = $('select  option:selected').val();
+ 	window.location="userSet/detail.do?&uemail="+postsuemali+"&pageNo="+vs;
+})
+
+//下一页
+$("#nextpage").click(function(){
+	console.log("xx");
+	pageNo=Number(pageNo)+1;
+	if(pageNo>pageMax){
+		pageNo=pageMax;
+		return;
+	}
+	window.location="userSet/detail.do?pageNo="+pageNo+"&uemail="+postsuemali;
+})
+
+//上一页
+$("#prepage").click(function(){
+	pageNo=Number(pageNo)-1;
+	
+	if(pageNo<=0){
+		pageNo=1;
+		return;
+	}
+	window.location="userSet/detail.do?pageNo="+pageNo+"&uemail="+postsuemali;
+})
 </script>

@@ -87,7 +87,7 @@
     
     <!-- 查询该用户消息总数 -->
     <select id="findUserMessageMaxNum" resultType="_int" parameterType="map">
-        SELECT COUNT(uemail) FROM REPLY WHERE 1=1
+        SELECT COUNT(uemail) FROM USER_MESSAGE WHERE 1=1
         <if test="uemail != null and uemail != ''">
             AND uemail = #{uemail}
         </if>

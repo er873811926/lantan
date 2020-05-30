@@ -52,4 +52,10 @@ public class UsersServiceImpl implements UsersService{
 		usersmapper.deleteUsersById(id);
 	}
 
+	@Override
+	public int findUsersMaxNum(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return usersmapper.findUsersMaxNum(map);
+	}
+
 }

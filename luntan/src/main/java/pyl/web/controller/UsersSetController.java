@@ -192,6 +192,13 @@ public class UsersSetController {
 		//查询所有置顶的
 		map.put("top", 1);
 		map.put("postsNo", postsNo);
+		try {
+			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			pageNo=1;
+		}
 		map=Myutil.fenPage(map, pageSize, pageNo);//分页
 		List<Reply> listrtop=replyService.findReplyByCondition(map);
 		int topnum=0;
@@ -200,14 +207,7 @@ public class UsersSetController {
 			pageMax-=topnum;
 		}
 		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
-		
-		try {
-			pageNo=Integer.parseInt(request.getParameter("pageNo"));
-			if(pageNo>pageMax)pageNo=pageMax;
-		} catch (Exception e) {
-			// TODO: handle exception
-			pageNo=1;
-		}
+		if(pageNo>pageMax)pageNo=pageMax;
 		
 		map.clear();
 		map.put("top", "0");

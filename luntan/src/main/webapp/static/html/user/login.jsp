@@ -192,7 +192,7 @@ layui.config({
 					layer.msg(data.msg, {shift: 3,icon:1});
 					setTimeout(function(){
 						window.location = data.url;					
-					},1000);  
+					},500);  
 				}
 			},
 				

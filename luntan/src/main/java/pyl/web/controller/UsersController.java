@@ -1,5 +1,6 @@
 package pyl.web.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import pyl.pojo.Likes;
 import pyl.pojo.Posts;
 import pyl.pojo.PostsContent;
 import pyl.pojo.Reply;
+import pyl.pojo.RoleRelation;
 import pyl.pojo.Smodule;
 import pyl.pojo.UserCollect;
 import pyl.pojo.UserMessage;
@@ -37,6 +39,7 @@ import pyl.service.LikesService;
 import pyl.service.PostsContentService;
 import pyl.service.PostsService;
 import pyl.service.ReplyService;
+import pyl.service.RoleRelationService;
 import pyl.service.SmoduleService;
 import pyl.service.UserCollectService;
 import pyl.service.UserMessageService;
@@ -66,6 +69,10 @@ public class UsersController {
 	private UserCollectService ucService=null;
 	@Autowired
 	private UserMessageService messageService=null;
+	@Autowired
+	private RoleRelationService roleRService=null;
+	
+	
 	//验证码生成
 	@RequestMapping("/yanZhengMa.do")
 	public @ResponseBody Map<String,Object> yanzhengma(){
@@ -315,6 +322,8 @@ public class UsersController {
 		model.addAttribute("listpa", listpa);
 		model.addAttribute("listMax", listMax);
 		model.addAttribute("smodule", lists);
+		
+		
 		
 		return "forward:/static/html/index.jsp";
 	}
@@ -804,11 +813,10 @@ public class UsersController {
 		
 		int pageNo=1;
 		int pageSize=10;
-		int pageMax=replyService.findReplyMaxNum(map);
-		map=Myutil.fenPage(map, pageSize, pageNo);//分页
 		map.put("uemail", uemail);
+		int pageMax=messageService.findUserMessageMaxNum(map);
+		map=Myutil.fenPage(map, pageSize, pageNo);//分页
 		map.put("desc", "");
-		
 		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
 		try {
 			pageNo=Integer.parseInt(request.getParameter("pageNo"));
@@ -856,6 +864,7 @@ public class UsersController {
 		}
 		String messageId=request.getParameter("messageId");
 		try {
+			map.put("state", 2);
 			messageService.removeUserMessageById(Integer.parseInt(messageId));	
 			
 		} catch (Exception e) {
@@ -867,38 +876,130 @@ public class UsersController {
 	}
 	
 	//更多帖子
-//	@RequestMapping("/morePosts.do")
-//	public String morePosts(HttpServletRequest request,Model model){
-//		Subject subject=SecurityUtils.getSubject(); 
-//		Map<String, Object> map=new HashMap<String, Object>();
-//		
-//		int pageNo=1;
-//		int pageSize=10;
-//		int pageMax=replyService.findReplyMaxNum(map);
-//		map=Myutil.fenPage(map, pageSize, pageNo);//分页
-//		map.put("uemail", uemail);
-//		map.put("desc", "");
-//		
-//		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
-//		try {
-//			pageNo=Integer.parseInt(request.getParameter("pageNo"));
-//			if(pageNo>pageMax)pageNo=pageMax;
-//		} catch (Exception e) {
-//			// TODO: handle exception
-//			pageNo=1;
-//		}
-//		
-//		List<UserMessage> listms=messageService.findUserMessageByCondition(map);
-//		
-//		model.addAttribute("listms",listms);
-//		model.addAttribute("pageNo", pageNo);
-//		model.addAttribute("pageMax", pageMax);
-//		return "forward:/static/html/user/message.jsp";
-//	}	
+	@RequestMapping("/morePosts.do")
+	public String morePosts(HttpServletRequest request,Model model){
+		Subject subject=SecurityUtils.getSubject(); 
+		Map<String, Object> map=new HashMap<String, Object>();
+		
+		String smoduleId=request.getParameter("sid");
+		String smoduleName=request.getParameter("sname");
+		
+		
+		map.clear();//清空map
+		List<Smodule> lists=SmoduleService.findSmoduleAll();//所有模块
+		boolean flag=false;
+		int sid=0;
+		try {
+			sid=Integer.parseInt(smoduleId);
+			for (Smodule s : lists) {
+				if(s.getSmoduleId()==sid){
+					flag=true;
+					smoduleName=s.getSmoduleName();
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	
+		if(flag){
+			model.addAttribute("smoduleName", smoduleName);
+		}else{
+			model.addAttribute("smoduleName", "综合");
+		}
+		
+		
+		
+		int pageNo=1;
+		int pageSize=10;
+		if(smoduleName!=null){
+			map.put("smoduleName", smoduleName);
+		}
+		int pageMax=postsService.findPostsMaxNum(map);
+		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
+		try {
+			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+		} catch (Exception e) {
+			// TODO: handle exception
+			pageNo=1;
+		}
+		if(pageNo>pageMax)pageNo=pageMax;
+		map=Myutil.fenPage(map, pageSize, pageNo);//分页
+		map.put("desc", "");
+		List<Posts> listp=postsService.findPostsByCondition(map);
+		
+		map.clear();
+		map.put("hot", "1");
+		map.put("desc", "");//倒叙
+		map=Myutil.fenPage(map, 10,1);
+		List<Posts> listph=postsService.findPostsByCondition(map);//置顶的
+		
+		
+		model.addAttribute("listph",listph);
+		model.addAttribute("listp",listp);
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("pageMax", pageMax);
+		model.addAttribute("lists", lists);
+		return "forward:/static/html/jie/index.jsp";
+	}	
 	
 	
+	//更多帖子
+	@RequestMapping("/loadphoto.do")
+	public @ResponseBody Map<String, Object> loadphoto(HttpServletRequest request,Model model){
+		Map<String, Object> map=new HashMap<String, Object>();
+		String uemail=request.getParameter("uemail");
+		map.put("uemail", uemail);
+		List<Users> listu=userservice.findUsersByCondition(map);
+		map.clear();
+		System.out.println(listu.get(0).getUemail());
+		map.put("uphoto", listu.get(0).getUphoto());
+		
+		return map;
+	}	
+	
+	@RequestMapping("/allUsers.do")
+	public String allUsers(HttpServletRequest request,Model model){
+		Subject subject =SecurityUtils.getSubject();
+		Map<String,Object> map=new HashMap<String, Object>();
+		if(subject.hasRole("admin")){
+			return "redirect:/luntan/pyl/lookIndex.do";
+		}
 		
 		
+		int pageNo=1;
+		int pageSize=8;
+		int pageMax=userservice.findUsersMaxNum(map);
+		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
+		try {
+			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+		} catch (Exception e) {
+			// TODO: handle exception
+			pageNo=1;
+		}
+		if(pageNo>pageMax)pageNo=pageMax;
+		map=Myutil.fenPage(map, pageSize, pageNo);//分页
+		map.put("desc", "");
+		List<Users> listu=userservice.findUsersByCondition(map);
 		
+		model.addAttribute("currentemail", subject.getPrincipal().toString());
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("pageMax", pageMax);
+		model.addAttribute("listu", listu);
+		return "forward:static/html/user/admini-users.jsp";
+	}	
+		
+	//禁用用户
+	@RequestMapping("/banUser.do")
+	public @ResponseBody Map<String, Object> banUser(HttpServletRequest request,Model model){
+		Map<String, Object> map=new HashMap<String, Object>();
+		String uemail=request.getParameter("uemail");
+		String ban=request.getParameter("ban");
+		map.put("uemail", uemail);
+		map.put("ban", ban);
+		userservice.updateUsers(map);
+		map.clear();
+		map.put("state", ban);
+		return map;
+	}	
 	
 }

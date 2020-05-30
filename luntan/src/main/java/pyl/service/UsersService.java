@@ -14,4 +14,5 @@ public interface UsersService {
 	public void addUsers(Users u);
 	public void updateUsers(Map<String,Object> map);
 	public void removeUsersById(int id );
+	public int findUsersMaxNum(Map<String,Object> map);
 }
