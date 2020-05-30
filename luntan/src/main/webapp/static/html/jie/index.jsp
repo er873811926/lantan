@@ -1,4 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -23,66 +25,63 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  <link rel="stylesheet" href="/luntan/static/res/css/global.css">
 </head>
 <body>
-
 <div class="fly-header layui-bg-black">
   <div class="layui-container">
-    <a class="fly-logo" href="/">
-      <img src="../../res/images/logo.png" alt="layui">
+    <a class="fly-logo" href="pyl/lookIndex.do">
+      <img src="/luntan/static/res/images/logo.png" alt="layui">
     </a>
     <ul class="layui-nav fly-nav layui-hide-xs">
       <li class="layui-nav-item layui-this">
-        <a href="/"><i class="iconfont icon-jiaoliu"></i>首页</a>
+        <a href="pyl/lookIndex.do"><i class="iconfont icon-jiaoliu"></i>首页</a>
       </li>
-    <!--  <li class="layui-nav-item">
-        <a href="../case/case.html"><i class="iconfont icon-iconmingxinganli"></i>案例</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>框架</a>
-      </li>-->
+      <shiro:hasRole name="admin">
+	      <li class="layui-nav-item layui-this">
+	        <a href="/luntan/static/html/user/admini-users.jsp"><i class="iconfont layui-icon">&#xe62b;</i>管理</a>
+	      </li>
+      </shiro:hasRole>
     </ul>
     
     <ul class="layui-nav fly-nav-user">
-      
-      <!--搜索-->
-       <li class="layui-nav-item layui-hide-xs">
-        <span class="fly-search"><i class="layui-icon"></i></span> 
-      </li>
-      <!-- 未登入的状态 -->
-      <li class="layui-nav-item">
-        <a class="iconfont icon-touxiang layui-hide-xs" href="user/login.html"></a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="/fly-3.0/html/user/login.html">登入</a>
-      </li>
-      <li class="layui-nav-item">
-        <a href="/fly-3.0/html/user/reg.html">注册</a>
-      </li>
-     <!-- <li class="layui-nav-item layui-hide-xs">
-        <a href="/app/qq/" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" title="QQ登入" class="iconfont icon-qq"></a>
+      <%--搜索--%>
+      <li class="layui-nav-item layui-hide-xs">
+      	<input id="soucontent" type="text" name="title" required lay-verify="required" placeholder="请输入搜索内容" autocomplete="off" class="layui-input">
       </li>
       <li class="layui-nav-item layui-hide-xs">
-        <a href="/app/weibo/" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" title="微博登入" class="iconfont icon-weibo"></a>
-      </li>-->
-      
-     
-      <!-- 登入后的状态 -->
-      <!--
+        <div class="layui-btn" id="sou">
+        	<i class="layui-icon">&#xe615;</i>
+        </div> 
+      </li>     
+      <%-- 未登入的状态 --%>   
+	<shiro:notAuthenticated> 
       <li class="layui-nav-item">
-        <a class="fly-nav-avatar" href="/fly-3.0/html/user/home.html">
-          <cite class="layui-hide-xs">贤心</cite>
-          <i class="iconfont icon-renzheng layui-hide-xs" title="认证信息：layui 作者"></i>
-          <i class="layui-badge fly-badge-vip layui-hide-xs">VIP3</i>
-          <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
+        <a class="iconfont icon-touxiang layui-hide-xs" href="/luntan/static/html/user/login.jsp"></a>
+      </li>
+      <li class="layui-nav-item">
+        <a href="/luntan/static/html/user/login.jsp">登入</a>
+      </li>
+      <li class="layui-nav-item">
+        <a href="/luntan/static/html/user/reg.jsp">注册</a>
+      </li>
+    </shiro:notAuthenticated>
+      
+         <!-- 登入后的状态 -->
+      <shiro:authenticated>
+      <li class="layui-nav-item">
+        <a class="fly-nav-avatar" href="userSet/home.do">
+          <cite class="layui-hide-xs">${currentNickName}</cite>
+          <%-- <img src="${uphoto}"> --%>
+          <img src="data:image/jpeg;base64,${uphoto}">
         </a>
         <dl class="layui-nav-child">
-          <dd><a href="../user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
-          <dd><a href="../user/message.html"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
-          <dd><a href="../user/home.html"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+          <dd><a href="pyl/playSet.do"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+          <dd><a href="pyl/userMessage.do"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>我的消息</a></dd>
+          <dd><a href="userSet/home.do"><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
           <hr style="margin: 5px 0;">
-          <dd><a href="" style="text-align: center;">退出</a></dd>
+          <dd><a href="logout.do" style="text-align: center;">退出</a></dd>
         </dl>
       </li>
-      -->
+       </shiro:authenticated>
+     
     </ul>
   </div>
 </div>
@@ -90,25 +89,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="fly-panel fly-column">
   <div class="layui-container">
     <ul class="layui-clear">
-      <li class="layui-hide-xs layui-this"><a href="javascript:;">首页</a></li> 
-      <li><a href="jie/index.html">提问</a></li> 
-      <li><a href="jie/index.html">分享<span class="layui-badge-dot"></span></a></li> 
-      <li><a href="jie/index.html">讨论</a></li> 
-      <li><a href="jie/index.html">公告</a></li> 
-      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li> 
+      <li class="layui-hide-xs layui-this"><a href="">首页</a></li> 
+      <c:forEach items="${smodule}" var="s">
+               <li><a href="/luntan/static/html/jie/index.jsp?sid=${s.smoduleId}">${s.smoduleName }</a></li> 
+      </c:forEach>
+      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
       
       <!-- 用户登入后显示 -->
-      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="../user/index.html">我发表的贴</a></li> 
-      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="../user/index.html#collection">我收藏的贴</a></li> 
+       <shiro:authenticated>
+	      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="pyl/findMyPosts.do?state=0">我发表的贴</a></li> 
+	      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="pyl/findMyPosts.do?state=1">我收藏的贴</a></li> 
+       </shiro:authenticated>
     </ul> 
     
     <div class="fly-column-right layui-hide-xs"> 
-      <span class="fly-search"><i class="layui-icon"></i></span> 
-      <a href="add.html" class="layui-btn">发表新帖</a> 
+      <a href="pyl/addPosts.do" class="layui-btn">发表新帖</a> 
     </div> 
-    <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;"> 
-      <a href="add.html" class="layui-btn">发表新帖</a> 
-    </div> 
+    <!-- <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;"> 
+      <a href="" class="layui-btn">发表新帖</a> 
+    </div>  -->
   </div>
 </div>
 

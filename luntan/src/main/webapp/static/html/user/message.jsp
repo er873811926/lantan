@@ -1,4 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -132,24 +134,40 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <div class="fly-panel fly-panel-user" pad20>
 	  <div class="layui-tab layui-tab-brief" lay-filter="user" id="LAY_msg" style="margin-top: 15px;">
-	    <button class="layui-btn layui-btn-danger" id="LAY_delallmsg">清空全部消息</button>
+	    <div class="layui-btn layui-btn-danger" id="L_delallmsg">清空全部消息</div>
 	    <div  id="LAY_minemsg" style="margin-top: 10px;">
         <!--<div class="fly-none">您暂时没有最新消息</div>-->
         <ul class="mine-msg">
-          <li data-id="123">
-            <blockquote class="layui-elem-quote">
-              <a href="/jump?username=Absolutely" target="_blank"><cite>Absolutely</cite></a>回答了您的求解<a target="_blank" href="/jie/8153.html/page/0/#item-1489505778669"><cite>你的帖子也写得也太好了</cite></a>
-            </blockquote>
-            <p><span>1小时前</span><a href="javascript:;" class="layui-btn layui-btn-small layui-btn-danger fly-delete">删除</a></p>
-          </li>
-          <li data-id="123">
-            <blockquote class="layui-elem-quote">
-              系统消息：欢迎使用禹霖
-            </blockquote>
-            <p><span>1小时前</span><a href="javascript:;" class="layui-btn layui-btn-small layui-btn-danger fly-delete">删除</a></p>
-          </li>
+        	<c:forEach items="${listms}" var="um">
+	          <li data-id="123">
+	            <blockquote class="layui-elem-quote">
+	              <a href="/jump?username=Absolutely" target="_blank"><cite>${um.otherUnickname}</cite></a>回复了您的帖子(<a href="userSet/detail.do?postsNo=${um.postsNo}&uemail=${um.uemail}" ><cite>${um.postsTitle}<cite></a>): <a><cite>${um.messageContent}</cite></a>
+	            </blockquote>
+	            <p><span>${um.time}</span><a href="javascript:clearOneMsg(${um.messageId});" class="layui-btn layui-btn-small layui-btn-danger">删除</a></p>
+	          </li>
+          </c:forEach>
         </ul>
       </div>
+      <center class="">
+            <div class="layui-btn  layui-btn-xs" id="prepage">
+			  <i class="layui-icon">&#xe603;</i>
+			</div>
+			<div class="layui-inline">
+			<select id="changepage">
+				 <c:forEach begin="1" end="${pageMax}" var="a">
+				 	<c:if test="${pageNo eq a}">
+					  <option value="${a}" selected>${a}</option>
+				 	</c:if>
+				 <c:if test="${pageNo ne a}">
+					  <option value="${a}">${a}</option>
+				  </c:if>
+				 </c:forEach>
+			</select>  
+			</div>
+			<div class="layui-btn  layui-btn-xs" id="nextpage">
+			  <i class="layui-icon">&#xe602;</i>
+			</div>
+       </center> 
 	  </div>
 	</div>
 
@@ -166,6 +184,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 
 <script src="/luntan/static/res/layui/layui.js"></script>
+<script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
 <script>
 layui.cache.page = 'user';
 layui.cache.user = {
@@ -182,8 +201,46 @@ layui.config({
   fly: 'index'
 }).use('fly');
 </script>
-
 </body>
-
 </html>
 <script src="/luntan/static/res/pyl.js"></script>
+<script type="text/javascript">
+
+
+function myajax(seturl,setdata){
+		var rurl=seturl;
+		var rdata=setdata;
+		$.ajax({
+				url:rurl,
+				type:'post',
+				dataType:'json',
+				data:rdata,
+				success:function(data){
+					if(data.state==0){
+						alert(data.msg);
+					}
+					if(data.state==1){
+						alert(data.msg);
+					}
+				},	
+		});
+}
+
+
+
+$("#L_delallmsg").click(function(){
+	if(confirm("确定清空所有消息")){
+		myajax("pyl/clearAllMsg.do");
+	}
+
+});
+
+
+function clearOneMsg(id){
+	if(confirm("确定清空所有消息")){
+		var content={"messageId":id};
+		myajax("pyl/clearOneMsg.do",content);
+	}
+}
+
+</script>

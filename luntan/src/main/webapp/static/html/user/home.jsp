@@ -146,7 +146,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	<c:if test="${p.hot eq '1'}">
            	 <span class="fly-jing">精</span>
             </c:if>
-            <a href="" class="jie-title"> ${p.postsTitle}</a>
+            <a href="userSet/detail.do?postsNo=${p.postsNo}&uemail=${p.uemail}" class="jie-title"> ${p.postsTitle}</a>
             <i>${p.uptime}</i>
             <em class="layui-hide-xs">${p.pageView}阅 / ${p.replyNum}评论</em>
           </li>

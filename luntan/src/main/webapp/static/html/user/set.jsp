@@ -362,7 +362,7 @@ $("#updatePass").click(function(){
 		alert("信息填写完整");	
 		return;
 	}
-	if(newupass.length<6||newupass.length>16){alert("密码长度不合格");return;}
+	if(newupass.length>16||newupass.length<6){alert("密码长度不合格");return;}
 	
 	if(newupass==reupass){
 		var content={"oldupass":oldupass,"newupass":newupass};

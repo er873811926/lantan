@@ -30,6 +30,7 @@ import pyl.pojo.PostsContent;
 import pyl.pojo.Reply;
 import pyl.pojo.Smodule;
 import pyl.pojo.UserCollect;
+import pyl.pojo.UserMessage;
 import pyl.pojo.Users;
 import pyl.service.UsersService;
 import pyl.service.LikesService;
@@ -38,6 +39,7 @@ import pyl.service.PostsService;
 import pyl.service.ReplyService;
 import pyl.service.SmoduleService;
 import pyl.service.UserCollectService;
+import pyl.service.UserMessageService;
 import pyl.util.GetHttpIP;
 import pyl.util.ImageUtil;
 import pyl.util.MyMD5;
@@ -62,7 +64,8 @@ public class UsersController {
 	private LikesService likesService=null;
 	@Autowired
 	private UserCollectService ucService=null;
-	
+	@Autowired
+	private UserMessageService messageService=null;
 	//验证码生成
 	@RequestMapping("/yanZhengMa.do")
 	public @ResponseBody Map<String,Object> yanzhengma(){
@@ -251,7 +254,9 @@ public class UsersController {
 		posts.setSmoduleId(Integer.parseInt(smoduleId));
 		posts.setSmoduleName(smoduleName);
 		posts.setUemail(uEmail);
+		posts.setUnickname((String)subject.getSession().getAttribute("currentNickName"));
 		posts.setUptime(Myutil.playTime(new Date()));
+		
 		
 		//postsContent类创建
 		PostsContent postsC=new PostsContent();
@@ -786,5 +791,114 @@ public class UsersController {
 		map.put("msg", "密码修改成功");
 		return map;
 	}
+	
+	//用户消息
+	@RequestMapping("/userMessage.do")
+	public String userMessage(HttpServletRequest request,Model model){
+		Subject subject=SecurityUtils.getSubject(); 
+		if(subject.getPrincipal()==null){
+			return "redirect:/pyl/lookIndex.do";
+		}
+		String uemail=subject.getPrincipal().toString();
+		Map<String, Object> map=new HashMap<String, Object>();
+		
+		int pageNo=1;
+		int pageSize=10;
+		int pageMax=replyService.findReplyMaxNum(map);
+		map=Myutil.fenPage(map, pageSize, pageNo);//分页
+		map.put("uemail", uemail);
+		map.put("desc", "");
+		
+		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
+		try {
+			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+			if(pageNo>pageMax)pageNo=pageMax;
+		} catch (Exception e) {
+			// TODO: handle exception
+			pageNo=1;
+		}
+		
+		List<UserMessage> listms=messageService.findUserMessageByCondition(map);
+		
+		model.addAttribute("listms",listms);
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("pageMax", pageMax);
+		return "forward:/static/html/user/message.jsp";
+	}	
+	
+	
+	@RequestMapping("/clearAllMsg.do")
+	public @ResponseBody Map<String, Object> clearAllMsg(HttpServletRequest request,Model model){
+		Subject subject=SecurityUtils.getSubject(); 
+		Map<String, Object> map=new HashMap<String, Object>();
+		if(subject.getPrincipal()==null){
+			return map;
+		}
+		try {
+			messageService.removeUserMessageAll();		
+			map.put("state", 1);
+			map.put("msg", "清空完成");
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			map.put("state", 0);
+			map.put("msg", "清空失败");
+		}
+		return map;
+	}
+	
+	@RequestMapping("/clearOneMsg.do")
+	public @ResponseBody Map<String, Object> clearOneMsg(HttpServletRequest request,Model model){
+		Subject subject=SecurityUtils.getSubject(); 
+		Map<String, Object> map=new HashMap<String, Object>();
+		if(subject.getPrincipal()==null){
+			return map;
+		}
+		String messageId=request.getParameter("messageId");
+		try {
+			messageService.removeUserMessageById(Integer.parseInt(messageId));	
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			map.put("state", 0);
+			map.put("msg", "删除失败");
+		}
+		return map;
+	}
+	
+	//更多帖子
+//	@RequestMapping("/morePosts.do")
+//	public String morePosts(HttpServletRequest request,Model model){
+//		Subject subject=SecurityUtils.getSubject(); 
+//		Map<String, Object> map=new HashMap<String, Object>();
+//		
+//		int pageNo=1;
+//		int pageSize=10;
+//		int pageMax=replyService.findReplyMaxNum(map);
+//		map=Myutil.fenPage(map, pageSize, pageNo);//分页
+//		map.put("uemail", uemail);
+//		map.put("desc", "");
+//		
+//		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
+//		try {
+//			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+//			if(pageNo>pageMax)pageNo=pageMax;
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			pageNo=1;
+//		}
+//		
+//		List<UserMessage> listms=messageService.findUserMessageByCondition(map);
+//		
+//		model.addAttribute("listms",listms);
+//		model.addAttribute("pageNo", pageNo);
+//		model.addAttribute("pageMax", pageMax);
+//		return "forward:/static/html/user/message.jsp";
+//	}	
+	
+	
+		
+		
+		
 	
 }

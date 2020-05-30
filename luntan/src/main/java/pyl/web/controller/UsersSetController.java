@@ -31,6 +31,7 @@ import pyl.pojo.Role;
 import pyl.pojo.RoleRelation;
 import pyl.pojo.Smodule;
 import pyl.pojo.UserCollect;
+import pyl.pojo.UserMessage;
 import pyl.pojo.Users;
 import pyl.service.UsersService;
 import pyl.service.LikesService;
@@ -40,6 +41,7 @@ import pyl.service.ReplyService;
 import pyl.service.RoleRelationService;
 import pyl.service.SmoduleService;
 import pyl.service.UserCollectService;
+import pyl.service.UserMessageService;
 import pyl.util.GetHttpIP;
 import pyl.util.MyMD5;
 import pyl.util.MyUUID;
@@ -63,6 +65,7 @@ public class UsersSetController {
 	private LikesService likesService=null;
 	@Autowired
 	private UserCollectService ucService=null;
+
 	
 	//访问用户主页
 	@RequestMapping("/home.do")
@@ -264,6 +267,9 @@ public class UsersSetController {
 		
 		return "forward:/static/html/jie/detail.jsp";
 	}	
+	
+	
+	
 	
 	
 	

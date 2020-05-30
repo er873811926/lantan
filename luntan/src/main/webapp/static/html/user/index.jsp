@@ -139,11 +139,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     --%>
     <div class="layui-tab layui-tab-brief" lay-filter="user">
       <ul class="layui-tab-title" id="LAY_mine">
-      	<c:if test="${state eq 0}">
+      	<c:if test="${postsstate eq 0}">
          <li data-type="mine-jie" lay-id="index" class="layui-this">我发的帖<span></span></li>
          <li data-type="collection" data-url="/collection/find/" lay-id="collection">我收藏的帖<span></span></li>
         </c:if>
-        <c:if test="${state eq 1}">
+        <c:if test="${postsstate eq 1}">
         <li data-type="mine-jie" lay-id="index" >我发的帖<span></span></li>
         <li data-type="collection" data-url="/collection/find/" class="layui-this" lay-id="collection">我收藏的帖<span></span></li>
         </c:if>
