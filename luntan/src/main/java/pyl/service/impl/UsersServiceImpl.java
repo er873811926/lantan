@@ -58,4 +58,10 @@ public class UsersServiceImpl implements UsersService{
 		return usersmapper.findUsersMaxNum(map);
 	}
 
+	@Override
+	public List<Users> findNameEmail(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return usersmapper.findNameEmail(map);
+	}
+
 }

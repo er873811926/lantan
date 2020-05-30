@@ -101,7 +101,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</a>
 				</li>
 				<li class="layui-nav-item ">
-					<a href="/luntan/static/html/user/admini-posts.jsp">
+					<a href="pyl/allPosts.do">
 						<i class="layui-icon">&#xe655;</i> 帖子管理
 					</a>
 				</li>
@@ -128,7 +128,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<div class="layui-form-item">
 					    
 					    <div class="layui-input-inline">
-					      <input type="text" name="title" required  lay-verify="required" placeholder="请输入帐号或者昵称" autocomplete="off" class="layui-input">
+					      <input id="searchname" type="text" name="title" value="${searchname}" placeholder="请输入昵称"  class="layui-input">
+					    </div>
+					    <div class="layui-input-inline">
+					      <input id="searchemail" type="text" name="title"  value="${searchemail}" placeholder="请输入邮箱"  class="layui-input">
 					    </div>
 					    <div class="layui-btn" id="mysearch">
 					    	搜索<i class="layui-icon">&#xe615;</i>
@@ -161,10 +164,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									<td class="uemail">${us.uemail}</td>
 									<td>${us.logintime}</td>
 									<td>${us.umaxim}</td>
-									<c:if test="${us.ban eq 0}">
+									<c:if test="${us.uban eq 0}">
 									<td><div class="layui-btn pyl_ban" value="1">禁用</div></td>
 									</c:if>
-									<c:if test="${us.ban eq 1}">
+									<c:if test="${us.uban eq 1}">
 									<td><div class="layui-btn pyl_ban" value="0">启用</div></td>
 									</c:if>
 								</tr>
@@ -234,26 +237,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </html>
 
 <script type="text/javascript">
+	var flag=false;
 	$(".pyl_ban").each(function(i){
 		$(".pyl_ban").eq(i).click(function(){
+			if(flag){return;}
+			flag=true;
 			var name=$(this).parent().siblings(".uname").html();
 			var uemail=$(this).parent().siblings(".uemail").html();
-			var ban=$(this).attr("value");
-			if(confirm('是否禁用用户：'+name)){
+			var uban=$(this).attr("value");
+			
+			if(confirm('是修改用户全选：'+name)){
+				if(uban==1){
+					$(this).attr("value",0);
+					$(this).html("启用");
+				}else{
+					$(this).html("禁用");
+					$(this).attr("value",1);
+				}
 				$.ajax({
 					url:'pyl/banUser.do',
 					type:'post',
 					dataType:'json',
-					data:{"uemail":uemail,"ban":ban},
+					data:{"uemail":uemail,"uban":uban},
 					success:function(data){
-						if(data.state==0){
-							$(this).html("禁用");
-							$(this).attr("value",1);
-						}
-						if(data.state==1){
-							$(this).html("启用");
-							$(this).attr("value",0);
-						}
+						flag=false;
 					}
 				
 				});
@@ -262,5 +269,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		})
 		
 	})
+	
+	$("#mysearch").click(function(){
+		var name=$("#searchname").val();
+		var email=$("#searchemail").val();
+		if(name==""&&email==""){
+			window.location="pyl/allUsers.do";
+		}else{
+			window.location="pyl/searchUsers.do?name="+name+"&email="+email;
+		}
+		
+		
+	
+	
+	});
+	
 	
 </script>

@@ -961,10 +961,9 @@ public class UsersController {
 	public String allUsers(HttpServletRequest request,Model model){
 		Subject subject =SecurityUtils.getSubject();
 		Map<String,Object> map=new HashMap<String, Object>();
-		if(subject.hasRole("admin")){
-			return "redirect:/luntan/pyl/lookIndex.do";
+		if(!subject.hasRole("admin")){
+			return "redirect:pyl/lookIndex.do";
 		}
-		
 		
 		int pageNo=1;
 		int pageSize=8;
@@ -985,7 +984,7 @@ public class UsersController {
 		model.addAttribute("pageNo", pageNo);
 		model.addAttribute("pageMax", pageMax);
 		model.addAttribute("listu", listu);
-		return "forward:static/html/user/admini-users.jsp";
+		return "forward:/static/html/user/admini-users.jsp";
 	}	
 		
 	//禁用用户
@@ -993,13 +992,143 @@ public class UsersController {
 	public @ResponseBody Map<String, Object> banUser(HttpServletRequest request,Model model){
 		Map<String, Object> map=new HashMap<String, Object>();
 		String uemail=request.getParameter("uemail");
-		String ban=request.getParameter("ban");
+		String uban=request.getParameter("uban");
 		map.put("uemail", uemail);
-		map.put("ban", ban);
+		map.put("uban",uban);
 		userservice.updateUsers(map);
 		map.clear();
-		map.put("state", ban);
+		map.put("state", uban);
 		return map;
 	}	
+	
+	//搜索用户
+	@RequestMapping("/searchUsers.do")
+	public  String searchUsers(HttpServletRequest request,Model model){
+		Subject subject =SecurityUtils.getSubject();
+		Map<String,Object> map=new HashMap<String, Object>();
+		if(!subject.hasRole("admin")){
+			return "redirect:pyl/lookIndex.do";
+		}
+		String searchname=request.getParameter("name");
+		String searchuemail=request.getParameter("email");
+		
+		map.put("uemail", searchuemail);
+		map.put("unickname", searchname);
+		int pageNo=1;
+		int pageSize=8;
+		int pageMax=userservice.findUsersMaxNum(map);
+		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
+		try {
+			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+		} catch (Exception e) {
+			// TODO: handle exception
+			pageNo=1;
+		}
+		if(pageNo>pageMax)pageNo=pageMax;
+		map=Myutil.fenPage(map, pageSize, pageNo);//分页
+		map.put("desc", "");
+		map.put("uemaillike", "");
+		List<Users> listu=userservice.findUsersByCondition(map);
+		map.clear();
+		model.addAttribute("currentemail", subject.getPrincipal().toString());
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("pageMax", pageMax);
+		model.addAttribute("listu", listu);
+		model.addAttribute("searchname", searchname);
+		model.addAttribute("searchuemail", searchuemail);
+		return "forward:/static/html/user/admini-users.jsp";
+	}	
+	
+	
+	@RequestMapping("/allPosts.do")
+	public String allPosts(HttpServletRequest request,Model model){
+		Subject subject =SecurityUtils.getSubject();
+		Map<String,Object> map=new HashMap<String, Object>();
+		if(!subject.hasRole("admin")){
+			return "redirect:pyl/lookIndex.do";
+		}
+		
+		int pageNo=1;
+		int pageSize=8;
+		int pageMax=postsService.findPostsMaxNum(map);
+		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
+		try {
+			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+		} catch (Exception e) {
+			// TODO: handle exception
+			pageNo=1;
+		}
+		if(pageNo>pageMax)pageNo=pageMax;
+		map=Myutil.fenPage(map, pageSize, pageNo);//分页
+		map.put("desc", "");
+		List<Posts> listp=postsService.findPostsByCondition(map);
+		
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("pageMax", pageMax);
+		model.addAttribute("listp", listp);
+		return "forward:/static/html/user/admini-posts.jsp";
+	}	
+//	
+	//加精帖子
+	@RequestMapping("/hotPosts.do")
+	public @ResponseBody Map<String, Object> hotPosts(HttpServletRequest request,Model model){
+		Map<String, Object> map=new HashMap<String, Object>();
+		String postsNo=request.getParameter("postsNo");
+		String hot=request.getParameter("hot");
+		map.put("postsNo", postsNo);
+		map.put("hot",hot);
+		postsService.updatePosts(map);
+		return map;
+	}	
+	
+	//置顶帖子
+	@RequestMapping("/topPosts.do")
+	public @ResponseBody Map<String, Object> topPosts(HttpServletRequest request,Model model){
+		Map<String, Object> map=new HashMap<String, Object>();
+		String postsNo=request.getParameter("postsNo");
+		String top=request.getParameter("top");
+		map.put("postsNo", postsNo);
+		map.put("top",top);
+		postsService.updatePosts(map);
+		return map;
+	}	
+//	
+//	//搜索用户
+//	@RequestMapping("/searchUsers.do")
+//	public  String searchUsers(HttpServletRequest request,Model model){
+//		Subject subject =SecurityUtils.getSubject();
+//		Map<String,Object> map=new HashMap<String, Object>();
+//		if(!subject.hasRole("admin")){
+//			return "redirect:pyl/lookIndex.do";
+//		}
+//		String searchname=request.getParameter("name");
+//		String searchuemail=request.getParameter("email");
+//		
+//		map.put("uemail", searchuemail);
+//		map.put("unickname", searchname);
+//		int pageNo=1;
+//		int pageSize=8;
+//		int pageMax=userservice.findUsersMaxNum(map);
+//		pageMax=pageMax%pageSize!=0?pageMax/pageSize+1:1;
+//		try {
+//			pageNo=Integer.parseInt(request.getParameter("pageNo"));
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			pageNo=1;
+//		}
+//		if(pageNo>pageMax)pageNo=pageMax;
+//		map=Myutil.fenPage(map, pageSize, pageNo);//分页
+//		map.put("desc", "");
+//		map.put("uemaillike", "");
+//		List<Users> listu=userservice.findUsersByCondition(map);
+//		map.clear();
+//		model.addAttribute("currentemail", subject.getPrincipal().toString());
+//		model.addAttribute("pageNo", pageNo);
+//		model.addAttribute("pageMax", pageMax);
+//		model.addAttribute("listu", listu);
+//		model.addAttribute("searchname", searchname);
+//		model.addAttribute("searchuemail", searchuemail);
+//		return "forward:/static/html/user/admini-users.jsp";
+//	}	
 	
 }

@@ -1,4 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -103,11 +105,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<i class="layui-icon">&#xe655;</i> 帖子管理
 					</a>
 				</li>
-				<li class="layui-nav-item">
-					<a href="set.html">
-						<i class="layui-icon">&#xe620;</i> 基本设置
-					</a>
-				</li>
 			</ul>
 
 			<div class="site-tree-mobile layui-hide">
@@ -154,26 +151,48 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								</tr>
 							</thead>
 							<tbody>
+								<c:forEach items="${listp}" var="p">
 								<tr>
-									<td>肥鸡</td>
-									<td><a href="">其实考研计划要详细制定</a></td>
-									<td>分享</td>
-									<td><div class="layui-btn">置顶</div></td>
-									<td><div class="layui-btn">加精</div></td>
+									<td class="email">${p.unickname}</td>
+									<td class="postsNo" value="${p.postsNo}"><a href="">${p.postsTitle}</a></td>
+									<td value="${p.smoduleId}">${p.smoduleName}</td>
+									<c:if test="${p.top eq 0}">
+										<td><div class="layui-btn pyl_top" value="1">置顶</div></td>
+									</c:if>
+									<c:if test="${p.top eq 1}">
+										<td><div class="layui-btn pyl_top" value="0">取消置顶</div></td>
+									</c:if>
+									<c:if test="${p.hot eq 0}">
+										<td><div class="layui-btn pyl_hot" value="1">加精</div></td>
+									</c:if>
+									<c:if test="${p.hot eq 1}">
+										<td><div class="layui-btn pyl_hot" value="0">取消加精</div></td>
+									</c:if>
 									<td><div class="layui-btn">删除</div></td>
 								</tr>
-								<tr>
-									<td>许闲心</td>
-									<td><a href="">每一个大学都有研究生有什么不同</a></td>
-									<td>分享</td>
-									<td><div class="layui-btn">取消置顶</div></td>
-									<td><div class="layui-btn">取消加精</div></td>
-									<td><div class="layui-btn">删除</div></td>
-								</tr>
-								
-								
+								</c:forEach>
 							</tbody>
 						</table>
+						<center class="">
+				            <div class="layui-btn  layui-btn-xs" id="prepage">
+							  <i class="layui-icon">&#xe603;</i>
+							</div>
+							<div class="layui-inline">
+							<select id="changepage">
+								 <c:forEach begin="1" end="${pageMax}" var="a">
+								 	<c:if test="${pageNo eq a}">
+									  <option value="${a}" selected>${a}</option>
+								 	</c:if>
+								 <c:if test="${pageNo ne a}">
+									  <option value="${a}">${a}</option>
+								  </c:if>
+								 </c:forEach>
+							</select>  
+							</div>
+							<div class="layui-btn  layui-btn-xs" id="nextpage">
+							  <i class="layui-icon">&#xe602;</i>
+							</div>
+				      	 </center> 
 					</div>
 				</div>
 			</div>
@@ -211,3 +230,72 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 </html>
 <script src="/luntan/static/res/layui/jquery-1.8.3.min.js"></script>
+
+
+<script type="text/javascript">
+	var flag=false;
+	$(".pyl_hot").each(function(i){
+		$(".pyl_hot").eq(i).click(function(){
+			if(flag){return;}
+			flag=true;
+			var postsNo=$(this).parent().siblings(".postsNo").attr("value");
+			var postsname=$(this).parent().siblings(".email").html();
+			var hot=$(this).attr("value");
+			
+			if(confirm('是否加精：'+postsname)){
+				if(hot==1){
+					$(this).attr("value",0);
+					$(this).html("加精");
+				}else{
+					$(this).html("取消加精");
+					$(this).attr("value",1);
+				}
+				$.ajax({
+					url:'pyl/hotPosts.do',
+					type:'post',
+					dataType:'json',
+					data:{"postsNo":postsNo,"hot":hot},
+					success:function(data){
+						flag=false;
+					}
+				
+				});
+						
+			}
+		})
+		
+	})
+	$(".pyl_top").each(function(i){
+		$(".pyl_top").eq(i).click(function(){
+			if(flag){return;}
+			flag=true;
+			var postsNo=$(this).parent().siblings(".postsNo").attr("value");
+			var postsname=$(this).parent().siblings(".email").html();
+			var top=$(this).attr("value");
+			
+			if(confirm('是否置顶：'+postsname)){
+				if(hot==1){
+					$(this).attr("value",0);
+					$(this).html("置顶");
+				}else{
+					$(this).html("取消置顶");
+					$(this).attr("value",1);
+				}
+				$.ajax({
+					url:'pyl/topPosts.do',
+					type:'post',
+					dataType:'json',
+					data:{"postsNo":postsNo,"top":top},
+					success:function(data){
+						flag=false;
+					}
+				
+				});
+						
+			}
+		})
+		
+	})
+	
+	
+</script>

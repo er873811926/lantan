@@ -43,8 +43,11 @@
         SELECT
         <include refid="allColumns" />
         FROM USERS WHERE 1 = 1
-        <if test="uemail != null and uemail != ''">
+        <if test="uemail != null and uemail != '' and uemaillike ==null">
             AND UEMAIL =#{uemail}
+        </if>
+        <if test="uemail != null and uemail != '' and uemaillike !=null">
+            AND UEMAIL LIKE CONCAT('%',#{uemail}, '%')
         </if>
         <if test="upassword != null and upassword != ''">
             AND UPASSWORD LIKE CONCAT('%', #{upassword}, '%')
@@ -84,6 +87,18 @@
         </if>
     </select>
     
+    
+     <select id="findNameEmail" resultMap="usersMap" parameterType="map">
+        SELECT
+        <include refid="allColumns" />
+        FROM USERS WHERE 1 = 1
+    	<if test="uemail != null and uemail != ''">
+            AND UEMAIL LIKE CONCAT('%',#{uemail}, '%')
+        </if>
+        <if test="unickname != null and unickname != ''">
+            AND UNICKNAME LIKE CONCAT('%', #{unickname}, '%')
+        </if>
+    </select>
     <!-- 根据主键查询数据 -->
     <select id="findUsersByIds" resultMap="usersMap" parameterType="list">
         SELECT

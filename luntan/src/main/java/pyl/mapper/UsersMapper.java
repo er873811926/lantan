@@ -12,6 +12,7 @@ public interface UsersMapper {
 	public List<Users> findUsersAll();
 	//条件查询
 	public List<Users> findUsersByCondition(Map<String,Object> map);
+	public List<Users> findNameEmail(Map<String,Object> map);
 	//根据主键查询
 	public List<Users> findUsersByIds(List<Integer> id);
 	public void insertUsers(Users u);
