@@ -45,7 +45,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	<i class="layui-icon">&#xe615;</i>
         </div> 
       </li>
-      <!-- 登入后的状态 -->
+      <%-- 未登录的状态 --%>
       <li class="layui-nav-item">
         <a class="iconfont icon-touxiang layui-hide-xs" href="/luntan/static/html/user/login.jsp"></a>
       </li>
@@ -54,8 +54,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       </li>
       <li class="layui-nav-item">
         <a href="/luntan/static/html/user/reg.jsp">注册</a>
-      </li>
-     
+      </li> 
     </ul>
   </div>
 </div>

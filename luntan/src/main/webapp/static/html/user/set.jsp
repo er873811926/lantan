@@ -210,10 +210,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <div class="layui-form-item">
               <div class="avatar-add">
                 <p>建议尺寸168*168，支持jpg、png、gif，最大不能超过50KB</p>
-                <button type="button" class="layui-btn upload-img">
+                <button type="button" id="selectphoto" class="layui-btn" >
                   <i class="layui-icon">&#xe67c;</i>上传头像
                 </button>
-                <img src="data:image/jpeg;base64,${users.uphoto}">
+                <input type="file" id="file"  
+style="filter:alpha(opacity=0);opacity:0;width: 0;height: 0;"/> 
+                <img id="zhanshi" src="data:image/jpeg;base64,${oneu.uphoto}">
                 <span class="loading"></span>
               </div>
             </div>
@@ -241,7 +243,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 </div>
               </div>
               <div class="layui-form-item">
-                <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+                <div id="updatePass" class="layui-btn" key="set-mine">确认修改</div>
               </div>
             </form>
           </div>
@@ -283,6 +285,7 @@ layui.config({
 </html>
 
 <script type="text/javascript">
+
 	function myajax(seturl,setdata){
 		var rurl=seturl;
 		var rdata=setdata;
@@ -293,12 +296,14 @@ layui.config({
 				data:rdata,
 				success:function(data){
 					if(data.state==1){
+						location.reload(); 
 						alert(data.msg);
 					}
-					
 				}	
 			});
 	}
+	
+	
 	$("#updateUser").click(function(){
 		if(confirm("确认修改吗")){
 			var unickname=$("#L_username").val();
@@ -312,6 +317,57 @@ layui.config({
 		}
 	});
 
+//修改图片按钮
+$("#selectphoto").click(function(){
+	$("#file").trigger("click"); 
 
+});
+
+function selectFile(){ 
+	$("#file").trigger("click"); 
+} 
+
+$("#file").change(function(){
+			var size=$(this)[0].files[0].size;
+			console.log(size);
+			if(size>50000){alert("图片大于50K");return;}
+			l($(this));
+});
+
+//修改头像获取ba64字符串
+function l(evn){
+	var name = $(evn)[0].files[0].name;//获取上传的文件名
+	var file = $(evn)[0].files[0];
+	if (window.FileReader) {
+	var reader = new FileReader();
+	reader.readAsDataURL(file);
+	//监听文件读取结束后事件
+	reader.onloadend = function (e) {
+		$("#zhanshi").attr("src",e.target.result); //e.target.result就是最后的路径地址
+		var uphotobs64=e.target.result;
+		var content={"uphoto":uphotobs64};
+		myajax("pyl/updatePhoto.do",content);
+		
+	};
+	}
+}
+
+
+$("#updatePass").click(function(){
+	var oldupass=$("#L_nowpass").val();
+	var newupass=$("#L_pass").val();
+	var reupass=$("#L_repass").val();
+
+	if(oldupass==""||newupass==""||reupass==""){
+		alert("信息填写完整");	
+		return;
+	}
+	if(newupass.length<6||newupass.length>16){alert("密码长度不合格");return;}
+	
+	if(newupass==reupass){
+		var content={"oldupass":oldupass,"newupass":newupass};
+		myajax("pyl/updatePass.do",content);
+	}
+});
 
 </script>

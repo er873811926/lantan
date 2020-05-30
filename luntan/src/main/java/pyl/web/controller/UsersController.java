@@ -280,7 +280,10 @@ public class UsersController {
 		Subject subject=SecurityUtils.getSubject(); 
 		Map<String,Object> map=new HashMap<String, Object>();
 		//需要全部的帖子和置顶的帖子，回复最多的人
-		List<Posts> listpa=postsService.findPostsAll();//全部的
+		map.put("top", "0");
+		map.put("desc", "");//倒叙
+		map=Myutil.fenPage(map, 12,1);
+		List<Posts> listpa=postsService.findPostsByCondition(map);//全部的
 		
 		map.put("top", "1");
 		map.put("desc", "");//倒叙
@@ -399,6 +402,12 @@ public class UsersController {
 		String type=request.getParameter("type");
 		Subject subject=SecurityUtils.getSubject();
 		Map<String, Object> map= new HashMap<String, Object>();
+		if(subject.getPrincipal()==null){
+			map.put("state", 1);
+			map.put("msg", "请先登录");
+			return map;
+		}
+		
 		if("submitReply".equals(type)){
 			Reply r=new Reply();
 			String uemail=subject.getPrincipal().toString();
@@ -442,6 +451,7 @@ public class UsersController {
 		}
 		
 		if("caina".equals(type)){
+			
 			String postsNo =request.getParameter("postsNo");
 			String uemail =request.getParameter("uemail");
 			String replyTime =request.getParameter("replyTime");
@@ -679,8 +689,8 @@ public class UsersController {
 		
 		String uemail=subject.getPrincipal().toString();
 		Map<String,Object> map=new HashMap<String, Object>();
+		map.put("uemail", uemail);
 		List<Users> listu=userservice.findUsersByCondition(map);
-		
 		model.addAttribute("oneu", listu.get(0));
 		
 		return "forward:/static/html/user/set.jsp";
@@ -690,7 +700,6 @@ public class UsersController {
 	@RequestMapping("/setUser.do")
 	public @ResponseBody Map<String,Object> setUser(HttpServletRequest request,HttpServletResponse response,Model model){
 		Subject subject =SecurityUtils.getSubject();
-		System.out.println(subject.getPrincipal());
 		Map<String,Object> map=new HashMap<String, Object>();
 		if(subject.getPrincipal()==null){
 			System.out.println(1);
@@ -713,27 +722,69 @@ public class UsersController {
 			userservice.updateUsers(map);
 		}
 		map.clear();
-		
+		subject.getSession().setAttribute("currentNickName", unickname);
 		map.put("state", 1);
 		map.put("msg", "修改成功");
+		
 		
 		return map;
 	}
 	
 	
 	
-//	@RequestMapping("/findMyCollect.do")
-//	public String findMyCollect(Model model){
-//		Subject subject =SecurityUtils.getSubject();
-//		if(subject.getPrincipal()==null){
-//			return "redirect:pyl/lookIndex.do";
-//		}
-//		
-//		String uemail=subject.getPrincipal().toString();
-//		Map<String,Object> map=new HashMap<String, Object>();
-//		
-//		
-//		return "forward:/static/html/user/index.jsp#collection";
-//	}
+	@RequestMapping("/updatePhoto.do")
+	public @ResponseBody Map<String,Object> uploadPhoto(HttpServletRequest request,HttpServletResponse response,Model model){
+		Subject subject =SecurityUtils.getSubject();
+		Map<String,Object> map=new HashMap<String, Object>();
+		if(subject.getPrincipal()==null){
+			return map;
+		}
+		
+		String uemail=subject.getPrincipal().toString();
+		String uphoto=request.getParameter("uphoto");
+		uphoto=uphoto.substring(uphoto.indexOf(",")+1);
+		map.put("uphoto", uphoto);
+		map.put("uemail", uemail);
+		userservice.updateUsers(map);
+
+		subject.getSession().setAttribute("uphoto", uphoto);
+		
+		map.clear();
+		map.put("state", 1);
+		map.put("msg", "头像修改成功");
+		return map;
+	}
+	@RequestMapping("/updatePass.do")
+	public @ResponseBody Map<String,Object> updatePass(HttpServletRequest request,HttpServletResponse response,Model model){
+		Subject subject =SecurityUtils.getSubject();
+		Map<String,Object> map=new HashMap<String, Object>();
+		if(subject.getPrincipal()==null){
+			return map;
+		}
+		
+		System.out.println("进来了");
+		String uemail=subject.getPrincipal().toString();
+		String oldupass=request.getParameter("oldupass");
+		String newupass=request.getParameter("newupass");
+		map.put("uemail", uemail);
+		List<Users> listu=userservice.findUsersByCondition(map);
+		
+		//使用shiro提供的加密方式
+		Object bs=ByteSource.Util.bytes(uemail);
+		SimpleHash sh=new SimpleHash("MD5", oldupass,bs, 5);
+		oldupass=sh.toString();
+		
+		//密码匹配正确修改
+		if(oldupass.equals(listu.get(0).getUpassword())){
+			sh=new SimpleHash("MD5", newupass,bs, 5);
+			newupass=sh.toString();
+			map.put("upassword", newupass);
+			userservice.updateUsers(map);
+		}
+		map.clear();
+		map.put("state", 1);
+		map.put("msg", "密码修改成功");
+		return map;
+	}
 	
 }

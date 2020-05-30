@@ -87,12 +87,12 @@
         <property name="filterChainDefinitions">
             <value>
                /static/res/** = anon
-                #/static/html/* = anon
+                
                 /static/json/* = anon
               /static/html/user/login.jsp = anon
               /static/html/user/reg.jsp = anon
               /static/html/user/sou.jsp = anon
-              #/static/html/** = anon
+              
                 /pyl/*.do = anon
                 /userSet/*.do = anon
                /logout.do = logout

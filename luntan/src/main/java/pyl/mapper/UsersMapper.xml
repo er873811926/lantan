@@ -44,7 +44,7 @@
         <include refid="allColumns" />
         FROM USERS WHERE 1 = 1
         <if test="uemail != null and uemail != ''">
-            AND UEMAIL LIKE CONCAT('%', #{uemail}, '%')
+            AND UEMAIL =#{uemail}
         </if>
         <if test="upassword != null and upassword != ''">
             AND UPASSWORD LIKE CONCAT('%', #{upassword}, '%')
